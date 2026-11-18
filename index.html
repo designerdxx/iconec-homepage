@@ -88,7 +88,7 @@ html:not(.js) .loader,html.still .loader{display:none}
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;z-index:0;background:var(--white)}
 .flow{position:relative;z-index:1}
 .hold{pointer-events:none}
-#hold2{height:calc(325vh - 158px);height:calc(325svh - 158px)}
+#hold2{height:335vh;height:335svh}
 #hold4{height:355vh;height:355svh}
 
 /* cards */
@@ -145,7 +145,7 @@ html.js .ch1.in p{opacity:1;transform:none;transition:opacity .7s .5s,transform 
 html.js:not(.still) .ch1 .rise .ln-r>span{transform:none}
 html.js:not(.still) .ch1 .rise:not(.in) .wd{transform:translateY(114%)}
 html.js .ch1 .rise.in .wd{transform:none;transition:transform .9s var(--ease-out);transition-delay:calc(var(--w)*45ms)}
-.anchor{height:316px;margin-top:16vh}
+.anchor{height:0}
 
 /* chapter 02 + 04 live on the stone layer inside the stage */
 .lux{position:absolute;inset:0;background:var(--stone);color:var(--ink);visibility:hidden;will-change:clip-path}
@@ -630,19 +630,14 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .scr{position:absolute;inset:0;overflow:hidden;background:#fff;visibility:hidden;will-change:opacity,filter,transform}
 .scr:first-child{visibility:inherit}
 .scr button{transition:transform .12s var(--ease-out)}
-.ph-slot{position:absolute;left:51.79px;top:139.48px;width:196.42px;height:260.95px;pointer-events:none}
-.phone:not(.has-card) [data-spot]{visibility:hidden}
 .ph-edge,.ph-back,.ph-glare,.ph-shadow{display:none}
-/* the landing card's second front: the app's spotlight card, at the size it has inside the phone */
-.card .appf{position:absolute;left:50%;top:50%;width:280px;height:372px;margin:-186px 0 0 -140px;transform:scale(.70149);backface-visibility:hidden;display:none;border-radius:24px;box-shadow:0 48px 70px -40px rgba(20,20,19,.5);transition:box-shadow .3s}
-.card.as-app .appf{display:flex}
-.card.as-app>.face:not(.back){display:none}
-.card.flat .appf{box-shadow:none}
 /* the steps */
 .steps{position:absolute;inset:0;pointer-events:none}
 .st-h,.st-p{position:absolute;top:0;visibility:hidden;will-change:transform}
 .st-h{left:var(--gx);max-width:calc(50% - 190px - var(--gx));font-size:clamp(44px,6.2vw,104px)}
-.st-p{left:calc(50% + 190px);width:min(34ch,calc(50% - 190px - var(--gxr)));display:grid;gap:14px}
+/* the name hangs off the left margin and the explanation off the right one, with the phone between; the first line of
+   the explanation starts level with the top of the name's capitals (set in the frame from the faces' own metrics) */
+.st-p{right:var(--gxr);width:min(34ch,calc(50% - 190px - var(--gxr)));display:grid;gap:14px}
 .st-p p{font-size:15px;line-height:1.45;color:var(--ink-70)}
 .st-p p:first-child{font-size:17px;line-height:1.4;color:var(--ink)}
 @media (max-width:760px){
@@ -660,6 +655,8 @@ html.p3d .ph-body::before,html.p3d .ph-body::after{content:none}
 html.p3d .ph-edge{display:block;position:absolute;inset:0;transform-style:preserve-3d}
 html.p3d .ph-edge i{position:absolute;inset:0;border-radius:53px}
 html.p3d .ph-back{display:block;position:absolute;inset:0;border-radius:53px;background:linear-gradient(135deg,#3c3c40,#232326);transform:translateZ(-14px) rotateY(180deg);backface-visibility:hidden}
+/* the back is seen for a moment during the swap's spin: a camera island, so it reads as a phone and not a slab */
+html.p3d .ph-back::before{content:"";position:absolute;left:16px;top:16px;width:122px;height:126px;border-radius:36px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 1px 3px rgba(0,0,0,.4);background:radial-gradient(circle at 35px 36px,#0a0a0c 0 12px,#1b1b1f 12.5px 19px,#5a5a5f 19.5px 20.5px,transparent 21px),radial-gradient(circle at 35px 90px,#0a0a0c 0 12px,#1b1b1f 12.5px 19px,#5a5a5f 19.5px 20.5px,transparent 21px),radial-gradient(circle at 88px 63px,#0a0a0c 0 12px,#1b1b1f 12.5px 19px,#5a5a5f 19.5px 20.5px,transparent 21px),linear-gradient(135deg,#47474b,#2d2d31)}
 html.p3d .ph-glare{display:block;position:absolute;inset:0;border-radius:44px;pointer-events:none;background:linear-gradient(112deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.2) 50%,rgba(255,255,255,0) 60%) 50% 0/300% 100% no-repeat}
 html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;height:14%;border-radius:50%;background:rgba(20,20,19,.34);filter:blur(26px)}
 </style>
@@ -743,7 +740,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
 <div class="scr" data-s="return"><div style="position: absolute; left: 0; top: 106px; width: 402px; padding: 16px 0 144px; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px; align-items: center"><section style="width: 402px; display: flex; flex-direction: column; gap: 12px; align-items: center; flex: none"><div style="width: 370px; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; white-space: nowrap"><div style="width: 100%; display: flex; align-items: center; justify-content: space-between; color: #141a14"><h2 style="margin: 0; font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 22px; line-height: 28px">The spotlight</h2></div><p style="margin: 0; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; color: #5f665f">Statement pieces, ready to wear.</p></div><div style="position: relative; width: 402px; height: 372px; overflow: hidden; flex: none"><div  style="position: absolute; left: -231px; top: 18px; width: 280px; height: 336px; border-radius: 24px; overflow: hidden; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start"><img src="app-flower-cluster-ring.jpg" alt="Flower Cluster Ring" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px"><div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 178px; background: linear-gradient(to bottom, rgba(20,21,22,0), rgba(20,21,22,0.62) 50%, rgba(20,21,22,0.9))"></div><div style="position: relative; width: 100%; display: flex; gap: 8px; align-items: flex-start"><div style="flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 4px"><strong style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 20px; line-height: 24px; color: #fff">Flower Cluster Ring</strong><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; color: rgba(255,255,255,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">White gold · New this week</span></div><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="display: block; flex: none; color: #fff"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M12 20.4s-8.2-4.9-8.2-11A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.2 2.5c0 6.1-8.2 11-8.2 11z"/></svg></div></div><div data-spot="1" style="position: absolute; left: 61px; top: 0px; width: 280px; height: 372px; border-radius: 24px; overflow: hidden; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start"><img src="app-love-knot-ring.jpg" alt="Love Knot Ring, two gold bands tied round one diamond" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px"><div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 202px; background: linear-gradient(to bottom, rgba(20,21,22,0), rgba(20,21,22,0.62) 50%, rgba(20,21,22,0.9))"></div><div style="position: relative; width: 100%; display: flex; gap: 8px; align-items: flex-start"><div style="flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 4px"><strong style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 20px; line-height: 24px; color: #fff">Love Knot Ring</strong><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; color: rgba(255,255,255,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Yellow gold · New this week</span></div><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="display: block; flex: none; color: #fff"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M12 20.4s-8.2-4.9-8.2-11A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.2 2.5c0 6.1-8.2 11-8.2 11z"/></svg></div></div><div  style="position: absolute; left: 353px; top: 18px; width: 280px; height: 336px; border-radius: 24px; overflow: hidden; padding: 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start"><img src="app-solitaire-pendant.jpg" alt="Solitaire Pendant" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 24px"><div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 178px; background: linear-gradient(to bottom, rgba(20,21,22,0), rgba(20,21,22,0.62) 50%, rgba(20,21,22,0.9))"></div><div style="position: relative; width: 100%; display: flex; gap: 8px; align-items: flex-start"><div style="flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 4px"><strong style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 20px; line-height: 24px; color: #fff">Solitaire Pendant</strong><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; color: rgba(255,255,255,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">White gold · New this week</span></div><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" style="display: block; flex: none; color: #fff"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M12 20.4s-8.2-4.9-8.2-11A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.2 2.5c0 6.1-8.2 11-8.2 11z"/></svg></div></div></div></section><section style="width: 370px; display: flex; flex-direction: column; gap: 12px; align-items: center; flex: none"><div style="width: 370px; box-sizing: border-box; border-radius: 20px; background: #f5f5f5; padding: 16px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start"><div style="width: 100%; display: flex; gap: 12px; align-items: center"><div style="display: flex; align-items: flex-start"><span style="position: relative; width: 36px; height: 36px; box-sizing: border-box; border: 2px solid #fff; border-radius: 8px; flex: none; margin-right: 0"><img src="app-pave-hoop-earrings.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 6px; object-position: 50% 42%"></span></div><div style="flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 2px; white-space: nowrap"><strong style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14">Pickup today, 2–4 pm</strong><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 20px; color: rgba(20,26,20,0.6)">1 piece going back</span></div><span style="width: 36px; height: 36px; border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: center; flex: none; color: #141a14"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="display: block; flex: none; color: currentColor"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="m9 4.8 7.2 7.2L9 19.2"/></svg></span></div><div aria-hidden="true" style="width: 100%; display: flex; border-radius: 2px; overflow: hidden; background: #e2e2de"><i style="flex: 2 0 0; height: 4px; background: #284423"></i><i style="flex: 1 0 0; height: 4px"></i></div><div style="width: 100%; box-sizing: border-box; border-radius: 14px; background: #f5f5f5; padding: 10px 10px 10px 14px; display: flex; align-items: center; justify-content: space-between"><div style="display: flex; flex-direction: column; gap: 2px; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; white-space: nowrap"><span style="font-size: 14px; line-height: 20px; color: #141a14">Pickup code</span><span style="font-size: 12px; line-height: 14px; color: rgba(20,26,20,0.6)">Give it to the courier</span></div><div style="display: flex; align-items: flex-start"><span style="height: 40px; padding: 0 4px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14">7</span><span style="height: 40px; padding: 0 4px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14">3</span><span style="height: 40px; padding: 0 4px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14">0</span><span style="height: 40px; padding: 0 4px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14">5</span></div></div></div></section><section style="width: 370px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; flex: none"><div style="width: 370px; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; white-space: nowrap"><div style="width: 100%; display: flex; align-items: center; justify-content: space-between; color: #141a14"><h2 style="margin: 0; font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 22px; line-height: 28px">Your pieces</h2><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 15px; line-height: 20px; text-decoration: underline; text-underline-position: from-font; text-decoration-thickness: from-font">Manage plan</span></div><p style="margin: 0; font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 15px; line-height: 20px; color: #5f665f">Single plan · 2 slots locked</p></div><div style="display: flex; gap: 14px; align-items: flex-start"><div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="position: relative; width: 114px; height: 150px; border-radius: 16px; overflow: hidden"><img src="app-pave-hoop-earrings.jpg" alt="Pavé Hoop Earrings" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 16px"><div aria-hidden="true" style="position: absolute; left: 0; top: 56px; width: 114px; height: 94px; background: linear-gradient(to bottom, rgba(20,21,22,0), rgba(20,21,22,0.62) 50%, rgba(20,21,22,0.9))"></div><span style="position: absolute; left: 10px; top: 100px; width: 94px; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 14px; line-height: 20px; color: #fff">Pavé Hoop Earrings</span></div><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 12px; line-height: 14px; color: #5f665f; white-space: nowrap">Since 4 Nov</span></div><div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="width: 114px; height: 150px; box-sizing: border-box; border-radius: 16px; background: #f4f2ee; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center"><img src="app-lock.svg" alt="" style="width: 24px; height: 24px; display: block"><span style="height: 44px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #000">Unlock</span></div><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 12px; line-height: 14px; color: #5f665f; white-space: nowrap">Locked slot</span></div><div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="width: 114px; height: 150px; box-sizing: border-box; border-radius: 16px; background: #f4f2ee; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center"><img src="app-lock.svg" alt="" style="width: 24px; height: 24px; display: block"><span style="height: 44px; display: flex; align-items: center; justify-content: center; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #000">Unlock</span></div><span style="font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 12px; line-height: 14px; color: #5f665f; white-space: nowrap">Locked slot</span></div></div></section><section style="width: 402px; display: flex; flex-direction: column; gap: 12px; align-items: center; flex: none"><div style="width: 370px; display: flex; flex-direction: column; gap: 2px; align-items: flex-start; white-space: nowrap"><div style="width: 100%; display: flex; align-items: center; justify-content: space-between; color: #141a14"><h2 style="margin: 0; font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 600; font-size: 22px; line-height: 28px">Most wanted</h2></div><p style="margin: 0; font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 15px; line-height: 20px; color: #5f665f">What members are wearing most</p></div><div style="width: 402px; box-sizing: border-box; padding: 0 16px; display: flex; gap: 10px; align-items: flex-start; overflow: hidden"><div style="width: 150px; flex: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="position: relative; width: 150px; height: 188px; border-radius: 16px"><img src="app-love-knot-ring.jpg" alt="Love Knot Ring, two gold bands tied round one diamond" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 16px"></div><div style="width: 100%; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 15px; line-height: 20px; color: #141a14">Love Knot Ring</span><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 13px; line-height: 18px; color: #5f665f">Yellow gold</span></div></div><div style="width: 150px; flex: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="position: relative; width: 150px; height: 188px; border-radius: 16px"><img src="app-pave-hoop-earrings.jpg" alt="Pavé Hoop Earrings" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 16px"></div><div style="width: 100%; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 15px; line-height: 20px; color: #141a14">Pavé Hoop Earrings</span><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 13px; line-height: 18px; color: #5f665f">White gold</span></div></div><div style="width: 150px; flex: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-start"><div style="position: relative; width: 150px; height: 188px; border-radius: 16px"><img src="app-tennis-necklace.jpg" alt="Tennis Necklace" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 16px"></div><div style="width: 100%; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 15px; line-height: 20px; color: #141a14">Tennis Necklace</span><span style="font-family: 'Hanken Grotesk', 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 13px; line-height: 18px; color: #5f665f">White gold</span></div></div></div></section><section style="width: 370px; box-sizing: border-box; border-radius: 20px; background: #f4f4f2; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; flex: none"><div style="display: flex; align-items: center; justify-content: space-between; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 500; font-size: 16px; line-height: 22px; color: #141a14; white-space: nowrap"><span>How it works</span><span style="text-decoration: underline; text-underline-position: from-font; text-decoration-thickness: from-font">See all</span></div><p style="margin: 0; font-family: 'Overused Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 14px; line-height: 1.6; color: #6b706b">Short videos on swaps, delivery and credits.</p></section></div><div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 402px; height: 106px; background: #fff"></div><div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 402px; height: 62px"><div style="position: absolute; left: 9px; top: 25.67px; width: 129.5px; height: 13px; display: flex; align-items: center; justify-content: center"><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 590; font-size: 17px; line-height: 22px; color: #141a14; white-space: nowrap">9:41</span></div><div style="position: absolute; left: 138.5px; top: 13.67px; width: 125px; height: 37px; border-radius: 100px; background: #000"></div><img src="app-levels.svg" alt="" style="position: absolute; left: 263.5px; top: 25.67px; width: 130px; height: 13px; display: block"></div><div style="position: absolute; left: 0; top: 62px; width: 402px; height: 44px; padding: 0 6px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; color: #141a14"><span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 24" width="25" height="25" aria-hidden="true" style="display: block; flex: none; color: currentColor"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="10.2" cy="10.2" r="6.6"/><path d="m15.2 15.2 5.4 5.4"/></g></svg></span><img src="app-logo.svg" alt="Iconec" style="width: 62px; height: 23.459px; display: block"><span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg viewBox="0 0 24 25" width="24" height="25" aria-hidden="true" style="display: block; flex: none; color: currentColor"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.4" y="7.6" width="15.2" height="13.2" rx="2.8"/><path d="M8.6 7.6V6.5a3.4 3.4 0 0 1 6.8 0v1.1"/></g></svg></span></div><div aria-hidden="true" style="position: absolute; left: 0; top: 106px; width: 402px; height: 1px; background: rgba(20,26,20,0.08)"></div><div aria-hidden="true" style="position: absolute; left: 0; bottom: 0; width: 402px; height: 140px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.7)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%); mask-image: linear-gradient(to bottom, transparent, #000 45%)"></div><div aria-hidden="true" style="position: absolute; left: 16px; top: 788px; width: 370px; height: 62px; padding: 4px; box-sizing: border-box; border-radius: 31px; background: rgba(255,255,255,0.3); box-shadow: 0px 8px 24px 0px rgba(0,0,0,0.08); display: flex; align-items: center"><span style="flex: 1 0 0; min-width: 1px; height: 100%; border-radius: 27px; background: rgba(0,0,0,0.07); color: #007aff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" style="display: block; flex: none; color: currentColor"><path fill="currentColor" fill-rule="evenodd" d="M11.3 2.9a1.1 1.1 0 0 1 1.4 0l3.5 3v-.8c0-.5.4-.9.9-.9h1.3c.5 0 .9.4.9.9v3.5l2.6 2.2a1 1 0 0 1-1.3 1.6l-.5-.4v7.2c0 1-.8 1.8-1.8 1.8H5.7c-1 0-1.8-.8-1.8-1.8V12l-.5.4a1 1 0 0 1-1.3-1.6zM10 14.7c0-.6.4-1 1-1h2c.6 0 1 .4 1 1v4.6h-4z"/></svg><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 510; font-size: 10px; line-height: 12px; white-space: nowrap">Home</span></span><span style="flex: 1 0 0; min-width: 1px; height: 100%; border-radius: 27px; background: transparent; color: rgba(28,28,30,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" style="display: block; flex: none; color: currentColor"><g fill="currentColor"><rect x="7.4" y="3" width="9.2" height="1.5" rx=".75"/><rect x="5.4" y="5.9" width="13.2" height="1.6" rx=".8"/><rect x="3.4" y="9" width="17.2" height="12" rx="2.6"/></g></svg><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 510; font-size: 10px; line-height: 12px; white-space: nowrap">Collections</span></span><span style="flex: 1 0 0; min-width: 1px; height: 100%; border-radius: 27px; background: transparent; color: rgba(28,28,30,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" style="display: block; flex: none; color: currentColor"><g fill="currentColor"><rect x="3.2" y="4.2" width="4.3" height="16.8" rx="1"/><rect x="8.5" y="7" width="4.3" height="14" rx="1"/><rect x="14.4" y="4.6" width="4.2" height="16.6" rx="1" transform="rotate(-12 16.5 12.9)"/></g></svg><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 510; font-size: 10px; line-height: 12px; white-space: nowrap">Catalog</span></span><span style="flex: 1 0 0; min-width: 1px; height: 100%; border-radius: 27px; background: transparent; color: rgba(28,28,30,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" style="display: block; flex: none; color: currentColor"><path fill="currentColor" d="M12 20.8s-8.6-5.1-8.6-11.5A4.7 4.7 0 0 1 12 6.7a4.7 4.7 0 0 1 8.6 2.6c0 6.4-8.6 11.5-8.6 11.5z"/></svg><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 510; font-size: 10px; line-height: 12px; white-space: nowrap">Wishlist</span></span><span style="flex: 1 0 0; min-width: 1px; height: 100%; border-radius: 27px; background: transparent; color: rgba(28,28,30,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" style="display: block; flex: none; color: currentColor"><g fill="currentColor"><circle cx="12" cy="7.3" r="4.1"/><path d="M4.1 19.9c0-3.6 3.5-5.8 7.9-5.8s7.9 2.2 7.9 5.8c0 .6-.5 1.1-1.1 1.1H5.200000000000001c-.6 0-1.1-.5-1.1-1.1z"/></g></svg><span style="font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif; font-weight: 510; font-size: 10px; line-height: 12px; white-space: nowrap">Profile</span></span></div><div aria-hidden="true" style="position: absolute; left: 129px; top: 861px; width: 144px; height: 5px; border-radius: 100px; background: #141a14"></div></div>
 <!-- app:end -->
           </div><i class="ph-glare" id="phGlare"></i></div>
-          <div class="ph-slot" id="slot"></div>
         </div>
       </div>
     </div>
@@ -937,11 +933,19 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
   $$('.big [data-split]').forEach(split);
 
   /* ── elements ── */
-  const stage = $('#stage'), field = $('#field'), lux = $('#lux'), phone = $('#phone'), slot = $('#slot'), flip = $('#flip');
+  const stage = $('#stage'), field = $('#field'), lux = $('#lux'), phone = $('#phone');
   const app = $('#app'), phRot = $('#phRot'), phGlare = $('#phGlare'), phShadow = $('#phShadow');
   const p3d = root.classList.contains('p3d');
   const SCR = $$('.scr', app), slotBtn = $('[data-s="slot"] button', app);
-  const STEPS = $$('#steps .step').map(el => ({ h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, on: null }));
+  const STEPS = $$('#steps .step').map(el => ({ h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, cap: 0, on: null }));
+  /* distance from an element's top edge to the top of its first line's capitals */
+  const cvx = document.createElement('canvas').getContext('2d');
+  const capTop = el => {
+    const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize), lh = parseFloat(cs.lineHeight) || fs * 1.2;
+    cvx.font = `${cs.fontWeight} ${fs}px ${cs.fontFamily}`;
+    const m = cvx.measureText('H'), asc = m.fontBoundingBoxAscent || fs * .95, desc = m.fontBoundingBoxDescent || fs * .25;
+    return (lh - asc - desc) / 2 + asc - (m.actualBoundingBoxAscent || fs * .7);
+  };
   if (p3d) {   /* the phone's body: fourteen slices 28px deep, lighter at the two chamfers */
     const N = 14, D = 28, tone = ['#a3a3a7', '#77777b', '#55555a', '#444448'];
     for (let i = 0; i < N; i++) { const d = document.createElement('i'); d.style.transform = `translateZ(${(D / 2 - i * D / (N - 1)).toFixed(2)}px)`; d.style.background = tone[Math.min(3, i, N - 1 - i)]; $('#phEdge').appendChild(d); }
@@ -949,7 +953,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
 
   /* ── the carousel: one row of cards sliding left to right ── */
   const DEF = [
-    { p: 0 }, { img: 'od-member-aisha' }, { p: 1 }, { img: 'od-member-dana' }, { p: 2 }, { img: 'od-app-band' },
+    { img: 'od-member-aisha' }, { p: 1 }, { img: 'od-member-dana' }, { p: 2 }, { img: 'od-app-band' },
     { p: 3 }, { img: 'od-member-reem' }, { img: 'od-step-return' }, { img: 'od-box-portrait' }, { img: 'od-member-fatima' }, { img: 'od-step-deliver' }
   ];
   const cards = DEF.map((d, i) => {
@@ -959,10 +963,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     field.appendChild(el);
     return { el, shade: el.lastChild, k: i, vis: false, lastShade: -1 };
   });
-  const hero0 = cards[0];
-  /* the landing card carries a second front: the app's own spotlight card, cloned from the phone's first screen */
-  { const spot = $('[data-spot]', app);
-    if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.shade); } }
   let car = 0, lastT = 0;
 
   /* ── measurements (cached; never read layout inside the frame) ── */
@@ -984,7 +984,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     M.L = cards.length * M.gap;
     M.rowY = vh * (small ? .2 : .15);
     M.ds = Math.min(1, M.fs);
-    M.anchor = docTop($('#anchor')) + 158;
+    M.anchor = docTop($('#anchor')) + .1 * vh;
     M.stick = M.anchor - vh / 2;
     M.r0 = M.stick + .25 * vh; M.r1 = M.stick + 1.15 * vh;
     M.ch3 = { top: docTop(ch3), h: ch3.offsetHeight };
@@ -1003,10 +1003,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     M.ps = Math.min(1, (small ? .5 : .58) * vh / 632, (vw - 64) / 300);
     M.pcy = (small ? .5 : .54) * vh;
     M.pBot = M.pcy + 316 * M.ps;
-    STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.on = null; });
-    let sx = slot.offsetWidth / 2 - phone.offsetWidth / 2, sy = slot.offsetHeight / 2 - phone.offsetHeight / 2, e = slot;
-    while (e && e !== phone) { sx += e.offsetLeft; sy += e.offsetTop; e = e.offsetParent; }
-    M.slot = { x: sx * M.ps, y: M.pcy - vh / 2 + sy * M.ps };
+    STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null; });
     M.luxR = Math.hypot(vw, vh) / 2 + 40;
     rows = $$('.row', ch3).map(el => ({ el, top: docTop(el), o: -1 }));
     planRows = $$('#plans li').map(el => ({ el, top: docTop(el), on: false }));
@@ -1072,14 +1069,12 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     /* act one */
     if (sy < M.ch5.top + 10) {
       set('ch1in', S > .45, v => { if (v) { ch1.classList.add('in'); $('#h2a').classList.add('in'); } });
-      const ay = M.anchor - sy, solo = ay < vh + 180;
       /* the cards follow an eased copy of the scroll, so a fast flick never snaps the row shut */
       sS = sS < 0 || calm || still || S > 1.2 ? S : sS + (S - sS) * (1 - Math.exp(-dt / 110));
       const g = seg(sS, .02, .62), exit = E.in(seg(sS, .3, .9));
-      const rowOn = !solo && exit < 1;
+      const rowOn = exit < 1;
       if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .3); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
       for (const c of cards) {
-        if (c === hero0 && solo) continue;
         if (!rowOn) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const inn = introT0 === null ? 0 : E.out(clamp((t - introT0 - 150) / 1700));
         if (inn <= 0) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
@@ -1095,20 +1090,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
         if (sh !== c.lastShade) { c.lastShade = sh; c.shade.style.opacity = sh / 100; }
         if (!c.vis) { c.vis = true; c.el.style.visibility = 'visible'; }
       }
-      /* the one card */
-      const docked = r >= 1;
-      if (solo) {
-        if (hero0.lastShade) { hero0.lastShade = 0; hero0.shade.style.opacity = 0; }
-        hero0.el.style.opacity = '';
-        const tc = E.io(seg(r, .5, 1));
-        const x = lerp(0, M.slot.x, tc), y = lerp(Math.max(ay, vh / 2) - vh / 2, M.slot.y, tc);
-        const sc = lerp(1, M.ps, tc) + Math.sin(Math.PI * seg(r, 0, .7)) * .08, rot = 360 * E.io(seg(r, .04, .86));
-        hero0.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(4)})`;
-        set('h0vis', !docked, v => { hero0.vis = v; hero0.el.style.visibility = v ? 'visible' : 'hidden'; });
-        set('flat', r > .9, v => hero0.el.classList.toggle('flat', v));
-        set('asapp', rot >= 180, v => hero0.el.classList.toggle('as-app', v));
-      } else { state.h0vis = hero0.vis; set('asapp', false, v => hero0.el.classList.toggle('as-app', v)); }
-      set('docked', docked, v => phone.classList.toggle('has-card', v));
 
       /* white opens to stone, the phone comes into focus */
       set('lux', r > 0, v => lux.style.visibility = v ? 'visible' : 'hidden');
@@ -1134,7 +1115,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
         });
         if (slotBtn) set('press', sy > M.T[1] - M.W - .09 * vh && sy < M.T[1] - M.W, v => { slotBtn.style.transform = v ? 'scale(.97)' : ''; });
 
-        /* the four steps pass the phone at page speed: name on the left, explanation on the right, a little lower.
+        /* the four steps pass the phone at page speed: name on the left, explanation on the right, on one top line.
            On phones there is no room beside it, so each step sits under the phone and fades through. */
         for (let i = 0; i < STEPS.length; i++) {
           const st = STEPS[i], dy = M.C[i] - sy, on = Math.abs(dy) < vh * 1.2;
@@ -1145,23 +1126,27 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
             st.h.style.transform = `translate3d(0,${y.toFixed(1)}px,0)`; st.p.style.transform = `translate3d(0,${(y + st.hh + 8).toFixed(1)}px,0)`;
             st.h.style.opacity = st.p.style.opacity = o.toFixed(3);
           } else {
-            st.h.style.transform = `translate3d(0,${(vh * .5 - st.hh / 2 + dy).toFixed(1)}px,0)`;
-            st.p.style.transform = `translate3d(0,${(vh * .5 - st.ph / 2 + dy + vh * .14).toFixed(1)}px,0)`;
+            const y = vh * .5 - st.hh / 2 + dy;
+            st.h.style.transform = `translate3d(0,${y.toFixed(1)}px,0)`;
+            st.p.style.transform = `translate3d(0,${(y + st.cap).toFixed(1)}px,0)`;
             if (st.h.style.opacity) st.h.style.opacity = st.p.style.opacity = '';
           }
         }
 
         if (p3d) {
-          /* arrives turned away and faces front before the card reaches it; after that it rests at a different angle
-             for each screen and turns between them over a wider stretch than the blur, so the turn leads the change */
-          const REST = [0, 22, -20, 18, -22, 20, -14];
+          /* one pose per screen, so each step moves in its own way: a three-quarter turn to open, a lean back to pick
+             the slot, a hard turn the other way for the delivery, a tip towards you while it is worn, a wide turn for
+             the jewellery list, a full spin round its back for the swap, and it comes to rest laid back for the return.
+             Each turn runs over a wider stretch than the screen's blur, so the move leads the change. */
+          const POSE = [[24, 6, -5], [-16, 22, 4], [-34, 5, 8], [14, -13, -4], [32, 12, -9], [338, 6, 7], [346, 32, -13]];
           let fw = 0; for (const T of M.T) fw += seg(sy, T - .3 * vh, T + .3 * vh);
-          const iw = Math.min(REST.length - 1, Math.floor(fw)), ang = lerp(REST[iw], REST[Math.min(REST.length - 1, iw + 1)], E.io(fw - iw));
-          const land = E.io(seg(r, .36, .7)), free = seg(sy, M.r1, M.r1 + .2 * vh), bob = calm ? 0 : Math.sin(t0 * .0011) * 5 * free;
-          const ry = lerp(-38, ang, land) + pxs * 9 * free, rx = lerp(18, 4 + Math.abs(ang) * .28, land) - pys * 7 * free, rz = lerp(-12, -ang * .26, land);
+          const iw = Math.min(POSE.length - 1, Math.floor(fw)), A = POSE[iw], B = POSE[Math.min(POSE.length - 1, iw + 1)], k = E.io(fw - iw);
+          const land = E.io(seg(r, .36, .78)), free = seg(sy, M.r1, M.r1 + .2 * vh), bob = calm ? 0 : Math.sin(t0 * .0011) * 5 * free;
+          const ry = lerp(-38, lerp(A[0], B[0], k), land) + pxs * 9 * free, rx = lerp(18, lerp(A[1], B[1], k), land) - pys * 7 * free, rz = lerp(-12, lerp(A[2], B[2], k), land);
           phRot.style.transform = `translateY(${bob.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
-          phGlare.style.backgroundPosition = `${(50 + ry * 2.4).toFixed(1)}% 0`;
-          phShadow.style.transform = `translateX(${(-ry * 1.6).toFixed(1)}px) scaleX(${(1 - Math.abs(ry) * .006).toFixed(3)})`;
+          const ys = Math.sin(ry * Math.PI / 180) * 40;      /* how far it is turned, as seen from the front (the spin passes through 0 twice) */
+          phGlare.style.backgroundPosition = `${(50 + ys * 2.4).toFixed(1)}% 0`;
+          phShadow.style.transform = `translateX(${(-ys * 1.6).toFixed(1)}px) scaleX(${(1 - Math.abs(ys) * .006).toFixed(3)})`;
         }
       } else set('phv', false, v => phone.style.visibility = 'hidden');
     }
