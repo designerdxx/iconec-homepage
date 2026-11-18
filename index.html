@@ -137,9 +137,10 @@ html.js .rise.in .ln-r>span{transform:none;transition:transform 1s var(--ease-ou
 .ch1{padding:0}
 /* what Iconec is: Wear then Swap's second section, copied over as it is there. A mist panel slides up over the hero; the
    sentence comes into focus word by word (24ms apart, 900ms, 9px blur, .32em rise); each picture opens from its centre
-   as the words around it arrive; the last clause is green; the How it works link follows 300ms later. Each piece is
-   revealed once, as it enters the lower 91% of the screen. */
-.ws-idea{--mist:#eff0ed;--fg:#10150f;--acc:#102c0b;--acc-on:#f3f4f0;--gut:clamp(20px,4.75vw,68px);background:var(--mist);color:var(--fg);padding-block:clamp(112px,19vh,208px);font-weight:400;line-height:1.4}
+   as the words around it arrive; the last clause is green; the How it works link follows 300ms later. Nearly a third of a
+   screen of white separates the panel from the hero, so the cards have gathered before it arrives, and each piece is
+   revealed once it is a quarter of the way up the screen, where the animation can be watched. */
+.ws-idea{--mist:#eff0ed;--fg:#10150f;--acc:#102c0b;--acc-on:#f3f4f0;--gut:clamp(20px,4.75vw,68px);background:var(--mist);color:var(--fg);margin-top:30vh;margin-top:30svh;padding-block:clamp(140px,26vh,280px);font-weight:400;line-height:1.4}
 /* alignment: the block starts on the page's one left margin, under the header logo and in line with the step names
    and every other heading; the sentence keeps a 22em measure so it breaks into three even lines */
 .ws-grid{padding-left:var(--gx);padding-right:var(--gxr)}
@@ -1174,7 +1175,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   });
   { const els = $$('.ws-lead,[data-wsrv]');
     if (calm || still || !('IntersectionObserver' in window)) els.forEach(el => el.classList.add('in'));
-    else { const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; e.target.classList.add('in'); io.unobserve(e.target); }), { rootMargin: '0px 0px -9% 0px', threshold: .01 }); els.forEach(el => io.observe(el)); } }
+    else { const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; e.target.classList.add('in'); io.unobserve(e.target); }), { rootMargin: '0px 0px -25% 0px', threshold: .01 }); els.forEach(el => io.observe(el)); } }
   $$('[data-cycle]').forEach(el => {
     if (calm || still) return;
     const files = el.dataset.cycle.split(',').map(f => f.split('|'));
@@ -1368,31 +1369,31 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     if (sy < M.ch5.top + 10) {
       set('ch1in', S > .45, v => { if (v) ch1.classList.add('in'); });
       /* the cards follow an eased copy of the scroll, so a fast flick never snaps the row shut */
-      sS = sS < 0 || calm || still || S > 1.2 ? S : sS + (S - sS) * (1 - Math.exp(-dt / 110));
-      /* Collapse and exit, staged so the panel sliding up from below never cuts through them:
-         - staging: the row is a deck by the time the panel is a third of the way up, and gone before the panel reaches it
-         - overlapping action: cards near the middle gather first, the far ones a beat later
-         - arcs: each card rises ahead of its slide inwards, so it swings in and does not travel in a straight line
-         - anticipation: the deck sinks 10px and tightens 2% just before it leaves
-         - slow in, slow out: the gather eases both ways; the exit eases in (it is leaving)
-         - follow-through: the top card leaves first and the rest trail it, tipping back as they go */
-      const g = seg(sS, .02, .32), ex = seg(sS, .28, .6), ant = Math.sin(Math.PI * seg(sS, .2, .34));
+      sS = sS < 0 || calm || still || S > 1.6 ? S : sS + (S - sS) * (1 - Math.exp(-dt / (lenis ? 80 : 140)));
+      /* Gather, then leave with the page. What made the last version bouncy, and what replaced it:
+         - slow in, slow out: every card now moves on one sine curve on both axes. Before, the rise used an ease-out,
+           which starts at full speed, so the row leapt the moment the scroll began.
+         - timing: the gather has nearly half a screen of scroll (it had under a third), so the same distance is covered
+           at a much lower speed.
+         - no anticipation dip, no tip-back, no per-card trail on the way out: they read as bounce at scroll speed.
+         - the exit is not an animation any more: once gathered, the deck picks up the page's own speed over a short ease
+           and scrolls away like everything else, staying just ahead of the panel that follows it.
+         - overlapping action is kept, lightly: the far cards start a beat after the near ones. */
+      const g = seg(sS, .04, .46), d = Math.max(0, sS - .44), lift = (d < .12 ? d * d / .24 : d - .06) * vh;
       const ay = M.anchor - sy, solo = ay < vh + 180;
-      const rowOn = ex < 1, N = cards.length;
-      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .2); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
+      const rowOn = !solo && sS < 1.5;
+      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .15); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
       for (const c of cards) {
         if (!rowOn) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const inn = introT0 === null ? 0 : E.out(clamp((t - introT0 - 150) / 1700));
         if (inn <= 0) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const fx = ((c.k * M.gap + car + M.L / 2) % M.L) - M.L / 2 - (1 - inn) * vw * .3;
-        const far = Math.min(1, Math.abs(fx) / (vw * .6)), tg = clamp((g - far * .22) / .78);
-        const ax = E.io(tg), ayv = E.out(tg);
-        const lift = E.in(clamp((ex - c.k * .012) / (1 - (N - 1) * .012)));
+        const far = Math.min(1, Math.abs(fx) / (vw * .6)), ax = E.sine(clamp((g - far * .12) / .88));
         /* the row sits on the inside of a wide curve, like a panorama: flat in the middle, turning in and coming closer at the edges */
         const th = clamp(fx / M.R, -1.25, 1.25), flat = 1 - ax;
-        const x = lerp(M.R * Math.sin(th), c.k * 9 - 30, ax), y = lerp(M.rowY, -vh * .06 - c.k * 2, ayv) + ant * 10 * ax - lift * vh * 1.15;
-        const z = M.R * (1 - Math.cos(th)) * flat - c.k * 26 * ax, rot = -th * 57.296 * flat + (-8 - c.k * 1.8) * ax, sc = lerp(M.fs, M.ds, ax) * (1 - .02 * ant * ax);
-        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateX(${(lift * 9).toFixed(2)}deg) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        const x = lerp(M.R * Math.sin(th), c.k * 9 - 30, ax), y = lerp(M.rowY, -vh * .06 - c.k * 2, ax) - lift;
+        const z = M.R * (1 - Math.cos(th)) * flat - c.k * 26 * ax, rot = -th * 57.296 * flat + (-8 - c.k * 1.8) * ax, sc = lerp(M.fs, M.ds, ax);
+        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
         c.el.style.opacity = inn < 1 ? inn.toFixed(2) : '';
         const sh = Math.round(ax * Math.min(22, c.k * 3));
         if (sh !== c.lastShade) { c.lastShade = sh; c.shade.style.opacity = sh / 100; }
