@@ -283,9 +283,24 @@ html.calm .how-nav button.on i{transform:none}
 html.no-js .steps{gap:32px}html.no-js .st{opacity:1;visibility:visible;transform:none;grid-area:auto}
 html.no-js .how-nav{display:none}
 /* scroll-driven: the block holds while each stretch of scroll moves it one step; reduced motion keeps the click-through */
-html.js:not(.calm) .how-pin{height:calc((100svh - var(--hd)) * 3.2);margin-top:var(--head)}
+html.js:not(.calm) .how-pin{height:calc((100svh - var(--hd)) * 4);margin-top:var(--head)}
+/* Satin Grid: each step's photo wipes up over the last (clip from the bottom) while its image settles from 1.1 to 1.02
+   and the photo underneath dims; the copy changes once, mid-wipe. Driven by scroll, so the visitor sets the pace. */
+html.js:not(.calm) .how-stick .how-media figure{opacity:1;transition:none;will-change:clip-path}
+html.js:not(.calm) .how-stick .how-media img{transition:none;will-change:transform}
+.how-media figure>i{position:absolute;inset:0;background:#161714;opacity:0;pointer-events:none}
 html.js:not(.calm) .how-stick{position:sticky;top:var(--hd);height:calc(100svh - var(--hd));display:flex;align-items:center;padding-block:24px}
 html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
+@media (min-width:761px){
+  html.js:not(.calm) .how-stick{padding-block:28px 44px}
+  html.js:not(.calm) .how-stick>.how-g{height:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,7vw,128px);align-items:center}
+  html.js:not(.calm) .how-stick .how-media{height:100%;max-height:840px;aspect-ratio:4/5;width:auto;max-width:100%;justify-self:end;border-radius:8px}
+  html.js:not(.calm) .how-stick .how-copy{justify-content:center;gap:clamp(40px,7vh,84px);max-width:30em;align-self:center}
+  html.js:not(.calm) .how-stick .st{gap:20px}
+  html.js:not(.calm) .how-stick .st-t{font-size:clamp(48px,6vw,100px);line-height:.96;margin-bottom:0}
+  html.js:not(.calm) .how-stick .st p{font-size:clamp(16px,1.3vw,19px);max-width:23em}
+  html.js:not(.calm) .how-stick .how-nav{max-width:380px;gap:6px}
+}
 @media (max-width:760px){
   html.js:not(.calm) .how-stick>.how-g{height:100%;grid-template-rows:minmax(0,1fr) auto;gap:16px}
   html.js:not(.calm) .how-stick .how-media{aspect-ratio:auto;height:100%}
@@ -1110,11 +1125,26 @@ html[data-only] .jb,html[data-only] .chat{display:none}
     step = i;
   }
   const howSpan = () => howPin.offsetHeight - (innerHeight - hd.offsetHeight);
+  const figImgs = figs.map(f => f.querySelector('img'));
+  const dims = figs.map(f => { const d = document.createElement('i'); d.setAttribute('aria-hidden', 'true'); f.appendChild(d); return d; });
+  const AT = [0, .25, .5, .75, 1], WIPE = .065;
+  const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, eout = t => 1 - Math.pow(1 - t, 3);
   function howScroll() {
     if (calm) return;
     const p = clamp((hd.offsetHeight - howPin.getBoundingClientRect().top) / Math.max(1, howSpan()), 0, .9999);
     setStep(Math.floor(p * 4));
     bars.forEach((b, k) => { b.style.transform = `scaleX(${clamp(p * 4 - k, 0, 1).toFixed(3)})`; });
+    const w = figs.map((f, i) => i === 0 ? 1 : eio(clamp((p - (AT[i] - WIPE)) / (2 * WIPE), 0, 1)));
+    figs.forEach((f, i) => {
+      const over = i < 3 ? w[i + 1] : 0, show = w[i] > 0 && over < 1;
+      f.style.zIndex = i + 1;
+      f.style.visibility = show ? 'visible' : 'hidden';
+      if (!show) return;
+      f.style.clipPath = w[i] >= 1 ? 'none' : `inset(${((1 - w[i]) * 100).toFixed(2)}% 0 0 0)`;
+      const settle = clamp((p - (AT[i] - WIPE)) / (.22 + WIPE), 0, 1);
+      figImgs[i].style.transform = `translate3d(0,${((1 - w[i]) * 9 - over * 4).toFixed(3)}%,0) scale(${(1.1 - .08 * eout(settle)).toFixed(4)})`;
+      dims[i].style.opacity = (over * .32).toFixed(3);
+    });
   }
   navB.forEach((b, k) => b.addEventListener('click', () => {
     if (calm) { setStep(k); return; }
