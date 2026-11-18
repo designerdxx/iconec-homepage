@@ -86,8 +86,8 @@ html:not(.js) .loader,html.still .loader{display:none}
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;z-index:0;background:var(--white)}
 .flow{position:relative;z-index:1}
 .hold{pointer-events:none}
-#hold2{height:220vh;height:220svh}
-#hold4{height:260vh;height:260svh}
+#hold2{height:400vh;height:400svh}
+#hold4{height:400vh;height:400svh}
 
 /* cards */
 #field{position:absolute;inset:0;perspective:1400px;transform-style:preserve-3d;pointer-events:none}
@@ -540,7 +540,6 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .c2 h2{top:calc(var(--hdh) + 4vh)}
 .c4 .words{top:calc(var(--hdh) + 4vh)}
 .ch6 .pin{padding-top:calc(var(--hdh) + 64px + env(safe-area-inset-top,0px))}
-@media (max-width:760px){.c2 h2,.c4 .words{top:calc(var(--hdh) + 4vh + 22px)}}
 .ux .hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;height:var(--hd);background:var(--paper);transition:box-shadow .3s}
 .ux .hd.lined{box-shadow:0 1px 0 var(--line)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.ux .hd{-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);transition:background-color .3s var(--out),box-shadow .3s var(--out)}
@@ -592,6 +591,21 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
   html.js.is-in .hero .tag-m{opacity:1;transform:none;transition:opacity .6s .5s,transform .8s .5s var(--ease-out)}
 }
 @media (min-width:761px) and (max-height:660px){.hero .tag-m{display:none}}
+/* how it works, step by step: each caption names its step, and the line above it is four bars that fill with the scroll
+   (linear: they are progress). Inside the phone: a delivery-slot sheet, then the swap sheet, then keeping it on. */
+.caps{border-top:0}
+.c2 .caps+.caps,.c4 .caps+.caps{opacity:0}
+.sbar{position:absolute;inset:0 0 auto;display:flex;gap:6px}
+.sbar span{flex:1;height:1.5px;background:var(--line-l);overflow:hidden}
+.sbar i{display:block;height:100%;background:var(--ink);transform:scaleX(0);transform-origin:0 50%}
+.stp{display:block;font-weight:400;font-size:13px;color:var(--ink-70);margin-bottom:6px}
+.srows{display:grid;gap:6px;margin-bottom:14px}
+.srow{display:flex;justify-content:space-between;align-items:center;height:40px;padding:0 12px;border-radius:10px;background:rgba(244,242,238,.08);font-size:13px;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .2s var(--ease-out),background-color .2s var(--ease-out)}
+.srow i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px var(--cream-70);transition:box-shadow .2s var(--ease-out)}
+.srow.sel{box-shadow:inset 0 0 0 1px var(--cream);background:rgba(244,242,238,.14)}
+.srow.sel i{box-shadow:inset 0 0 0 4.5px var(--cream)}
+.pbtn.keep.press{transform:scale(.96);background:rgba(244,242,238,.16);color:var(--cream)}
+.pbtn.keep.sel{color:var(--cream);box-shadow:inset 0 0 0 1px var(--cream-70)}
 </style>
 </head>
 <body>
@@ -643,7 +657,6 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 </dialog>
 </div>
 
-<div class="hud" id="hud" aria-hidden="true"><span><i id="hudL">The drawer</i></span><span><i id="hudR">Chapter 01</i></span></div>
 
 <main id="top">
 <div class="act1" id="act1">
@@ -653,8 +666,14 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
       <div class="c2" id="c2">
         <h2 class="d"><span>Piece chosen.</span><span>Thirty days start now.</span></h2>
         <div class="caps">
-          <p>Pick a piece in the app and choose a delivery slot. It comes to your door, and it is yours to wear for the next 30 days.</p>
+          <p><span class="stp">Step 1 of 4 · Choose</span>Pick a piece in the app and choose a delivery slot.</p>
+          <p>A courier hands your pieces over in person, and they’re yours to wear from the first evening.</p>
+          <div class="sbar" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+        </div>
+        <div class="caps">
+          <p><span class="stp">Step 2 of 4 · Wear</span>It comes to your door, and it is yours to wear for the next 30 days.</p>
           <p>A month is long enough for a piece to become part of how you dress. It goes to the office, to dinner and through an ordinary Tuesday.</p>
+          <div class="sbar" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
         </div>
       </div>
       <div class="c4" id="c4">
@@ -662,8 +681,13 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
         <div class="words wl d" aria-hidden="true"><span><i>Thirty</i></span><span><i>days</i></span><span><i>later</i></span></div>
         <div class="words wr d" aria-hidden="true"><span><i>Swap it</i></span><span><i>or keep</i></span><span><i>it on</i></span></div>
         <div class="caps">
-          <p>From day 2, swap whenever you like. Choose the next piece and a slot, and we deliver it and collect the one you are wearing.</p>
+          <p><span class="stp">Step 3 of 4 · Swap</span>From day 2, swap whenever you like. Choose the next piece and a slot, and we deliver it and collect the one you are wearing.</p>
+          <div class="sbar" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+        </div>
+        <div class="caps">
+          <p><span class="stp">Step 4 of 4 · Return or keep</span>Each piece goes back by day 30, unless you extend it another 30 days in the app. The courier collects it at your slot.</p>
           <p>Still attached on day 30? Keep it on for another 30. The option appears in your last week, so nothing goes back before you are done with it.</p>
+          <div class="sbar" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
         </div>
       </div>
     </div>
@@ -676,9 +700,9 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
           <svg viewBox="0 0 28 13" fill="currentColor"><rect x=".5" y=".5" width="24" height="12" rx="3.8" fill="none" stroke="currentColor" opacity=".38"/><rect x="2" y="2" width="21" height="9" rx="2.5"/><path d="M26 4.5v4c.9-.3 1.5-1.1 1.5-2s-.6-1.7-1.5-2z" opacity=".42"/></svg>
         </span></div><div class="island"></div>
         <span class="wordmark">ICONEC</span>
-        <span class="wearing">Wearing now</span>
+        <span class="wearing" id="wearL">Your pick</span>
         <div class="slot" id="slot"><div class="flip" id="flip"></div></div>
-        <div class="dayrow"><div><b id="dayL">Day 1 of 30</b><span id="dayS">Swap from day 2</span></div><div class="bar"><i id="dayB"></i></div></div>
+        <div class="dayrow"><div><b id="dayL">Choose a delivery slot</b><span id="dayS"></span></div><div class="bar"><i id="dayB"></i></div></div>
         <div class="tabs">
           <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg>
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
@@ -686,12 +710,18 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>
         </div>
         <i class="homebar"></i>
+        <div class="psheet" id="dsheet">
+          <small>Delivery</small>
+          <h3>Pick a delivery slot</h3>
+          <div class="srows"><div class="srow" id="srow">Today · 6–8 pm<i></i></div><div class="srow">Tomorrow · 10 am–12 pm<i></i></div><div class="srow">Tomorrow · 6–8 pm<i></i></div></div>
+          <div class="pbtn go" id="dgo">Confirm slot</div>
+        </div>
         <div class="psheet" id="psheet">
           <small>Day 30</small>
           <h3>Swap it, or keep it on?</h3>
-          <div class="opts"><div class="opt" id="optA"><img src="od-piece-pendant.jpg" alt="">Feather pendant</div><div class="opt"><img src="od-piece-earrings.jpg" alt="">Leaf drops</div></div>
+          <div class="opts"><div class="opt" id="optA"><img id="optAi" src="od-piece-pendant.jpg" alt=""><span id="optAn">Feather pendant</span></div><div class="opt"><img src="od-piece-earrings.jpg" alt="">Leaf drops</div></div>
           <div class="pbtn go" id="pgo">Swap</div>
-          <div class="pbtn keep">Keep 30 more days</div>
+          <div class="pbtn keep" id="pkeep">Keep 30 more days</div>
         </div>
       </div>
     </div>
@@ -888,9 +918,10 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
   const stage = $('#stage'), field = $('#field'), lux = $('#lux'), phone = $('#phone'), slot = $('#slot'), flip = $('#flip');
   const c2 = $('#c2'), c4 = $('#c4'), days = $('#days'), dayN = $('#dayN'), dayL = $('#dayL'), dayS = $('#dayS'), dayB = $('#dayB');
   const psheet = $('#psheet'), optA = $('#optA'), pgo = $('#pgo');
-  const hud = $('#hud'), hudL = $('#hudL'), hudR = $('#hudR');
   const ch1 = $('#ch1'), ch3 = $('#ch3'), ch5 = $('#ch5'), ch6 = $('#ch6'), ch7 = $('#ch7'), foot = $('#foot');
-  const c2h = $$('h2 span', c2), c2caps = $('.caps', c2), c4caps = $('.caps', c4), c4w = $$('.words i', c4);
+  const c2h = $$('h2 span', c2), c2caps = $$('.caps', c2), c4caps = $$('.caps', c4), c4w = $$('.words i', c4);
+  const dsheet = $('#dsheet'), srow = $('#srow'), dgo = $('#dgo'), pkeep = $('#pkeep'), wearL = $('#wearL'), optAi = $('#optAi'), optAn = $('#optAn');
+  const sbars = [1, 2, 3, 4].map(n => $$(`.sbar span:nth-child(${n}) i`));
   flip.innerHTML = pcHTML(PIECES[0], 'On rotation') + pcHTML(PIECES[2], 'Just arrived');
 
   /* ── the carousel: one row of cards sliding left to right ── */
@@ -932,7 +963,10 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
     M.r0 = M.stick + .25 * vh; M.r1 = M.stick + 1.15 * vh;
     M.ch3 = { top: docTop(ch3), h: ch3.offsetHeight };
     M.swapAt = M.ch3.top + M.ch3.h / 2 - vh / 2;
-    M.h4 = docTop($('#hold4'));
+    /* the app's steps: slot and delivery run over 1.8 screens after the card docks; the month then counts until the
+       sheet has passed; the swap and the second month each get their own stretch before On rotation rises */
+    M.bEnd = M.r1 + 1.8 * vh; M.d0 = M.r1 + 1.8 * vh * .66;
+    M.h4 = docTop($('#hold4')); M.q2a = M.h4 + .55 * vh; M.q2b = M.h4 + 1.95 * vh;
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
     M.ch6 = { top: docTop(ch6), h: ch6.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
@@ -943,7 +977,7 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
     /* the phone keeps Out of the Drawer's exact size and place. The words above it are fitted into the room
        between the header and the phone instead: scaled down if they must be, then set a steady gap above it. */
     { const hdEl = $('#hd'), hdH = hdEl ? hdEl.offsetHeight : 0, pTop = M.pcy - 316 * M.ps, g = small ? 24 : clamp(vh * .03, 20, 36);
-      const T = hdH + (small ? 42 : 14);
+      const T = hdH + 14;
       const fitAbove = el => {
         el.style.fontSize = ''; el.style.top = '';
         let h = el.offsetHeight; const room = pTop - g - T;
@@ -996,18 +1030,6 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
   let mx = 0, my = 0, pxs = 0, pys = 0;
   addEventListener('pointermove', e => { if (e.pointerType === 'touch') return; mx = e.clientX / vw - .5; my = e.clientY / vh - .5; }, { passive: true });
 
-  /* ── chapters ── */
-  const CH = [null, 'The drawer', 'Thirty days', 'A month in', 'The swap', 'On rotation', 'The maths', 'The plans', 'The gift'];
-  const LIGHT = [1, 1, 1, 1, 1, 1, 0, 1, 1];
-  let chNow = -1;
-  function setChapter(ch) {
-    if (ch === chNow) return; const up = ch < chNow; chNow = ch;
-    hud.classList.toggle('on', ch > 0); hud.classList.toggle('light', !!LIGHT[ch]);
-    if (!ch) return;
-    hudL.textContent = CH[ch]; hudR.textContent = 'Chapter 0' + ch;
-    if (!calm) [hudL, hudR].forEach(el => el.animate([{ transform: `translateY(${up ? -100 : 100}%)` }, { transform: 'none' }], { duration: 280, easing: 'cubic-bezier(.16,1,.3,1)' }));
-  }
-
   /* ── sheets ── */
   const TILT = 1.6;
   function tilt(el, m, sy) {
@@ -1027,19 +1049,7 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
     const dt = Math.min(50, t - lastT); lastT = t;
     pxs += (mx - pxs) * .06; pys += (my - pys) * .06;
 
-    /* chapter */
-    let ch = 0;
-    if (S > .55) ch = 1;
     const r = seg(sy, M.r0, M.r1);
-    if (r > .58) ch = 2;
-    if (sy > M.ch3.top - 44) ch = 3;
-    if (sy > M.h4 - 44) ch = 4;
-    if (sy > M.ch5.top - 44) ch = 5;
-    if (sy > M.ch6.top - vh * .5) ch = 6;
-    if (sy > M.ch7.top - 44) ch = 7;
-    if (sy > M.ch7.top + M.ch7.h - 44) ch = 8;
-    setChapter(ch);
-    set('hudOff', (ch === 3 && sy > M.ch3.top + vh * .3) || (ch === 7 && sy > M.ch7.top + vh * .3) || sy > M.ft - vh * .3, v => hud.classList.toggle('off', v));
 
     /* act one */
     if (sy < M.ch5.top + 10) {
@@ -1093,32 +1103,59 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
         phone.style.transform = `translate(-50%,-50%) translateY(${((1 - pe) * 46).toFixed(1)}px) scale(${(M.ps * (1.1 - .1 * pe)).toFixed(4)})`;
         const isCh4 = sy > M.swapAt;
         set('ch4', isCh4, v => stage.classList.toggle('is-ch4', v));
-        const day = Math.round(lerp(1, 30, seg(sy, M.r1, M.swapAt)));
+        /* the app, step by step. b: the slot is booked and the piece is delivered · the month counts · q: the swap ·
+           q2: a second month, then keeping it on. Each state changes once; sheets and bars follow the scroll. */
+        const b = seg(sy, M.r1, M.bEnd);
+        const sheetY = (el, k) => v => { el.style.transform = `translateY(${((1 - v / 500) * 102).toFixed(1)}%)`; };
+        let mode = 'day', d = 1, big = 1, lab = 'Wearing now', dprog = 0, s1 = 0, s2 = 0, s3 = 0, s4 = 0;
         if (!isCh4) {
           const to = seg(r, .64, .98);
-          c2h.forEach((el, i) => { const p = E.out(seg(to, i * .25, .75 + i * .25)); el.style.opacity = p.toFixed(3); el.style.transform = `translateY(${((1 - p) * 34).toFixed(1)}px)`; });
-          c2caps.style.opacity = to.toFixed(3);
-          days.style.opacity = E.out(seg(r, .5, .9)).toFixed(3);
+          [E.out(seg(to, 0, .75)), E.out(seg(b, .64, .8))].forEach((p, i) => { c2h[i].style.opacity = p.toFixed(3); c2h[i].style.transform = `translateY(${((1 - p) * 34).toFixed(1)}px)`; });
+          c2caps[0].style.opacity = (to * (1 - seg(b, .58, .64))).toFixed(3);
+          c2caps[1].style.opacity = seg(b, .68, .76).toFixed(3);
+          days.style.opacity = E.out(seg(b, .66, .8)).toFixed(3);
+          set('ds', Math.round((E.out(seg(b, .06, .16)) - E.in(seg(b, .36, .44))) * 500), sheetY(dsheet));
+          set('dsel', b > .22, v => srow.classList.toggle('sel', v));
+          set('dpress', b > .3 && b < .36, v => dgo.classList.toggle('press', v));
           set('q', 0, () => { psheet.style.transform = ''; });
           set('swapped', false, v => phone.classList.toggle('swapped', v));
           set('sel', false, v => optA.classList.toggle('sel', v));
+          set('kpress', false, v => pkeep.classList.toggle('press', v));
+          set('kept', false, v => pkeep.classList.toggle('sel', v));
+          if (b < .44) { mode = 'pick'; lab = 'Your pick'; }
+          else if (b < .66) { mode = 'way'; lab = 'Arriving today'; dprog = seg(b, .44, .66); }
+          else d = big = Math.round(lerp(1, 30, seg(sy, M.d0, M.swapAt)));
+          s1 = b > 0 ? .3 + .7 * seg(b, 0, .66) : .3 * seg(r, .6, 1); s2 = seg(sy, M.d0, M.swapAt);
         } else {
-          const q = seg(sy, M.h4 - .7 * vh, M.h4 + .55 * vh);
+          const q = seg(sy, M.h4 - .7 * vh, M.h4 + .55 * vh), q2 = seg(sy, M.q2a, M.q2b);
+          set('ds', 0, sheetY(dsheet));
           c4w.forEach((el, i) => { const j = i % 3, p = E.out(seg(q, .06 + j * .06, .4 + j * .06)); el.style.transform = `translateY(${((1 - p) * 108).toFixed(1)}%)`; });
-          c4caps.style.opacity = seg(q, .1, .4).toFixed(3);
-          days.style.opacity = (1 - seg(q, 0, .25)).toFixed(3);
-          const up = E.out(seg(q, .3, .5)) - E.in(seg(q, .7, .84));
+          c4caps[0].style.opacity = (seg(q, .1, .4) * (1 - seg(q2, .44, .5))).toFixed(3);
+          c4caps[1].style.opacity = seg(q2, .52, .6).toFixed(3);
+          days.style.opacity = clamp(1 - seg(q, 0, .25) + E.out(seg(q2, .08, .18)) - seg(q2, .5, .58)).toFixed(3);
+          const up = E.out(seg(q, .3, .5)) - E.in(seg(q, .7, .84)) + E.out(seg(q2, .55, .65)) - E.in(seg(q2, .8, .9));
           psheet.style.transform = `translateY(${((1 - up) * 102).toFixed(1)}%)`;
-          set('sel', q > .5, v => optA.classList.toggle('sel', v));
+          set('late', q2 > .3, v => { optAi.src = `od-piece-${v ? 'riviere' : 'pendant'}.jpg`; optAn.textContent = v ? 'Double rivière' : 'Feather pendant'; });
+          set('sel', q > .5 && q2 <= .3, v => optA.classList.toggle('sel', v));
           set('press', q > .6 && q < .68, v => pgo.classList.toggle('press', v));
           set('swapped', q > .68, v => phone.classList.toggle('swapped', v));
+          set('kpress', q2 > .72 && q2 < .8, v => pkeep.classList.toggle('press', v));
+          const kept = q2 >= .8;
+          set('kept', kept, v => pkeep.classList.toggle('sel', v));
           state.q = 1;
+          if (kept) { mode = 'kept'; big = 31; }
+          else d = big = q > .68 ? Math.round(lerp(1, 30, seg(q2, .1, .5))) : 30;
+          s1 = s2 = 1; s3 = q; s4 = q2;
         }
-        const d = state.swapped ? 1 : day;
-        if (d !== lastDay) {
-          lastDay = d; dayN.textContent = String(day).padStart(2, '0');
-          dayL.textContent = `Day ${d} of 30`; dayS.textContent = d < 2 ? 'Swap from day 2' : d >= 24 ? 'Swap or keep it on' : 'Swap any time'; dayB.style.transform = `scaleX(${(d / 30).toFixed(3)})`;
-        }
+        set('lab', lab, v => { wearL.textContent = v; });
+        set('row', mode + (mode === 'day' ? d : mode === 'way' ? Math.round(dprog * 40) : ''), () => {
+          if (mode === 'pick') { dayL.textContent = 'Choose a delivery slot'; dayS.textContent = ''; dayB.style.transform = 'scaleX(0)'; }
+          else if (mode === 'way') { dayL.textContent = 'Today, 6–8 pm'; dayS.textContent = 'Courier on the way'; dayB.style.transform = `scaleX(${dprog.toFixed(3)})`; }
+          else if (mode === 'kept') { dayL.textContent = 'Day 31 of 60'; dayS.textContent = 'Kept for 30 more'; dayB.style.transform = `scaleX(${(31 / 60).toFixed(3)})`; }
+          else { dayL.textContent = `Day ${d} of 30`; dayS.textContent = d < 2 ? 'Swap from day 2' : d >= 24 ? 'Swap or keep it on' : 'Swap any time'; dayB.style.transform = `scaleX(${(d / 30).toFixed(3)})`; }
+        });
+        set('big', big, v => { dayN.textContent = String(v).padStart(2, '0'); });
+        [s1, s2, s3, s4].forEach((v, i) => set('s' + i, Math.round(v * 200), f => sbars[i].forEach(el => { el.style.transform = `scaleX(${f / 200})`; })));
       } else set('phv', false, v => phone.style.visibility = 'hidden');
     }
 
