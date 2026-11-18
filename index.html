@@ -89,8 +89,9 @@ html:not(.js) .loader,html.still .loader{display:none}
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;z-index:0;background:var(--white)}
 .flow{position:relative;z-index:1}
 .hold{pointer-events:none}
-#hold2{height:calc(325vh - 158px);height:calc(325svh - 158px)}
-#hold4{height:355vh;height:355svh}
+/* one pinned scene for all four steps: the card lands, then Slot, Wear, Swap and Return change about .9 of a screen
+   apart; Return is held for .8 of a screen before the dark section starts to cover it */
+#hold2{height:calc(645vh - 158px);height:calc(645svh - 158px)}
 
 /* cards */
 #field{position:absolute;inset:0;perspective:1400px;transform-style:preserve-3d;pointer-events:none}
@@ -235,22 +236,6 @@ html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s
 /* ───────── sheets ───────── */
 .sheet{position:relative;z-index:2;background:var(--white);color:var(--ink);border-radius:20px;box-shadow:0 -30px 80px -40px rgba(20,20,19,.22);will-change:transform}
 .sheet-in{padding:clamp(88px,15vh,150px) var(--gxr) clamp(72px,12vh,128px) var(--gx)}
-.ch3 h2{font-size:var(--d3)}
-.ch3 h2 .inl{display:inline-block;position:relative;width:1.08em;height:.78em;border-radius:.07em;overflow:hidden;vertical-align:-.04em;margin:0 .06em;background:#23252a}
-.inl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s}
-.inl img.on{opacity:1}
-.ch3 .sub{margin-top:22px;color:var(--ink-70)}
-.rows{margin-top:clamp(40px,8vh,84px)}
-.row{display:grid;grid-template-columns:1fr minmax(160px,17vw) 1fr;gap:24px;padding:18px 0 22px;border-top:1px solid var(--line-l);min-height:clamp(150px,22vh,220px);transform-origin:50% 0;will-change:transform,opacity}
-.row-l{display:flex;flex-direction:column}
-.row-l small{font-size:var(--small);color:var(--ink-70)}
-.row-l strong{font-weight:500;font-size:clamp(17px,1.5vw,22px);letter-spacing:-.01em;line-height:1.25;max-width:22ch}
-.row-l em{font-style:normal;font-size:var(--small);color:var(--ink-50);margin-top:auto;font-variant-numeric:tabular-nums}
-.row-i{border-radius:4px;overflow:hidden;aspect-ratio:3/2;align-self:start;background:var(--stone)}
-.row-i img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
-.row:hover .row-i img{transform:scale(1.04)}
-.row p{justify-self:end;max-width:30ch;color:var(--ink-70);font-size:15px}
-
 /* ───────── act two: pieces ───────── */
 .ch5{position:relative;z-index:3;height:300vh;height:300svh;margin-top:-100vh;margin-top:-100svh;background:var(--char);color:var(--cream);border-radius:20px 20px 0 0;--cw:clamp(190px,23vw,340px)}
 .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
@@ -279,17 +264,29 @@ html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s
 /* ───────── plans + footer ───────── */
 .tail{position:relative;z-index:4}
 .ch7 .sheet-in{padding-top:clamp(96px,17vh,180px)}
-.ch7 .eyebrow{font-size:14px;color:var(--ink-70);margin-bottom:18px}
 .ch7 h2{font-size:var(--d3)}
-.plans{margin-top:clamp(64px,13vh,140px)}
-.plans li{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:22px 0;border-top:1px solid var(--line-l);font-weight:300;font-size:clamp(28px,4.2vw,64px);letter-spacing:-.035em;line-height:1}
-.plans li:last-child{border-bottom:1px solid var(--line-l)}
-.plans .th{display:flex;gap:6px}
-.plans .th img{width:clamp(34px,3.4vw,52px);aspect-ratio:3/4;object-fit:cover;border-radius:3px}
-.plans small{font-weight:400;font-size:14px;letter-spacing:0;color:var(--ink-70);margin-left:10px}
-.plans li>span:last-child{justify-self:end;font-variant-numeric:tabular-nums;white-space:nowrap}
-html.js:not(.still) .plans:not(.in) li>span{opacity:0;transform:translateY(28px)}
-html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(var(--n)*50ms)}
+.pl-sub{margin-top:22px;max-width:30ch;color:var(--ink-70);font-size:17px;line-height:1.4}
+/* The plans, laid out the way people expect a price table: three cards side by side, each with its name, how many pieces
+   (the thumbnails), the monthly price, one line on who it suits and the way in. What every plan shares sits once, below. */
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:clamp(40px,7vh,72px)}
+.plan{display:flex;flex-direction:column;min-height:clamp(340px,28vw,410px);padding:clamp(22px,2.2vw,32px);border-radius:6px;background:#f4f5f2}
+.plan-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.plan h3{font-weight:400;font-size:clamp(20px,1.7vw,24px);line-height:1.2;letter-spacing:-.02em}
+.plan .th{display:flex;gap:4px}
+.plan .th img{width:clamp(36px,3.4vw,50px);aspect-ratio:3/4;object-fit:cover;border-radius:3px}
+.pl-price{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:40px;color:var(--ink-70);font-size:14px;line-height:1}
+.pl-price b{font-weight:300;color:var(--ink);font-size:clamp(52px,5.4vw,80px);line-height:.9;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.pl-d{margin-top:16px;color:var(--ink-70);font-size:15px;line-height:1.4}
+.pl-go{display:flex;align-items:center;justify-content:center;height:48px;margin-top:28px;padding:0 24px;border-radius:999px;background:#294123;color:#f8f8f2;font-size:15px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;transition:background-color .2s var(--ease-out),transform .12s var(--ease-out)}
+.pl-go:active{transform:scale(.97)}
+@media (hover:hover){.pl-go:hover{background:#1f3219}}
+.pl-all{margin-top:clamp(28px,4vh,40px);padding-top:20px;border-top:1px solid var(--line-l);font-size:15px;line-height:1.4}
+.pl-all p{font-weight:500}
+.pl-all ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 16px;margin-top:8px;color:var(--ink-70)}
+/* the cards rise in 50ms apart as the row enters, and each price counts up to its figure */
+html.js:not(.still) .plans:not(.in) .plan,html.js:not(.still) .plans:not(.in)+.pl-all{opacity:0;transform:translateY(28px)}
+html.js .plans.in .plan,html.js .plans.in+.pl-all{opacity:1;transform:none;transition:opacity .6s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(var(--n,3)*50ms)}
+html.calm .plans .plan,html.calm .pl-all{opacity:1!important;transform:none!important;transition:none!important}
 .fine{max-width:44ch;margin-top:32px;color:var(--ink-70);font-size:15px}
 
 .foot{position:sticky;bottom:0;z-index:-1;height:100vh;height:100svh;background:var(--char);color:var(--cream);display:flex;flex-direction:column;padding:clamp(88px,16vh,170px) var(--gxr) calc(22px + env(safe-area-inset-bottom,0px)) var(--gx);overflow:hidden;visibility:hidden}
@@ -326,18 +323,15 @@ html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--
   .caps p+p{display:none}
   .caps p:first-child{max-width:none}
   .c4 .words{font-size:9.6vw;top:9.5vh}
-  .row{grid-template-columns:1fr 34vw;gap:8px 16px;min-height:0}
-  .row p{grid-column:1/-1;justify-self:start;max-width:36ch}
-  .row-l em{margin-top:10px}
   .p-desc{top:calc(52px + env(safe-area-inset-top,0px));font-size:14px;max-width:21ch}
   .ch5{--cw:52vw}
   .p-card{top:43%}
   .p-name{padding-bottom:14vh;font-size:18.5vw}
   .p-foot{flex-direction:column;align-items:flex-start;gap:14px;padding-top:12px;bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .p-pick p{display:none}
-  .plans li{grid-template-columns:1fr auto;gap:12px}
-  .plans .th{display:none}
-  .plans small{display:block;margin:8px 0 0;text-align:right}
+  .plans{grid-template-columns:1fr;gap:12px}
+  .plan{min-height:0}
+  .pl-all ul{grid-template-columns:1fr}
   .foot-top{flex-direction:column;align-items:flex-start;gap:16px}
   .foot-row{grid-template-columns:1fr 1fr}
   .foot-row>div:nth-child(2){display:none}
@@ -938,22 +932,6 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   </section>
 
   <div class="hold flow" id="hold2"></div>
-
-  <section class="sheet ch3" id="ch3">
-    <div class="sheet-in">
-      <h2 class="d" aria-label="One piece. Thirty days of reasons.">One <span class="inl" id="inl" aria-hidden="true"><img src="od-piece-ring.jpg" alt="" class="on"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""><img src="od-piece-riviere.jpg" alt=""></span> piece.<br>Thirty days of reasons.</h2>
-      <p class="sub">No promises. This is what tends to happen once it is on.</p>
-      <ul class="rows" id="rows">
-        <li class="row"><div class="row-l"><small>A chance</small><strong>To wear diamonds on a Tuesday.</strong><em>01</em></div><div class="row-i"><img src="od-app-band.jpg" alt="A fine gold chain worn with an open white shirt" loading="lazy"></div><p>No occasion needed. It is on you at the school run, in the meeting and at the supermarket till.</p></li>
-        <li class="row"><div class="row-l"><small>A chance</small><strong>To say yes to the bold one.</strong><em>02</em></div><div class="row-i"><img src="od-member-dana.jpg" alt="Stacked gold rings and a sculptural earring" loading="lazy"></div><p>The piece you would never buy because you would never wear it enough. For a month, enough is not the question.</p></li>
-        <li class="row"><div class="row-l"><small>A chance</small><strong>To be asked where it is from.</strong><em>03</em></div><div class="row-i"><img src="od-member-aisha.jpg" alt="A gold pendant worn over a black top" loading="lazy"></div><p>And to have a different answer next month.</p></li>
-        <li class="row"><div class="row-l"><small>A chance</small><strong>To find out what suits you.</strong><em>04</em></div><div class="row-i"><img src="od-step-return.jpg" alt="Three gold rings in a jewellery tray" loading="lazy"></div><p>Try the collar, the drops, the knot ring. Three months of wearing teaches you more than years of looking through a window.</p></li>
-        <li class="row"><div class="row-l"><small>A chance</small><strong>To send it back without regret.</strong><em>05</em></div><div class="row-i"><img src="od-step-deliver.jpg" alt="A ribboned Iconec box changing hands" loading="lazy"></div><p>It goes on to its next month. So do you.</p></li>
-      </ul>
-    </div>
-  </section>
-
-  <div class="hold flow" id="hold4"></div>
 </div>
 
 <section class="kp" id="ch5" aria-label="Pieces on rotation">
@@ -1043,14 +1021,14 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
 <div class="tail">
   <section class="sheet ch7" id="ch7" aria-label="Plans">
     <div class="sheet-in">
-      <p class="eyebrow">A plan is how many pieces you hold at once.</p>
       <h2 class="d rise" id="h2p" aria-label="One, two or three. You set the pace."><span class="ln-r" aria-hidden="true" style="--i:0"><span>One, two or three.</span></span><span class="ln-r" aria-hidden="true" style="--i:1"><span>You set the pace.</span></span></h2>
+      <p class="pl-sub">Choose how many you hold at a time. Priced by the month.</p>
       <ul class="plans" id="plans">
-        <li><span style="--n:0">One piece</span><span class="th" style="--n:1" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span><span style="--n:2">AED 299<small>a month</small></span></li>
-        <li><span style="--n:3">Two pieces</span><span class="th" style="--n:4" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span><span style="--n:5">AED 450<small>a month</small></span></li>
-        <li><span style="--n:6">Three pieces</span><span class="th" style="--n:7" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span><span style="--n:8">AED 599<small>a month</small></span></li>
+        <li class="plan" style="--n:0"><div class="plan-top"><h3>One piece</h3><span class="th" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="299">299</b><span>a month</span></p><p class="pl-d">One piece at a time. The simplest way to start.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:1"><div class="plan-top"><h3>Two pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="450">450</b><span>a month</span></p><p class="pl-d">Two at a time. Keep one on, swap the other.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:2"><div class="plan-top"><h3>Three pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="599">599</b><span>a month</span></p><p class="pl-d">Three at a time. A full box that keeps changing.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
       </ul>
-      <p class="fine">Every piece is yours for 30 days. Swap any of them from day 2, send it back on day 30, or keep it on for another 30.</p>
+      <div class="pl-all"><p>Every plan</p><ul><li>Swaps from day 2</li><li>Delivery at a slot you choose</li><li>30 more days on any piece you want to keep</li></ul></div>
     </div>
   </section>
 
@@ -1311,15 +1289,11 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     M.anchor = docTop($('#anchor')) + 158;
     M.stick = M.anchor - vh / 2;
     M.r0 = M.stick + .25 * vh; M.r1 = M.stick + 1.15 * vh;
-    M.ch3 = { top: docTop(ch3), h: ch3.offsetHeight };
-    M.swapAt = M.ch3.top + M.ch3.h / 2 - vh / 2;
-    M.h4 = docTop($('#hold4'));
-    /* where each step sits centred (Choose, Wear before the month sheet; Swap, Return after it), and where each of
-       the six screen changes happens. W is half the width of a change. */
-    M.C = [M.r1 + .25 * vh, M.r1 + 1.25 * vh, M.h4 + .15 * vh, M.h4 + 1.15 * vh];
-    /* where each of the four screen changes happens. Slot .55 of a screen after the card lands, Wearing .6 after that,
-       Swap behind the month sheet, Return three quarters of a screen after the sheet has gone. */
-    M.T = [M.r1 + .55 * vh, M.r1 + 1.15 * vh, M.h4 - .8 * vh, M.h4 + .75 * vh];
+    /* where each of the four screen changes happens, measured from the card landing: Slot .55 of a screen after it,
+       then Wearing, Swap and Return, each about .9 of a screen after the one before */
+    M.T = [M.r1 + .55 * vh, M.r1 + 1.2 * vh, M.r1 + 2.1 * vh, M.r1 + 3 * vh];
+    /* with reduced motion the steps scroll past the phone: where each one sits centred */
+    M.C = [M.r1 + .25 * vh, M.T[1] + .25 * vh, M.T[2] + .25 * vh, M.T[3] + .25 * vh];
     M.W = .07 * vh;
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
@@ -1331,10 +1305,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     M.pBot = M.pcy + 316 * M.ps;
     STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null; });
     if (!calm) {
-      /* each step's stretch of the scroll, [arrives, leaves]: Choose as the card lands, Wear with the delivery screen and until
-         the month sheet has covered it, Swap as that sheet clears the text, Return with its own screen. Wear and Return
-         change on the same point of the scroll as their screens. */
-      M.SA = [[M.r0 + .88 * (M.r1 - M.r0), M.T[1]], [M.T[1], M.h4 - .9 * vh], [M.h4 - .38 * vh, M.T[3]], [M.T[3], 1e9]];
+      /* each step's stretch of the scroll, [arrives, leaves]: Choose as the card lands; Wear, Swap and Return change on
+         the same point of the scroll as their screens */
+      M.SA = [[M.r0 + .88 * (M.r1 - M.r0), M.T[1]], [M.T[1], M.T[2]], [M.T[2], M.T[3]], [M.T[3], 1e9]];
       /* the name is centred on the phone's own centre line; on phones both sit under the phone */
       STEPS.forEach(st => {
         const y = small ? M.pBot + 22 : M.pcy - st.hh / 2;
@@ -1346,13 +1319,10 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     while (e && e !== phone) { sx += e.offsetLeft; sy += e.offsetTop; e = e.offsetParent; }
     M.slot = { x: sx * M.ps, y: M.pcy - vh / 2 + sy * M.ps };
     M.luxR = Math.hypot(vw, vh) / 2 + 40;
-    rows = $$('.row', ch3).map(el => ({ el, top: docTop(el), o: -1 }));
     planRows = $$('#plans li').map(el => ({ el, top: docTop(el), on: false }));
   }
 
   /* ── inline image cycle, store links ── */
-  const inl = $$('#inl img'); let inlI = 0;
-  if (!calm && !still) setInterval(() => { inl[inlI].classList.remove('on'); inlI = (inlI + 1) % inl.length; inl[inlI].classList.add('on'); }, 1700);
   $$('[data-store]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); go(M.max); }));
 
   /* ── smooth scroll ── */
@@ -1587,14 +1557,18 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       }
     } else if (qVis !== false && qPinned) { wqFly.style.visibility = 'hidden'; qVis = false; if (sy >= M.wq.top + M.wq.h) wp.classList.remove('fly-on'); }
 
-    /* sheet: a month in */
-    tilt(ch3, M.ch3, sy);
-    for (const row of rows) { const o = Math.round(seg(sy + vh * .98 - row.top, 0, vh * .34) * 50) / 50; if (o !== row.o) { row.o = o; row.el.style.opacity = o; row.el.style.transform = o < 1 ? `scale(${(.96 + .04 * o).toFixed(3)}) translateY(${((1 - o) * 24).toFixed(1)}px)` : 'none'; } }
-
     /* plans + footer */
     tilt(ch7, M.ch7, sy);
     set('h2p', sy > M.ch7.top - vh * .55, v => v && $('#h2p').classList.add('in'));
-    if (!plansOn && planRows.length && sy + vh * .96 > planRows[planRows.length - 1].top) { plansOn = true; $('#plans').classList.add('in'); }
+    if (!plansOn && planRows.length && sy + vh * .9 > planRows[0].top) {
+      plansOn = true; $('#plans').classList.add('in');
+      /* each price counts up to its figure as its card arrives (900ms, decaying) */
+      if (!calm && !still) $$('#plans [data-count]').forEach((el, i) => {
+        const to = +el.dataset.count, t0 = performance.now() + i * 50, dur = 900;
+        const tick = now => { const k = clamp((now - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(2, -10 * k)) / (1 - Math.pow(2, -10))); if (k < 1) requestAnimationFrame(tick); };
+        requestAnimationFrame(tick);
+      });
+    }
     set('foot', sy > M.ch7.top, v => foot.classList.toggle('on', v));
   }
 
