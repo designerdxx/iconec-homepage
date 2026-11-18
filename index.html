@@ -101,14 +101,14 @@ html:not(.js) .loader,html.still .loader{display:none}
 .face.back{transform:rotateY(180deg);background:var(--stone);color:var(--ink);display:grid;place-items:center;font-size:11px;font-weight:500;letter-spacing:.2em}
 .face.back::before{content:"";position:absolute;inset:8px;border:1px solid var(--line-l);border-radius:6px}
 .shade{position:absolute;inset:0;background:#000;opacity:0;border-radius:12px;pointer-events:none}
-/* Three cards leave the gathered deck and become the statement's three pictures. The deck lives under the page's
+/* Three cards let go of the row and come down into the statement's three pictures. The row lives under the page's
    sections, so each of the three has a twin in this layer above them, with the same perspective: the twin takes over
-   at the exact pose of its card, comes down, narrows to the pill's shape and shows the pill's own picture by the time
-   it lands, where the real pill takes over from it. */
+   at the exact pose of its card, comes down and narrows to the pill's shape, and dissolves into the pill's own
+   reveal when it lands. */
 #fliers{position:fixed;inset:0 0 auto;height:100vh;height:100svh;z-index:2;perspective:1400px;pointer-events:none}
 .card.fly{will-change:transform,clip-path}
-.fly-pill{position:absolute;left:0;width:100%;overflow:hidden;background:#17181c;opacity:0;z-index:3}
-.fly-pill img{position:absolute;inset:calc((1 - var(--z,1))*50%);width:calc(var(--z,1)*100%);height:calc(var(--z,1)*100%);max-width:none;object-fit:cover}
+
+
 .ph{background:var(--stone)}
 .ph img{width:100%;height:100%;object-fit:cover}
 /* the piece card (same markup in the carousel and in the phone) */
@@ -1301,22 +1301,28 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.el.firstChild); } }
   /* the three cards that come down into the statement: [card in the deck, pill in the sentence], front card first,
      so a card never has to pass through one still lying on top of it */
+  /* the three places in the sentence, each with a twin card waiting in the layer above the page */
   const FLY = [];
   if (!calm && !still) {
     const layer = document.createElement('div'); layer.id = 'fliers'; layer.setAttribute('aria-hidden', 'true'); stage.parentNode.insertBefore(layer, stage.nextSibling);
-    const pills = $$('.ws-lead .ipill');
-    [[0, 1], [1, 0], [2, 2]].forEach(([k, pi], i) => {
-      const src = cards[k], pill = pills[pi]; if (!src || !pill) return;
-      const el = src.el.cloneNode(true); el.classList.add('fly'); el.style.cssText = '';
-      const ov = document.createElement('span'), im = document.createElement('img'); ov.className = 'fly-pill'; im.alt = ''; ov.appendChild(im); el.appendChild(ov);
-      layer.appendChild(el); pill.classList.add('tgt', 'wait');
-      const f = { el, src, pill, ov, im, shade: $('.shade', el), k, a: .5 + i * .08, st: 0, cx: 0, cy: 0, w: 1, hb: 97 };
-      src.fly = f; FLY.push(f);
+    $$('.ws-lead .ipill').forEach((pill, i) => {
+      const el = document.createElement('div'); el.className = 'card fly'; layer.appendChild(el); pill.classList.add('tgt', 'wait');
+      FLY.push({ el, pill, src: null, a: .3 + i * .08, st: 0, q: 0, on: false, t2: -1e9, seated: true, cx: 0, cy: 0, w: 1, hb: 97 });
     });
   }
-  /* the twin's picture is whatever its pill is showing */
-  const syncFly = f => { const on = $('img.on', f.pill); if (!on) return; f.im.src = on.currentSrc || on.src; f.im.style.objectPosition = on.style.objectPosition; f.im.style.setProperty('--z', on.style.getPropertyValue('--z') || 1); };
-  FLY.forEach(syncFly);
+  /* a card's place in the row: along the row, and its pose on the row's wide curve (flat in the middle, turning in and
+     coming closer at the edges) */
+  const fxOf = c => ((c.k * M.gap + car + M.L / 2) % M.L) - M.L / 2;
+  const poseOf = fx => { const th = clamp(fx / M.R, -1.25, 1.25); return [M.R * Math.sin(th), M.R * (1 - Math.cos(th)), -th * 57.296]; };
+  /* which three drop: the three nearest the middle of the row at that moment, matched left to right with the three
+     places left to right, so no two paths cross. The row has stopped sliding by then, so nothing else has to move. */
+  let flySet = false;
+  const pickFly = () => {
+    const near = cards.slice().sort((a, b) => Math.abs(fxOf(a)) - Math.abs(fxOf(b))).slice(0, FLY.length).sort((a, b) => fxOf(a) - fxOf(b));
+    FLY.slice().sort((a, b) => a.cx - b.cx).forEach((f, i) => { const c = near[i]; if (!c) return; f.src = c; c.fly = f; f.el.innerHTML = c.el.innerHTML; });
+    flySet = true;
+  };
+  const dropFly = () => { FLY.forEach(f => { if (f.src) f.src.fly = null; f.src = null; }); flySet = false; };
   let car = 0, lastT = 0;
 
   /* ── measurements (cached; never read layout inside the frame) ── */
@@ -1345,7 +1351,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       M.kpH = kpCards[0].offsetHeight;
     }
     /* where each pill sits on the page, and the band of its card that has the pill's proportions */
-    FLY.forEach(f => { const r = f.pill.getBoundingClientRect(); if (!r.width) return; f.w = r.width; f.cx = r.left + r.width / 2; f.cy = r.top + scrollY + r.height / 2; f.hb = 232 * r.height / r.width; f.ov.style.top = ((316 - f.hb) / 2).toFixed(2) + 'px'; f.ov.style.height = f.hb.toFixed(2) + 'px'; });
+    FLY.forEach(f => { const r = f.pill.getBoundingClientRect(); if (!r.width) return; f.w = r.width; f.cx = r.left + r.width / 2; f.cy = r.top + scrollY + r.height / 2; f.hb = 232 * r.height / r.width; });
     const small = vw <= 760;
     M.small = small;
     M.fs = small ? clamp(vh * .34 / 316, .5, 1) : clamp(vh * .42 / 316, .55, 1.2);
@@ -1462,64 +1468,65 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     /* act one */
     if (sy < M.ch5.top + 10) {
       set('ch1in', S > .45, v => { if (v) ch1.classList.add('in'); });
-      /* the cards follow an eased copy of the scroll, so a fast flick never snaps the row shut */
+      /* an eased copy of the scroll drives the three falling cards, so a fast flick never throws them */
       sS = sS < 0 || calm || still || S > 1.6 ? S : sS + (S - sS) * (1 - Math.exp(-dt / (lenis ? 80 : 140)));
-      /* Gather, then leave with the page. What made the last version bouncy, and what replaced it:
-         - slow in, slow out: every card now moves on one sine curve on both axes. Before, the rise used an ease-out,
-           which starts at full speed, so the row leapt the moment the scroll began.
-         - timing: the gather has nearly half a screen of scroll (it had under a third), so the same distance is covered
-           at a much lower speed.
-         - no anticipation dip, no tip-back, no per-card trail on the way out: they read as bounce at scroll speed.
-         - the exit is not an animation any more: once gathered, the deck picks up the page's own speed over a short ease
-           and scrolls away like everything else, staying just ahead of the panel that follows it.
-         - overlapping action is kept, lightly: the far cards start a beat after the near ones. */
-      const g = seg(sS, .04, .46), d = Math.max(0, sS - .44), lift = (d < .12 ? d * d / .24 : d - .06) * vh;
+      /* The row is not rearranged any more. It keeps its arrangement and leaves with the page, at the page's own speed,
+         like everything else on it; it only stops sliding sideways once the scroll has begun. Three of its cards let go
+         of it from where they are and come down into the sentence; the places they leave stay empty.
+         (12 principles: staging, one thing happens at a time and nothing else moves while the cards fall; slow in and
+         slow out, one sine curve for each fall; arcs, the sideways move starts a beat after the fall; overlapping
+         action, the three leave 8% of a screen apart; and at the landing, squash and follow-through: the card presses
+         into its place and settles.) */
       const ay = M.anchor - sy, solo = ay < vh + 180;
-      const rowOn = !solo && sS < 1.5;
-      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .15); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
+      const rowOn = !solo && sy < vh * 1.15;
+      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .15); car += dt * .034 * slow * slow; }
+      if (FLY.length) {
+        if (!flySet && sS > FLY[0].a) pickFly(); else if (flySet && sS <= FLY[0].a) dropFly();
+        for (const f of FLY) {
+          const q = flySet && f.src ? clamp((sS - f.a) / .7) : 0, st = q <= 0 ? 0 : q >= 1 ? 2 : 1;
+          f.q = q;
+          if (st === f.st) continue;
+          if (st === 2) {
+            /* landed: the picture's own reveal starts, the place presses in and settles, and the card has 450ms to
+               dissolve into it (none of this if the fall was skipped) */
+            f.t2 = f.st === 1 ? t : -1e9; f.seated = f.st !== 1;
+            f.pill.classList.remove('wait'); f.pill.classList.add('shut'); void f.pill.offsetWidth; f.pill.classList.remove('shut');
+            if (f.st === 1 && navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive) navigator.vibrate(8);
+          } else if (f.st === 2) { f.pill.classList.add('wait'); f.pill.style.scale = ''; f.seated = true; }
+          f.st = st; f.el.classList.toggle('flat', st !== 0);
+        }
+      }
       for (const c of cards) {
         if (!rowOn) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const inn = introT0 === null ? 0 : E.out(clamp((t - introT0 - 150) / 1700));
         if (inn <= 0) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
-        const fx = ((c.k * M.gap + car + M.L / 2) % M.L) - M.L / 2 - (1 - inn) * vw * .3;
-        const far = Math.min(1, Math.abs(fx) / (vw * .6)), ax = E.sine(clamp((g - far * .12) / .88));
-        /* the row sits on the inside of a wide curve, like a panorama: flat in the middle, turning in and coming closer at the edges */
-        const th = clamp(fx / M.R, -1.25, 1.25), flat = 1 - ax;
-        const x = lerp(M.R * Math.sin(th), c.k * 9 - 30, ax), y = lerp(M.rowY, -vh * .06 - c.k * 2, ax) - lift;
-        const z = M.R * (1 - Math.cos(th)) * flat - c.k * 26 * ax, rot = -th * 57.296 * flat + (-8 - c.k * 1.8) * ax, sc = lerp(M.fs, M.ds, ax);
-        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        const [x, z, rot] = poseOf(fxOf(c) - (1 - inn) * vw * .3);
+        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${(M.rowY - sy).toFixed(1)}px,${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${M.fs.toFixed(3)})`;
         c.el.style.opacity = inn < 1 ? inn.toFixed(2) : '';
-        const sh = Math.round(ax * Math.min(22, c.k * 3));
-        if (sh !== c.lastShade) { c.lastShade = sh; c.shade.style.opacity = sh / 100; }
-        const want = !(c.fly && sS > c.fly.a);      /* its twin has taken over */
+        if (c.lastShade !== 0) { c.lastShade = 0; c.shade.style.opacity = 0; }
+        const want = !(c.fly && c.fly.st !== 0);      /* its twin has taken over */
         if (c.vis !== want) { c.vis = want; c.el.style.visibility = want ? 'visible' : 'hidden'; }
       }
-      /* The three cards come down into the sentence. Each takes half a screen of scroll, 8% of a screen after the
-         one before, and is down to a small tile before it crosses the words (12 principles: slow in and slow out, one sine curve for the whole move; arcs, the sideways
-         move starts a beat after the fall so the path curves; overlapping action, the three leave one after
-         another; staging, the card's shadow goes and its shape narrows on the way down, and its picture only
-         changes once it has landed, where the pill's own reveal takes over; no tilt, no overshoot, no settle bounce). The fall follows the eased scroll and the landing
-         place follows the page, so the card meets the pill exactly wherever the page is. */
+      /* The three falling cards. Each takes .7 of a screen of scroll. On the page it simply travels down from the row
+         to its place; the fall follows the eased scroll and both ends follow the page, so the card meets the pill
+         exactly wherever the page is. At the landing the place and the card press in together to 95% and settle
+         through 101.5% (a damped spring, 0.5s, played in time): the click of something seating. */
       for (const f of FLY) {
-        const q = clamp((sS - f.a) / .5), st = q <= 0 ? 0 : q >= 1 ? 2 : 1;
-        if (st !== f.st) {
-          if (st === 2) {
-            /* landed: the picture's own reveal starts, and the card has 450ms to dissolve into it (none if the flight was skipped) */
-            f.t2 = f.st === 1 ? t : -1e9;
-            f.pill.classList.remove('wait'); f.pill.classList.add('shut'); void f.pill.offsetWidth; f.pill.classList.remove('shut');
-          } else if (f.st === 2) f.pill.classList.add('wait');
-          f.st = st; f.el.classList.toggle('flat', st !== 0);
+        const dtl = t - f.t2;
+        let seat = 1;
+        if (f.st === 2 && !f.seated) {
+          if (dtl < 520) { seat = 1 - .085 * Math.exp(-dtl / 110) * Math.sin(dtl / 260 * 6.2832); f.pill.style.scale = seat.toFixed(4); }
+          else { f.pill.style.scale = ''; f.seated = true; }
         }
-        const out = st === 2 ? clamp((t - f.t2) / 450) : 0, show = st === 1 || (st === 2 && out < 1);
+        const out = f.st === 2 ? clamp(dtl / 450) : 0, show = f.st === 1 || (f.st === 2 && out < 1);
         if (show !== f.on) { f.on = show; f.el.style.visibility = show ? 'visible' : 'hidden'; }
-        if (!show) continue;
-        const e = E.sine(q), ex = E.sine(seg(q, .1, 1)), to = f.w / 232;
-        const x = lerp(f.k * 9 - 30, f.cx - vw / 2, ex), y = lerp(-vh * .06 - f.k * 2 - lift, f.cy - sy - vh / 2, e);
-        const sc = M.ds * Math.pow(to / M.ds, E.sine(seg(q, 0, .78))), cl = E.sine(seg(q, .2, 1)), hb = lerp(316, f.hb, cl);
-        f.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${(-f.k * 26 * (1 - e)).toFixed(1)}px) rotateY(${((-8 - f.k * 1.8) * (1 - e)).toFixed(2)}deg) scale(${sc.toFixed(4)})`;
+        if (!show || !f.src) continue;
+        const q = f.q, e = E.sine(q), ex = E.sine(seg(q, .1, 1)), to = f.w / 232, [px, pz, pr] = poseOf(fxOf(f.src));
+        const x = lerp(px, f.cx - vw / 2, ex), y = lerp(M.rowY, f.cy - vh / 2, e) - sy;
+        const sc = M.fs * Math.pow(to / M.fs, E.sine(seg(q, 0, .78))) * seat, cl = E.sine(seg(q, .2, 1)), hb = lerp(316, f.hb, cl);
+        f.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${(pz * (1 - e)).toFixed(1)}px) rotateY(${(pr * (1 - e)).toFixed(2)}deg) scale(${sc.toFixed(4)})`;
         f.el.style.clipPath = cl > 0 ? `inset(${((316 - hb) / 2).toFixed(2)}px 0 round ${lerp(12, f.hb / 2, cl).toFixed(1)}px)` : '';
         f.el.style.opacity = out > 0 ? (1 - out * out).toFixed(3) : '';
-        f.shade.style.opacity = (Math.min(22, f.k * 3) / 100 * (1 - e)).toFixed(3);
       }
 
       /* the one card */
