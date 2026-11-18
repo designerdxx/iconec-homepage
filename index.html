@@ -240,7 +240,7 @@ html.js:not(.calm) .hero.in :is(.hero-sub,.hero-from){opacity:1;transform:none;t
 html.js:not(.calm):not([data-only]) .act{height:calc((100svh - var(--hd)) * 1.9)}
 html.js:not(.calm):not([data-only]) .hero{position:sticky;top:var(--hd);height:calc(100svh - var(--hd));overflow:hidden}
 html.js:not(.calm):not([data-only]) .hero>.wrap{will-change:transform}
-html.js:not(.calm):not([data-only]) .act+.sec{position:relative;z-index:1;margin-top:calc((100svh - var(--hd)) * -.6)}
+html.js:not(.calm):not([data-only]) .act+.story{position:relative;z-index:1;margin-top:calc((100svh - var(--hd)) * -.6)}
 .rail.gathered{pointer-events:none;cursor:default}
 
 /* ───────── shared section frame ───────── */
@@ -260,102 +260,159 @@ html.js:not(.calm) .rv.wait.in{opacity:1;transform:none;transition:opacity .7s v
 html.js:not(.calm) .rise.wait .ln-r>span{transform:translateY(108%)}
 html.js:not(.calm) .rise.wait.in .ln-r>span{transform:none;transition:transform 1s var(--out);transition-delay:calc(var(--i) * 50ms)}
 
-/* ───────── 2 · how it works ───────── */
-/* photo on the left gutter, step copy level with its top, tabs level with its bottom.
-   The current tab fills like a progress bar (linear, it is a progress indicator), then the next step plays. */
-.how-g{display:grid;gap:24px;margin-top:var(--head)}
-.how-media{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:4/5;background:var(--slate)}
-.how-media figure{position:absolute;inset:0;opacity:0;transition:opacity .3s var(--in)}
-.how-media figure.on{opacity:1;z-index:1;transition:opacity .3s var(--out)}
-.how-media img{width:100%;height:100%;object-fit:cover;transform:scale(1.03);transition:transform .9s var(--out)}
-.how-media figure.on img{transform:none}
-.how-copy{display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-width:0}
-.steps{display:grid}
-.st{grid-area:1/1;display:grid;gap:12px;align-content:start;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .15s var(--in),transform .15s var(--in),visibility 0s .15s}
-.st.on{opacity:1;visibility:visible;transform:none;transition:opacity .3s .08s var(--out),transform .3s .08s var(--out),visibility 0s}
-.st-k{font-size:var(--small);line-height:1;color:var(--ink-2);margin-bottom:4px}
-.st-t{font-size:clamp(36px,3.1vw,44px);line-height:1;margin-bottom:4px}
-.st p{font-size:var(--lead);line-height:1.45;color:var(--ink-2);max-width:30ch}
-.how-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:560px}
-.how-nav button{position:relative;min-height:44px;padding:14px 0 0;text-align:start;font-size:var(--cap);color:var(--ink-2);transition:color .2s var(--out)}
-.how-nav button::before,.how-nav button i{content:"";position:absolute;inset:0 0 auto;height:1.5px;background:var(--line)}
-.how-nav button i{background:var(--ink);transform:scaleX(0);transform-origin:0 50%}
-[dir="rtl"] .how-nav button i{transform-origin:100% 50%}
-.how-nav button.done i{transform:none}
-.how-nav button.on{color:var(--ink)}
-@media (hover:hover){.how-nav button:hover{color:var(--ink)}}
-html.calm .how-nav button.on i{transform:none}
-html.no-js .steps{gap:32px}html.no-js .st{opacity:1;visibility:visible;transform:none;grid-area:auto}
-html.no-js .how-nav{display:none}
-/* scroll-driven: the block holds while each stretch of scroll moves it one step; reduced motion keeps the click-through */
-html.js:not(.calm) .how-pin{height:calc((100svh - var(--hd)) * 4);margin-top:var(--head)}
-/* Satin Grid: each step's photo wipes up over the last (clip from the bottom) while its image settles from 1.1 to 1.02
-   and the photo underneath dims; the copy changes once, mid-wipe. Driven by scroll, so the visitor sets the pace. */
-html.js:not(.calm) .how-stick .how-media figure{opacity:1;transition:none;will-change:clip-path}
-html.js:not(.calm) .how-stick .how-media img{transition:none;will-change:transform}
-.how-media figure>i{position:absolute;inset:0;background:#161714;opacity:0;pointer-events:none}
-html.js:not(.calm) .how-stick{position:sticky;top:var(--hd);height:calc(100svh - var(--hd));display:flex;align-items:center;padding-block:24px}
-html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
-@media (min-width:761px){
-  html.js:not(.calm) .how-stick{padding-block:28px 44px}
-  html.js:not(.calm) .how-stick>.how-g{height:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,7vw,128px);align-items:center}
-  html.js:not(.calm) .how-stick .how-media{height:100%;max-height:840px;aspect-ratio:4/5;width:auto;max-width:100%;justify-self:end;border-radius:8px}
-  html.js:not(.calm) .how-stick .how-copy{justify-content:center;gap:clamp(40px,7vh,84px);max-width:30em;align-self:center}
-  html.js:not(.calm) .how-stick .st{gap:20px}
-  html.js:not(.calm) .how-stick .st-t{font-size:clamp(48px,6vw,100px);line-height:.96;margin-bottom:0}
-  html.js:not(.calm) .how-stick .st p{font-size:clamp(16px,1.3vw,19px);max-width:23em}
-  html.js:not(.calm) .how-stick .how-nav{max-width:380px;gap:6px}
-}
-@media (max-width:760px){
-  html.js:not(.calm) .how-stick>.how-g{height:100%;grid-template-rows:minmax(0,1fr) auto;gap:16px}
-  html.js:not(.calm) .how-stick .how-media{aspect-ratio:auto;height:100%}
-  html.js:not(.calm) .how-stick .how-copy{gap:16px}
-}
-@media (min-width:761px){
-  .how-g{grid-template-columns:clamp(300px,29vw,416px) minmax(0,1fr);gap:clamp(48px,9vw,128px);align-items:stretch}
-}
+/* ───────── 2 · how it works, told the Out of the Drawer way ───────── */
+/* One piece card waits under the heading. On scroll a dark circle opens from it, the card turns once and lands in
+   the app, and the month plays out on the phone: chosen, worn (the day counts up), swapped, then day 30.
+   Then the circle closes back into the phone. Without motion it is a still sheet: copy beside the phone. */
+.story{padding-block:var(--sec) 0}
+.sy-intro{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px}
+.sy-intro .lead{max-width:30ch}
+.sy-lux{margin:var(--head) clamp(8px,1vw,16px) 0;border-radius:var(--r-sheet);background:var(--ink);color:var(--cream);padding:clamp(32px,5vw,72px) 0;display:grid;gap:40px;justify-items:center}
+.sy-copy{display:grid;gap:32px;align-content:center;width:100%}
+.steps{display:grid;gap:32px}
+.st{display:grid;gap:12px;align-content:start}
+.st-k{font-size:var(--small);line-height:1;color:var(--cream-2)}
+.st-t{font-size:clamp(40px,4.4vw,72px);line-height:.96}
+.st p{font-size:var(--lead);line-height:1.45;color:var(--cream-2);max-width:30ch}
+.how-nav{display:none}
+.sy-days,.sy-card{display:none}
+@media (min-width:761px){.sy-lux{grid-template-columns:minmax(0,1fr) auto;align-items:center;justify-items:start;padding-inline-end:clamp(32px,6vw,96px)}}
 
-/* ───────── 3 · purchase credit ───────── */
+/* the phone (Out of the Drawer's iPhone Pro at 300 × 632) */
+.phone{position:relative;width:300px;height:632px;flex:none;border-radius:53px;background:#000;padding:9px;box-shadow:inset 0 0 0 1px #77777b,inset 0 0 0 3px #2a2a2d,inset 0 0 0 3.5px #48484b;zoom:.78}
+.phone::before,.phone::after{content:"";position:absolute;width:3px;z-index:-1}
+.phone::before{left:-2px;top:112px;height:150px;border-radius:2px 0 0 2px;background:linear-gradient(#3a3a3d 0 22px,transparent 22px 44px,#3a3a3d 44px 88px,transparent 88px 104px,#3a3a3d 104px 148px,transparent 148px)}
+.phone::after{right:-2px;top:176px;height:72px;border-radius:0 2px 2px 0;background:#3a3a3d}
+.ph-screen{position:relative;height:100%;border-radius:44px;background:#fff;color:var(--ink);overflow:hidden;display:flex;flex-direction:column;align-items:center}
+.ph-status{width:100%;height:42px;display:grid;grid-template-columns:1fr 88px 1fr;align-items:center;justify-items:center;flex:none;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",var(--sans);font-size:12px;font-weight:600;letter-spacing:-.01em}
+.ph-status time{padding-inline-start:6px}
+.ph-sr{display:flex;align-items:center;gap:4.5px;padding-inline-end:5px}
+.ph-sr svg{display:block;height:8.5px;width:auto}
+.ph-sr svg:last-child{height:9px}
+.ph-island{position:absolute;top:8px;left:50%;width:88px;height:26px;margin-left:-44px;border-radius:13px;background:#000}
+.ph-island::after{content:"";position:absolute;right:9px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#26283a 0 30%,#0b0b10 70%)}
+.ph-home{position:absolute;left:50%;bottom:6px;width:94px;height:3.5px;margin-left:-47px;border-radius:2px;background:var(--ink)}
+.ph-wm{height:12px;width:auto;margin-top:10px;fill:currentColor}
+.ph-wear{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:12px 0 8px}
+.ph-slot{width:232px;height:316px;flex:none;perspective:900px;border-radius:12px;background:rgba(22,23,20,.05)}
+.ph-flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s var(--io)}
+.ph-flip .pc{position:absolute;inset:0;backface-visibility:hidden;box-shadow:0 0 0 1px rgba(22,23,20,.07)}
+.ph-flip .pc+.pc{transform:rotateY(180deg)}
+.phone.swapped .ph-flip{transform:rotateY(180deg)}
+.ph-day{width:232px;margin-top:14px;font-size:13px;display:flex;flex-direction:column;gap:7px}
+.ph-day div{display:flex;justify-content:space-between}
+.ph-day b{font-weight:500;font-variant-numeric:tabular-nums}
+.ph-day span{color:var(--ink-3)}
+.ph-bar{height:2px;border-radius:2px;background:rgba(22,23,20,.12);overflow:hidden}
+.ph-bar i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(.033);transition:transform .25s linear}
+.ph-tabs{margin-top:auto;width:100%;height:60px;display:flex;justify-content:space-around;align-items:flex-start;padding:10px 18px 0;border-top:1px solid var(--line)}
+.ph-tabs svg{width:22px;height:22px;fill:none;stroke:var(--ink-3);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ph-tabs svg:first-child{stroke:var(--ink);fill:var(--ink)}
+.ph-sheet{position:absolute;inset:auto 0 0;background:var(--green);color:var(--cream);border-radius:28px 28px 44px 44px;padding:10px 20px 24px;transform:translateY(102%);will-change:transform}
+.ph-sheet::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(248,248,242,.3);margin:0 auto 16px}
+.ph-sheet::after{content:"";position:absolute;left:50%;bottom:6px;width:94px;height:3.5px;margin-left:-47px;border-radius:2px;background:var(--cream)}
+.ph-sheet small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--cream-2)}
+.ph-sheet h4{font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.15;margin:4px 0 14px}
+.ph-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.ph-opt{border-radius:10px;padding:4px 4px 8px;background:rgba(248,248,242,.08);font-size:12px;text-align:center;box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .2s var(--out),background-color .2s var(--out)}
+.ph-opt img{width:100%;height:76px;object-fit:cover;border-radius:7px;margin-bottom:6px}
+.ph-opt.sel{box-shadow:inset 0 0 0 1px var(--cream);background:rgba(248,248,242,.14)}
+.ph-btn{display:grid;place-items:center;height:42px;border-radius:999px;font-size:14px;font-weight:500;transition:transform .12s var(--out),background-color .12s var(--out),box-shadow .2s var(--out)}
+.ph-btn.go{background:var(--cream);color:var(--green)}
+.ph-btn.go.press{transform:scale(.96);background:#fff}
+.ph-btn.keep{color:var(--cream-2);height:34px;margin-top:4px}
+.ph-btn.keep.sel{color:var(--cream);box-shadow:inset 0 0 0 1px rgba(248,248,242,.5)}
+.sy-lux .wrap{padding-inline:clamp(24px,5vw,72px)}
+@media (max-width:760px){.phone{zoom:.66}.sy-lux{padding-block:32px 40px}}
+
+/* motion: the block holds for seven screens; everything moves with scroll */
+html.js:not(.calm) .story{padding-top:0}
+html.js:not(.calm) .sy-pin{height:calc((100svh - var(--hd)) * 7)}
+html.js:not(.calm) .sy-stage{position:sticky;top:var(--hd);height:calc(100svh - var(--hd));overflow:hidden;background:var(--paper);perspective:1400px}
+html.js:not(.calm) .sy-intro{position:absolute;inset:clamp(20px,5vh,56px) 0 auto;will-change:opacity}
+html.js:not(.calm) .sy-lux{position:absolute;inset:0;margin:0;border-radius:0;padding:0;display:block;visibility:hidden;clip-path:circle(0 at 50% 50%);will-change:clip-path}
+html.js:not(.calm) .sy-days{display:flex;position:absolute;inset-inline-end:var(--gr);top:50%;transform:translateY(-50%);flex-direction:column;align-items:flex-end;font-weight:300;line-height:.8;letter-spacing:-.05em;color:rgba(248,248,242,.09);text-transform:uppercase;font-variant-numeric:tabular-nums;user-select:none;opacity:0}
+html.js:not(.calm) .sy-days span:first-child{font-size:clamp(40px,5vw,84px);letter-spacing:-.02em;margin-inline-end:.1em}
+html.js:not(.calm) .sy-days span:last-child{font-size:clamp(160px,22vw,340px)}
+html.js:not(.calm) .sy-copy{position:absolute;inset:0;display:block;opacity:0}
+html.js:not(.calm) .steps{position:absolute;inset-inline-start:var(--gl);top:50%;transform:translateY(-50%);width:min(30vw,26em);display:grid;gap:0}
+html.js:not(.calm) .st{grid-area:1/1;gap:18px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .15s var(--in),transform .15s var(--in),visibility 0s .15s}
+html.js:not(.calm) .st.on{opacity:1;visibility:visible;transform:none;transition:opacity .3s .08s var(--out),transform .3s .08s var(--out),visibility 0s}
+html.js:not(.calm) .st-t{font-size:clamp(56px,6.4vw,112px)}
+html.js:not(.calm) .st p{font-size:clamp(16px,1.3vw,19px);max-width:24em}
+html.js:not(.calm) .how-nav{display:grid;position:absolute;inset-inline-start:var(--gl);bottom:clamp(24px,4.4vh,44px);width:min(30vw,380px);grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.how-nav button{position:relative;min-height:44px;padding:14px 0 0;text-align:start;font-size:var(--cap);color:var(--cream-3);transition:color .2s var(--out)}
+.how-nav button::before,.how-nav button i{content:"";position:absolute;inset:0 0 auto;height:1.5px;background:var(--line-d)}
+.how-nav button i{background:var(--cream);transform:scaleX(0);transform-origin:0 50%}
+[dir="rtl"] .how-nav button i{transform-origin:100% 50%}
+.how-nav button.on{color:var(--cream)}
+@media (hover:hover){.how-nav button:hover{color:var(--cream)}}
+html.js:not(.calm) .phone{position:absolute;left:50%;top:0;margin:-316px 0 0 -150px;zoom:1;visibility:hidden;box-shadow:0 50px 90px -30px rgba(0,0,0,.5),inset 0 0 0 1px #77777b,inset 0 0 0 3px #2a2a2d,inset 0 0 0 3.5px #48484b;will-change:transform,opacity,filter}
+html.js:not(.calm) .phone:not(.has-card) .ph-flip{visibility:hidden}
+html.js:not(.calm) .sy-card{display:block;position:absolute;left:50%;top:0;width:232px;height:316px;margin:-158px 0 0 -116px;transform-style:preserve-3d;will-change:transform;z-index:2}
+.sy-card .face{position:absolute;inset:0;border-radius:var(--r-card);backface-visibility:hidden}
+.sy-card .face .pc{box-shadow:var(--float)}
+.sy-card .back{transform:rotateY(180deg);background:var(--ink);color:var(--cream);display:grid;place-items:center}
+.sy-card .back::before{content:"";position:absolute;inset:8px;border:1px solid var(--line-d);border-radius:6px}
+.sy-card .back svg{height:16px;width:auto;fill:currentColor}
+@media (max-width:760px){
+  html.js:not(.calm) .sy-intro{inset-block-start:20px}
+  html.js:not(.calm) .sy-days{inset-inline:0;top:35%;align-items:center}
+  html.js:not(.calm) .sy-days span:first-child{display:none}
+  html.js:not(.calm) .sy-days span:last-child{font-size:58vw}
+  html.js:not(.calm) .steps{top:auto;bottom:76px;transform:none;width:auto;inset-inline-end:var(--gr)}
+  html.js:not(.calm) .st{gap:8px}
+  html.js:not(.calm) .st-t{font-size:40px}
+  html.js:not(.calm) .st p{font-size:15px;max-width:none}
+  html.js:not(.calm) .how-nav{width:auto;inset-inline-end:var(--gr);bottom:16px}
+}
+.story>.wrap>.prompt{margin-top:clamp(40px,5vw,72px)}
+html.calm .story>.wrap>.prompt,html:not(.js) .story>.wrap>.prompt{margin-top:clamp(48px,6vw,88px)}
+
+/* ───────── 3 · purchase credit, after Out of the Drawer's piece showcase ───────── */
 .sheet{margin-inline:clamp(8px,1vw,16px);border-radius:var(--r-sheet);background:var(--green);color:var(--cream)}
-/* the original layout on white: months glide past on the left, the piece you keep stands on the right.
-   One duration and one curve (.64s, --io) move the strip, the month fades and the credit line together. */
-.cr{display:grid;grid-template-areas:"h" "strip" "status" "keep" "ctrl" "fine";row-gap:28px}
-.cr-h{grid-area:h;display:grid;gap:16px}
-.cr-strip{grid-area:strip;position:relative;overflow:hidden;margin-inline:calc(var(--gx) * -1);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent);--mcw:120px}
-.cr-track{display:flex;gap:14px;width:max-content;will-change:transform;backface-visibility:hidden;transition:opacity .3s var(--out),translate .3s var(--out)}
-.cr-track.reset{opacity:0;translate:0 10px;transition:opacity .2s var(--in),translate .2s var(--in)}
-.mc{flex:none;width:var(--mcw);opacity:.28}
-.mc.past{opacity:.5}.mc.on{opacity:1}
-.mc-ph{display:grid;gap:2px;aspect-ratio:4/5;border-radius:6px;overflow:hidden}
+/* The block holds while scroll runs the months. The card shows what was worn that month; behind it a giant figure
+   counts down what is left to pay with credit, drawn again as an outline where it passes over the photo.
+   When credit covers the price the card turns over to the piece you keep and the figure becomes "Yours". */
+.credit{padding-block:var(--sec) 0}
+.cv-stage{display:grid;gap:28px}
+.cv-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 48px}
+.cv-top .lead{max-width:34ch}
+.cv-mid{position:relative;display:grid;place-items:center;height:clamp(380px,62vh,640px);padding-top:30px}
+.cv-lab{position:absolute;inset:0 var(--gr) auto var(--gl);display:flex;justify-content:space-between;gap:16px;font-size:var(--small);line-height:1.2}
+.cv-lab span{color:var(--ink-2)}
+.cv-num{position:absolute;inset-inline:0;top:calc(50% + 15px);transform:translateY(-50%);text-align:center;font-weight:300;font-size:clamp(64px,15vw,236px);line-height:1;letter-spacing:-.045em;white-space:nowrap;text-transform:uppercase;font-variant-numeric:tabular-nums;pointer-events:none;overflow:clip;overflow-clip-margin:.12em}
+.cv-num span{display:inline-block}
+.cv-card{position:relative;z-index:1;height:100%;aspect-ratio:4/5;max-width:72vw;border-radius:var(--r-card);overflow:hidden;perspective:1200px}
+.cv-flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .8s var(--io)}
+.cv-flip.yours{transform:rotateY(180deg)}
+.cv-f{position:absolute;inset:0;border-radius:var(--r-card);overflow:hidden;backface-visibility:hidden;background:var(--slate)}
+.cv-back{transform:rotateY(180deg)}
+.cv-back img{width:100%;height:100%;object-fit:cover}
+.cv-front .mc-ph{position:absolute;inset:0;aspect-ratio:auto;border-radius:0;will-change:transform,opacity}
+.cv-tag{position:absolute;inset-inline-start:10px;bottom:10px;z-index:1;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--ink);font-size:12px;line-height:1;white-space:nowrap}
+.cv-card .cv-num{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;z-index:1;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.92)}
+[dir="rtl"] .cv-card .cv-num{left:auto;right:50%;transform:translate(50%,-50%)}
+.mc-ph{display:grid;gap:2px}
 .mc-ph[data-n="2"]{grid-template-columns:1fr 1fr}
 .mc-ph[data-n="3"]{grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr}
 .mc-ph[data-n="3"] img:first-child{grid-row:span 2}
 .mc-ph img{width:100%;height:100%;object-fit:cover;min-height:0}
-.mc-f{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:10px;font-size:13px;line-height:1;color:rgba(22,23,20,.6);white-space:nowrap}
-.mc-m{color:var(--ink-2);transition:color .3s var(--out)}
-.mc.on .mc-m{color:var(--ink)}
-.cr-status{grid-area:status;font-size:17px;line-height:1.45;min-height:2.9em;max-width:40ch}
+.cv-bot{display:grid;gap:24px}
+.cr-status{font-size:17px;line-height:1.45;min-height:2.9em;max-width:42ch}
 .cr-status b{font-weight:500}
 .cr-status span{color:var(--ink-2)}
-.keep{grid-area:keep;width:min(72%,300px)}
-.keep-ph{aspect-ratio:4/5;border-radius:6px;overflow:hidden;background:var(--slate)}
-.keep-ph img{width:100%;height:100%;object-fit:cover;transition:opacity .2s var(--out)}
-.keep-ph img.out{opacity:0;transition:opacity .12s var(--in)}
-.keep-r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;font-size:14px}
-.keep-r span{color:var(--ink-2)}
-.keep-r b{font-weight:500}
-.keep-bar{position:relative;height:2px;margin-top:12px;background:var(--line);overflow:hidden}
-.keep-bar i{position:absolute;inset:0;background:var(--ink);transform-origin:0 50%;transform:scaleX(0)}
-[dir="rtl"] .keep-bar i{transform-origin:100% 50%}
-.cr-ctrl{grid-area:ctrl;display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px 40px}
+.ruler{display:flex;gap:3px;margin-top:14px}
+.ruler i{flex:1;height:2px;background:var(--line);transition:background-color .2s var(--out)}
+.ruler i.on{background:var(--ink)}
+.ruler-l{display:flex;justify-content:space-between;gap:16px;margin-top:10px;font-size:var(--cap);color:var(--ink-2)}
+.cr-ctrl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 32px}
 .ctl{display:grid;gap:10px;min-width:0}
 .ctl-l{font-size:var(--cap);line-height:1;color:var(--ink-2)}
-.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;box-shadow:inset 0 0 0 1px var(--line)}
-.seg button{display:grid;place-content:center;min-height:52px;padding:6px 4px;border-radius:12px;font-size:14px;line-height:1.25;transition:background-color .2s var(--out),color .2s var(--out),transform .12s var(--out)}
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{position:relative;z-index:1;display:grid;place-content:center;min-height:52px;padding:6px 4px;border-radius:12px;font-size:14px;line-height:1.25;transition:background-color .2s var(--out),color .2s var(--out),transform .12s var(--out)}
 .seg button span{display:block;font-size:12px;opacity:.72}
 .seg button[aria-checked="true"]{background:var(--ink);color:var(--paper)}
-.seg{position:relative}
-.seg button{position:relative;z-index:1}
 .seg.has-thumb button[aria-checked="true"]{background:transparent}
 .seg-thumb{position:absolute;top:0;left:0;border-radius:12px;background:var(--ink);pointer-events:none;transition:transform .3s var(--out),width .3s var(--out),height .3s var(--out)}
 .seg button:active{transform:scale(.97)}
@@ -367,19 +424,33 @@ html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
 @media (hover:hover){.picks button:hover{opacity:1}}
 .picks img{width:100%;height:100%;object-fit:cover;border-radius:4px}
 .cr-ctrl .ctl:first-child{flex:1 1 100%}
-.cr-fine{grid-area:fine;font-size:12px;line-height:1.5;color:rgba(22,23,20,.6);max-width:64ch}
+.cr-fine{font-size:12px;line-height:1.5;color:rgba(22,23,20,.6);max-width:72ch;margin-top:28px}
 @media (min-width:761px){
-  .cr{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"h ." "strip keep" "status keep" "ctrl keep" "fine keep";grid-template-rows:auto auto auto auto 1fr;column-gap:clamp(48px,6.7vw,96px);row-gap:32px;align-items:start}
-  .cr .h2{font-size:clamp(34px,4.7vw,68px);white-space:nowrap}
-  .cr-strip{margin-inline:0;--mcw:clamp(132px,10.8vw,156px)}
-  .cr-status{font-size:20px}
-  .keep{justify-self:end;width:min(100%,400px)}
+  .cv-top .h2{font-size:clamp(34px,4.7vw,68px);white-space:nowrap}
+  .cv-bot{grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px clamp(48px,7vw,112px)}
+  .cr-status{font-size:19px}
+  .cr-ctrl{flex-wrap:nowrap}
   .cr-ctrl .ctl:first-child{flex:none}
   .seg{display:flex;border-radius:999px;width:max-content}
   .seg-thumb{border-radius:999px}
   .seg button{display:inline-flex;align-items:center;min-height:40px;height:40px;padding:0 16px;border-radius:999px;white-space:nowrap}
   .seg button span{display:inline;font-size:14px;opacity:1}
   .seg button span::before{content:" · "}
+}
+/* motion: the block holds for a little over three screens */
+html.js:not(.calm) .cv-pin{height:calc((100svh - var(--hd)) * 3.4)}
+html.js:not(.calm) .cv-stage{position:sticky;top:var(--hd);height:calc(100svh - var(--hd));grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(14px,2.6vh,28px);padding-block:clamp(16px,3.4vh,40px) clamp(16px,3vh,36px)}
+html.js:not(.calm) .cv-mid{height:auto;min-height:0}
+@media (max-width:760px){
+  html.js:not(.calm) .cv-top .lead{display:none}
+  html.js:not(.calm) .cv-bot{gap:14px}
+  html.js:not(.calm) .cr-status{font-size:15px;min-height:2.9em}
+  html.js:not(.calm) .ruler{margin-top:8px}
+  html.js:not(.calm) .ruler-l{margin-top:6px}
+  html.js:not(.calm) .seg button{min-height:44px}
+  html.js:not(.calm) .cr-ctrl{gap:12px 20px}
+  html.js:not(.calm) .ctl{gap:6px}
+  html.js:not(.calm) .picks button{width:44px;height:44px}
 }
 
 /* ───────── 4 · pieces on rotation ───────── */
@@ -678,71 +749,103 @@ html[data-only] .jb,html[data-only] .chat{display:none}
 </section>
 </div>
 
-<!-- 2 · how it works -->
-<section class="sec" id="how" data-block="how" aria-labelledby="howH">
-  <div class="wrap">
-    <div class="sec-h"><div>
-      <h2 class="dsp h2 rise" id="howH">A jewellery box that<br class="br-d"> never stays the same.</h2>
-      <p class="lead rv" style="--d:.45s">Four steps, and then the month starts again.</p>
-    </div></div>
-    <div class="how-pin" id="howPin"><div class="how-stick">
-    <div class="how-g" id="howG">
-      <div class="how-media rv" id="howMedia" style="--d:.1s">
-        <figure class="on"><img src="step-choose.jpg" alt="A member choosing pieces on her phone"></figure>
-        <figure><img src="step-wear.jpg" alt="A courier handing over a ribboned Iconec box" loading="lazy"></figure>
-        <figure><img src="step-swap.jpg" alt="A diamond ring held up between two fingers" loading="lazy"></figure>
-        <figure><img src="step-return.jpg" alt="Gold rings resting in a jewellery tray" loading="lazy"></figure>
+<!-- 2 · how it works: one card leaves the page for the app, then the month plays out on the phone (Out of the Drawer) -->
+<section class="story" id="how" data-block="how" aria-labelledby="howH">
+  <div class="sy-pin" id="syPin">
+    <div class="sy-stage" id="syStage">
+      <div class="sy-intro wrap" id="syIntro">
+        <h2 class="dsp h2 rise" id="howH">A jewellery box that<br class="br-d"> never stays the same.</h2>
+        <p class="lead rv" style="--d:.45s">Four steps, and then the month starts again.</p>
       </div>
-      <div class="how-copy rv" style="--d:.15s">
-        <div class="steps" id="steps" aria-live="polite">
-          <div class="st on"><p class="st-k">Step 1 of 4 · In the app</p><h3 class="st-t dsp">Choose</h3><p>Browse what’s on rotation and pick how many pieces you hold at a time: one, two or three.</p></div>
-          <div class="st"><p class="st-k">Step 2 of 4 · Day 1</p><h3 class="st-t dsp">Wear</h3><p>Pick a delivery slot. A courier hands your pieces over in person, and they’re yours to wear from the first evening.</p></div>
-          <div class="st"><p class="st-k">Step 3 of 4 · Any weekday</p><h3 class="st-t dsp">Swap</h3><p>Seen something new? Choose it in the app and book a slot. We collect one piece and deliver the next.</p></div>
-          <div class="st"><p class="st-k">Step 4 of 4 · <span class="ph">Day 30</span></p><h3 class="st-t dsp">Return</h3><p>Each piece goes back by day 30, unless you extend it another 30 days in the app. The courier collects it at your slot.</p></div>
+      <div class="sy-card" id="syCard" aria-hidden="true"><div class="face"><div class="pc"><div class="pc-i"><img src="piece-ivy.jpg" alt=""></div><div class="pc-b"><span class="pc-k">On rotation</span><strong class="pc-n">The Ivy</strong><span class="pc-m">Yours for 30 days</span></div></div></div><div class="face back"><svg viewBox="0 0 220 84.29"><use href="#logo"/></svg></div></div>
+      <div class="sy-lux" id="syLux">
+        <div class="sy-days" id="syDays" aria-hidden="true"><span>Day</span><span id="syDayN">01</span></div>
+        <div class="sy-copy wrap" id="syCopy">
+          <div class="steps" id="steps" aria-live="polite">
+            <div class="st on"><p class="st-k">Step 1 of 4 · In the app</p><h3 class="st-t dsp">Choose</h3><p>Browse what’s on rotation and pick how many pieces you hold at a time: one, two or three.</p></div>
+            <div class="st"><p class="st-k">Step 2 of 4 · Day 1</p><h3 class="st-t dsp">Wear</h3><p>Pick a delivery slot. A courier hands your pieces over in person, and they’re yours to wear from the first evening.</p></div>
+            <div class="st"><p class="st-k">Step 3 of 4 · Any weekday</p><h3 class="st-t dsp">Swap</h3><p>Seen something new? Choose it in the app and book a slot. We collect one piece and deliver the next.</p></div>
+            <div class="st"><p class="st-k">Step 4 of 4 · <span class="ph">Day 30</span></p><h3 class="st-t dsp">Return</h3><p>Each piece goes back by day 30, unless you extend it another 30 days in the app. The courier collects it at your slot.</p></div>
+          </div>
+          <div class="how-nav" id="howNav" role="group" aria-label="Go to a step">
+            <button type="button" class="on" aria-current="step"><i></i>Choose</button><button type="button"><i></i>Wear</button><button type="button"><i></i>Swap</button><button type="button"><i></i>Return</button>
+          </div>
         </div>
-        <div class="how-nav" id="howNav" role="group" aria-label="Go to a step">
-          <button type="button" class="on" aria-current="step"><i></i>Choose</button><button type="button"><i></i>Wear</button><button type="button"><i></i>Swap</button><button type="button"><i></i>Return</button>
+        <div class="phone" id="phone" aria-hidden="true">
+          <div class="ph-screen">
+            <div class="ph-status"><time>9:41</time><span></span><span class="ph-sr"><svg viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 17 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4.5A9.2 9.2 0 0 1 15 4.5"/><path d="M4.54 7.04A5.6 5.6 0 0 1 12.46 7.04"/><path d="M8.5 11 6.66 9.16A2.6 2.6 0 0 1 10.34 9.16Z" fill="currentColor" stroke="none"/></svg><svg viewBox="0 0 28 13" fill="currentColor"><rect x=".5" y=".5" width="24" height="12" rx="3.8" fill="none" stroke="currentColor" opacity=".38"/><rect x="2" y="2" width="21" height="9" rx="2.5"/><path d="M26 4.5v4c.9-.3 1.5-1.1 1.5-2s-.6-1.7-1.5-2z" opacity=".42"/></svg></span></div><div class="ph-island"></div>
+            <svg class="ph-wm" viewBox="0 0 220 84.29"><use href="#logo"/></svg>
+            <span class="ph-wear">Wearing now</span>
+            <div class="ph-slot" id="slot"><div class="ph-flip"><div class="pc"><div class="pc-i"><img src="piece-ivy.jpg" alt=""></div><div class="pc-b"><span class="pc-k">On rotation</span><strong class="pc-n">The Ivy</strong><span class="pc-m">Yours for 30 days</span></div></div><div class="pc"><div class="pc-i"><img src="piece-feather.jpg" alt=""></div><div class="pc-b"><span class="pc-k">Just arrived</span><strong class="pc-n">The Feather</strong><span class="pc-m">Yours for 30 days</span></div></div></div></div>
+            <div class="ph-day"><div><b id="dayL">Day 1 of 30</b><span id="dayS">Swap from day 2</span></div><div class="ph-bar"><i id="dayB"></i></div></div>
+            <div class="ph-tabs"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg><svg viewBox="0 0 24 24"><path d="M6 8h12l1 12H5z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg></div>
+            <i class="ph-home"></i>
+            <div class="ph-sheet" id="psheet">
+              <small id="psDay">Day 12</small>
+              <h4>Swap it, or keep it on?</h4>
+              <div class="ph-opts"><div class="ph-opt" id="optA"><img id="optAi" src="piece-feather.jpg" alt=""><span id="optAn">The Feather</span></div><div class="ph-opt"><img id="optBi" src="piece-windfall.jpg" alt=""><span id="optBn">The Windfall</span></div></div>
+              <div class="ph-btn go" id="pgo">Swap</div>
+              <div class="ph-btn keep" id="pkeep">Keep 30 more days</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    </div></div>
+  </div>
+  <div class="wrap">
     <div class="prompt rv"><p>That’s the whole idea. Pick your plan and your first piece.</p><a class="go" href="#plans">Join now <svg class="ic flip" aria-hidden="true"><use href="#arr"/></svg></a></div>
   </div>
 </section>
 
-<!-- 3 · purchase credit -->
-<section class="sec credit" id="credit" data-block="credit" aria-labelledby="crH">
-  <div class="wrap">
-    <div class="cr" id="cr">
-      <div class="cr-h"><h2 class="dsp h2 rise" id="crH">Wear something new.<br class="br-d"> Watch one become yours.</h2><p class="lead rv">Every monthly payment builds Purchase Credit toward a piece you keep.</p></div>
-      <div class="cr-strip rv" aria-hidden="true"><div class="cr-track" id="crTrack"></div></div>
-      <p class="cr-status rv" id="crStatus"></p>
-      <div class="keep rv" id="keep" aria-hidden="true">
-        <div class="keep-ph"><img id="keepImg" src="keep-ivy.jpg" alt=""></div>
-        <div class="keep-r"><span id="keepN">The Ivy · AED 4,800</span><b id="keepV"></b></div>
-        <div class="keep-bar"><i id="keepBar"></i></div>
+<!-- 3 · purchase credit: the months run with scroll, the figure counts down, the card turns into the piece you keep -->
+<section class="credit" id="credit" data-block="credit" aria-labelledby="crH">
+  <div class="cv-pin" id="cvPin">
+    <div class="cv-stage" id="cr">
+      <div class="cv-top wrap">
+        <h2 class="dsp h2 rise" id="crH">Wear something new.<br class="br-d"> Watch one become yours.</h2>
+        <p class="lead rv">Every monthly payment builds Purchase Credit toward a piece you keep.</p>
       </div>
-      <div class="cr-ctrl rv">
-        <div class="ctl">
-          <span class="ctl-l" id="crPlanL">Your plan</span>
-          <div class="seg" id="crPlan" role="radiogroup" aria-labelledby="crPlanL">
-            <button type="button" role="radio" aria-checked="true" data-v="single">Single<span>AED 299</span></button>
-            <button type="button" role="radio" aria-checked="false" data-v="duo" tabindex="-1">Duo<span class="ph">AED 499</span></button>
-            <button type="button" role="radio" aria-checked="false" data-v="stack" tabindex="-1">Stack<span>AED 599</span></button>
+      <div class="cv-mid" aria-hidden="true">
+        <div class="cv-lab"><span id="cvK">Left to pay with credit</span><span id="keepN">The Ivy · AED 4,800</span></div>
+        <div class="cv-num"><span id="cvNum">AED 4,800</span></div>
+        <div class="cv-card">
+          <div class="cv-flip" id="cvFlip">
+            <div class="cv-f cv-front"><div class="mc-ph" id="cvMonth" data-n="1"></div><span class="cv-tag" id="cvTag">Month 1 · +AED 299 credit</span></div>
+            <div class="cv-f cv-back"><img id="keepImg" src="keep-ivy.jpg" alt=""><span class="cv-tag">Yours · credit covers the full price</span></div>
           </div>
+          <div class="cv-num"><span id="cvNumO">AED 4,800</span></div>
         </div>
-        <div class="ctl">
-          <span class="ctl-l" id="crPickL">The piece you keep</span>
-          <div class="picks" id="crPick" role="radiogroup" aria-labelledby="crPickL">
-            <button type="button" role="radio" aria-checked="true" data-v="ivy" aria-label="The Ivy earrings"><img src="piece-ivy.jpg" alt=""></button>
-            <button type="button" role="radio" aria-checked="false" data-v="knot" aria-label="The Knot ring" tabindex="-1"><img src="piece-knot.jpg" alt=""></button>
-            <button type="button" role="radio" aria-checked="false" data-v="feather" aria-label="The Feather pendant" tabindex="-1"><img src="piece-feather.jpg" alt=""></button>
-          </div>
-        </div>
-        <p class="sr" id="crLive" aria-live="polite"></p>
       </div>
-      <p class="cr-fine ph-block"><span class="ph">Prices exclude VAT. Purchase Credit builds on the membership fees paid (excluding VAT) and can be used toward eligible purchases. Piece prices shown are examples. Terms apply.</span></p>
+      <div class="cv-bot wrap">
+        <div class="cv-read">
+          <p class="cr-status" id="crStatus"></p>
+          <div class="ruler" id="ruler" aria-hidden="true"></div>
+          <div class="ruler-l" aria-hidden="true"><span id="rulerL">Month 1 of 17</span><span id="rulerR">+AED 299 credit a month</span></div>
+        </div>
+        <div class="cr-ctrl">
+          <div class="ctl">
+            <span class="ctl-l" id="crPlanL">Your plan</span>
+            <div class="seg" id="crPlan" role="radiogroup" aria-labelledby="crPlanL">
+              <button type="button" role="radio" aria-checked="true" data-v="single">Single<span>AED 299</span></button>
+              <button type="button" role="radio" aria-checked="false" data-v="duo" tabindex="-1">Duo<span class="ph">AED 499</span></button>
+              <button type="button" role="radio" aria-checked="false" data-v="stack" tabindex="-1">Stack<span>AED 599</span></button>
+            </div>
+          </div>
+          <div class="ctl">
+            <span class="ctl-l" id="crPickL">The piece you keep</span>
+            <div class="picks" id="crPick" role="radiogroup" aria-labelledby="crPickL">
+              <button type="button" role="radio" aria-checked="true" data-v="ivy" aria-label="The Ivy earrings"><img src="piece-ivy.jpg" alt=""></button>
+              <button type="button" role="radio" aria-checked="false" data-v="knot" aria-label="The Knot ring" tabindex="-1"><img src="piece-knot.jpg" alt=""></button>
+              <button type="button" role="radio" aria-checked="false" data-v="feather" aria-label="The Feather pendant" tabindex="-1"><img src="piece-feather.jpg" alt=""></button>
+            </div>
+          </div>
+          <p class="sr" id="crLive" aria-live="polite"></p>
+        </div>
+      </div>
     </div>
+  </div>
+  <div class="wrap">
+    <p class="cr-fine ph-block"><span class="ph">Prices exclude VAT. Purchase Credit builds on the membership fees paid (excluding VAT) and can be used toward eligible purchases. It doesn’t build while a membership is paused and is forfeited on immediate cancellation. Piece prices shown are examples. Terms apply.</span></p>
     <div class="prompt rv"><p>Every month you wear counts toward one you keep.</p><a class="go" href="#plans">Join now <svg class="ic flip" aria-hidden="true"><use href="#arr"/></svg></a></div>
   </div>
 </section>
@@ -1141,127 +1244,173 @@ html[data-only] .jb,html[data-only] .chat{display:none}
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(startLoader);
   setTimeout(startLoader, 1200);
 
-  /* ── 2 · how it works: scroll-driven. The block holds; each stretch of scroll is one step and the tab bars
-        fill with the scroll (linear: they are progress). A tab click glides to that step. Reduced motion: click-through. ── */
-  const howG = $('#howG'), howPin = $('#howPin'), steps = $$('#steps .st'), figs = $$('#howMedia figure'), navB = $$('#howNav button');
-  const bars = navB.map(b => b.querySelector('i'));
+  /* ── 2 · how it works, after Out of the Drawer's act one. One scroll position P (0–1 across the held block) drives it all:
+        .03–.20  a dark circle opens from the card (ease-in-out), the card turns once and lands in the phone's slot,
+                 the phone comes into focus (blur 16px → 0, 46px rise, ease-out)
+        .20–.38  Choose · .38–.56 Wear, the day counts 1 → 12 · .56–.76 Swap, the sheet rises, Swap is pressed, the card turns
+        .76–.94  Return, the day counts to 30 and the sheet offers 30 more days · .945–1 the phone fades and the circle closes.
+        The tab bars fill with P (linear: they are progress). Reduced motion: a still sheet, every step visible. ── */
+  const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const syPin = $('#syPin'), syStage = $('#syStage'), syIntro = $('#syIntro'), syLux = $('#syLux'), syCard = $('#syCard'), syCopy = $('#syCopy'), syDays = $('#syDays'), syDayN = $('#syDayN');
+  const phone = $('#phone'), slot = $('#slot'), dayL = $('#dayL'), dayS = $('#dayS'), dayB = $('#dayB'), psheet = $('#psheet'), psDay = $('#psDay'), optA = $('#optA'), pgo = $('#pgo'), pkeep = $('#pkeep');
+  const optAi = $('#optAi'), optAn = $('#optAn'), optBi = $('#optBi'), optBn = $('#optBn');
+  const steps = $$('#steps .st'), navB = $$('#howNav button'), bars = navB.map(b => b.querySelector('i'));
+  const SB = [.2, .38, .56, .76, .94];
   let step = 0;
   function setStep(i) {
     if (i === step) return;
-    figs.forEach((f, k) => f.classList.toggle('on', k === i));
     steps.forEach((st, k) => st.classList.toggle('on', k === i));
-    navB.forEach((b, k) => { b.classList.toggle('on', k === i); b.classList.toggle('done', k < i); if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    navB.forEach((b, k) => { b.classList.toggle('on', k === i); if (k === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
     step = i;
   }
-  const howSpan = () => howPin.offsetHeight - (innerHeight - hd.offsetHeight);
-  const figImgs = figs.map(f => f.querySelector('img'));
-  const dims = figs.map(f => { const d = document.createElement('i'); d.setAttribute('aria-hidden', 'true'); f.appendChild(d); return d; });
-  const AT = [0, .25, .5, .75, 1], WIPE = .065;
-  const eio = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, eout = t => 1 - Math.pow(1 - t, 3);
-  function howScroll() {
+  const SY = {}, sy = {};
+  const put = (k, v, fn) => { if (sy[k] !== v) { sy[k] = v; fn(v); } };
+  function measureStory() {
     if (calm) return;
-    const p = clamp((hd.offsetHeight - howPin.getBoundingClientRect().top) / Math.max(1, howSpan()), 0, .9999);
-    setStep(Math.floor(p * 4));
-    bars.forEach((b, k) => { b.style.transform = `scaleX(${clamp(p * 4 - k, 0, 1).toFixed(3)})`; });
-    const w = figs.map((f, i) => i === 0 ? 1 : eio(clamp((p - (AT[i] - WIPE)) / (2 * WIPE), 0, 1)));
-    figs.forEach((f, i) => {
-      const over = i < 3 ? w[i + 1] : 0, show = w[i] > 0 && over < 1;
-      f.style.zIndex = i + 1;
-      f.style.visibility = show ? 'visible' : 'hidden';
-      if (!show) return;
-      f.style.clipPath = w[i] >= 1 ? 'none' : `inset(${((1 - w[i]) * 100).toFixed(2)}% 0 0 0)`;
-      const settle = clamp((p - (AT[i] - WIPE)) / (.22 + WIPE), 0, 1);
-      figImgs[i].style.transform = `translate3d(0,${((1 - w[i]) * 9 - over * 4).toFixed(3)}%,0) scale(${(1.1 - .08 * eout(settle)).toFixed(4)})`;
-      dims[i].style.opacity = (over * .32).toFixed(3);
+    const vh = syStage.clientHeight, sm = small.matches;
+    SY.span = Math.max(1, syPin.offsetHeight - vh);
+    SY.fs = sm ? clamp(vh * .36 / 316, .5, 1) : clamp(vh * .42 / 316, .55, 1.15);
+    SY.cy = vh * (sm ? .62 : .6);
+    SY.ps = sm ? Math.min(.64, vh * .5 / 632, (innerWidth - 48) / 300) : Math.min(1, vh * .68 / 632);
+    SY.py = vh * (sm ? .33 : .5);
+    let sx = slot.offsetWidth / 2, sY = slot.offsetHeight / 2, e = slot;
+    while (e && e !== phone) { sx += e.offsetLeft; sY += e.offsetTop; e = e.offsetParent; }
+    SY.sx = (sx - phone.offsetWidth / 2) * SY.ps * dirSign();
+    SY.sy = SY.py + (sY - phone.offsetHeight / 2) * SY.ps;
+    SY.R = Math.hypot(innerWidth / 2, vh) + 40;
+    for (const k in sy) delete sy[k];
+  }
+  function howScroll() {
+    if (calm || !SY.span) return;
+    const P = clamp((hd.offsetHeight - syPin.getBoundingClientRect().top) / SY.span, 0, 1);
+    const r = seg(P, .03, .2), close = seg(P, .945, 1);
+    /* the heading steps back as the circle opens */
+    syIntro.style.opacity = (1 - seg(r, 0, .4)).toFixed(3);
+    /* the circle: opens from the card, closes back into the phone */
+    const rad = SY.R * eio(seg(r, 0, .62)) * (1 - eio(seg(close, .12, 1)));
+    put('lux', rad > .5, v => { syLux.style.visibility = v ? 'visible' : 'hidden'; });
+    syLux.style.clipPath = rad >= SY.R - 1 ? 'none' : `circle(${rad.toFixed(1)}px at 50% ${(close > 0 ? SY.py : SY.cy).toFixed(1)}px)`;
+    /* the card: one turn on the way to the slot, a small lift mid-flight */
+    const tc = eio(seg(r, .5, 1));
+    const cx = lerp(0, SY.sx, tc), cy = lerp(SY.cy, SY.sy, tc);
+    const sc = lerp(SY.fs, SY.ps, tc) + Math.sin(Math.PI * seg(r, 0, .7)) * .08, rot = 360 * eio(seg(r, .04, .86));
+    const docked = r >= 1;
+    put('card', docked, v => { syCard.style.visibility = v ? 'hidden' : ''; phone.classList.toggle('has-card', v); });
+    if (!docked) syCard.style.transform = `translate3d(${cx.toFixed(1)}px,${cy.toFixed(1)}px,0) rotateY(${(rot * dirSign()).toFixed(2)}deg) scale(${sc.toFixed(4)})`;
+    /* the phone comes into focus, and leaves the same way */
+    const po = seg(r, .36, .78) * (1 - seg(close, 0, .45)), pe = ease.out(seg(r, .36, .78));
+    put('phv', po > 0, v => { phone.style.visibility = v ? 'visible' : 'hidden'; });
+    phone.style.opacity = po.toFixed(3);
+    phone.style.filter = po < 1 ? `blur(${((1 - po) * 16).toFixed(1)}px)` : 'none';
+    phone.style.transform = `translate3d(0,${(SY.py + (1 - pe) * 46).toFixed(1)}px,0) scale(${(SY.ps * (1.1 - .1 * pe) * (1 - .05 * close)).toFixed(4)})`;
+    /* copy, tabs and the day */
+    const co = seg(r, .64, .98) * (1 - seg(close, 0, .35));
+    syCopy.style.opacity = co.toFixed(3);
+    syDays.style.opacity = (seg(P, .36, .42) * (1 - seg(close, 0, .35))).toFixed(3);
+    setStep(P < SB[1] ? 0 : P < SB[2] ? 1 : P < SB[3] ? 2 : 3);
+    bars.forEach((b, k) => { b.style.transform = `scaleX(${seg(P, SB[k], SB[k + 1]).toFixed(3)})`; });
+    let day = 1, sheet = 0, sel = false, press = false, keep = false, late = false;
+    const swapped = P > .67;
+    if (P >= SB[1] && P < SB[2]) day = 1 + Math.round(11 * seg(P, .4, .54));
+    else if (P >= SB[2] && P < SB[3]) { day = swapped ? 1 : 12; sheet = ease.out(seg(P, .58, .62)) - ease.in(seg(P, .69, .73)); sel = P > .612; press = P > .645 && P < .67; }
+    else if (P >= SB[3]) { late = true; day = 1 + Math.round(29 * seg(P, .78, .88)); sheet = ease.out(seg(P, .885, .915)); keep = P > .91; }
+    put('sw', swapped, v => phone.classList.toggle('swapped', v));
+    put('late', late, v => {
+      psDay.textContent = v ? 'Day 30' : 'Day 12';
+      optAi.src = `${v ? 'piece-knot' : 'piece-feather'}.jpg`; optAn.textContent = v ? 'The Knot' : 'The Feather';
+    });
+    put('sel', sel, v => optA.classList.toggle('sel', v));
+    put('press', press, v => pgo.classList.toggle('press', v));
+    put('keep', keep, v => pkeep.classList.toggle('sel', v));
+    put('sheet', Math.round(sheet * 1000), v => { psheet.style.transform = `translateY(${((1 - v / 1000) * 102).toFixed(1)}%)`; });
+    put('day', day, d => {
+      syDayN.textContent = String(d).padStart(2, '0');
+      dayL.textContent = `Day ${d} of 30`;
+      dayS.textContent = d < 2 ? 'Swap from day 2' : d >= 24 ? 'Swap or keep it on' : 'Swap any time';
+      dayB.style.transform = `scaleX(${(d / 30).toFixed(3)})`;
     });
   }
+  if (calm) phone.classList.add('has-card');
+  measureStory();
+  if (document.fonts) document.fonts.ready.then(() => { measureStory(); howScroll(); });
   navB.forEach((b, k) => b.addEventListener('click', () => {
-    if (calm) { setStep(k); return; }
-    const y = howPin.getBoundingClientRect().top + scrollY - hd.offsetHeight + howSpan() * (k + .5) / 4;
+    if (calm) return;
+    const y = syPin.getBoundingClientRect().top + scrollY - hd.offsetHeight + SY.span * (SB[k] + SB[k + 1]) / 2;
     if (lenis) lenis.scrollTo(y, { duration: .9, easing: t => 1 - Math.pow(1 - t, 3) }); else scrollTo({ top: y, behavior: 'smooth' });
   }));
 
-  /* ── 3 · purchase credit: months glide past, credit builds toward the piece you keep.
-        Strip, month fade and credit line share one duration and curve, so they move as one. ── */
+  /* ── 3 · purchase credit, after Out of the Drawer's piece showcase: the block holds while scroll runs the months.
+        Each month the card shows what was worn (out 200ms ease-in, in 520ms ease-out, as their pieces change), the giant
+        figure counts down what is left to pay with credit (300ms ease-out per month), and the ruler fills one notch.
+        When credit covers the price the card turns over (800ms, ease-in-out) to the piece you keep and the figure
+        rolls to "Yours". Reduced motion: the finished state, with the controls still live. ── */
   const PLANS = { single: { n: 1, price: 299, name: 'Single' }, duo: { n: 2, price: 499, name: 'Duo' }, stack: { n: 3, price: 599, name: 'Stack' } };
   const KEEP = { ivy: { name: 'The Ivy', price: 4800, img: 'keep-ivy' }, knot: { name: 'The Knot', price: 3600, img: 'keep-knot' }, feather: { name: 'The Feather', price: 6200, img: 'keep-feather' } };
   const POOL = ['life-1', 'life-3', 'life-5', 'life-2', 'life-4', 'life-6', 'life-8', 'life-9', 'member-dana', 'member-reem', 'member-aisha', 'member-fatima'];
-  const crTrack = $('#crTrack'), crStatus = $('#crStatus'), keepImg = $('#keepImg'), keepN = $('#keepN'), keepV = $('#keepV'), keepBar = $('#keepBar'), crLive = $('#crLive');
-  const strip = $('.cr-strip');
-  let plan = 'single', piece = 'ivy', month = 1, M = 1, cards = [], playing = false, inView = false, timer = 0, announced = '';
-  function buildTrack() {
+  const cvPin = $('#cvPin'), cvStage = $('#cr'), cvMonth = $('#cvMonth'), cvTag = $('#cvTag'), cvFlip = $('#cvFlip'), cvK = $('#cvK'), cvNums = [$('#cvNum'), $('#cvNumO')];
+  const keepImg = $('#keepImg'), keepN = $('#keepN'), crStatus = $('#crStatus'), crLive = $('#crLive'), ruler = $('#ruler'), rulerL = $('#rulerL'), rulerR = $('#rulerR');
+  let plan = 'single', piece = 'ivy', M = 1, cm = 0, ticks = [], shownLeft = null, yoursOn = null, numRaf = 0, monthAnim = null, announced = '';
+  const monthHTML = m => { const n = PLANS[plan].n; return Array.from({ length: n }, (_, j) => `<img src="${POOL[((m - 1) * n + j) % POOL.length]}.jpg" alt="">`).join(''); };
+  function build() {
     const p = PLANS[plan], k = KEEP[piece];
     M = Math.ceil(k.price / p.price);
-    crTrack.innerHTML = '';
-    cards = [];
-    for (let m = 1; m <= M; m++) {
-      const imgs = Array.from({ length: p.n }, (_, j) => `<img src="${POOL[((m - 1) * p.n + j) % POOL.length]}.jpg" alt="" loading="lazy">`).join('');
-      const c = document.createElement('div'); c.className = 'mc';
-      c.innerHTML = `<div class="mc-ph" data-n="${p.n}">${imgs}</div><div class="mc-f"><span class="mc-m">Month ${m}</span><span>+AED ${fmt(p.price)}</span></div>`;
-      crTrack.appendChild(c); cards.push(c);
-    }
+    ruler.innerHTML = '<i></i>'.repeat(M); ticks = [...ruler.children];
     keepN.textContent = `${k.name} · AED ${fmt(k.price)}`;
-    const src = `${k.img}.jpg`;
-    if (!keepImg.getAttribute('src').endsWith(src)) {
-      if (calm) keepImg.src = src;
-      else { keepImg.classList.add('out'); setTimeout(() => { keepImg.src = src; const done = () => keepImg.classList.remove('out'); if (keepImg.complete) done(); else keepImg.onload = done; }, 120); }
-    }
+    rulerR.textContent = `+AED ${fmt(p.price)} credit a month`;
+    cvMonth.dataset.n = p.n;
+    keepImg.src = `${k.img}.jpg`;
   }
-  /* one continuous position, mp, drives everything: each month glides into the next on a long sine ease
-     (no hard start or stop), the photos brighten as they reach the marker, the credit line grows with it,
-     and the words change as each month lands. At the end it rests, fades and comes back in softly. */
-  const STEP_MS = 1500, REST_MS = 3200;
-  let mp = 1, base = 1, glideT0 = 0, restUntil = 0, raf = 0, shownM = 0, strip0 = { step: 0, anchor: 0 };
-  function measureStrip() { if (!cards.length) return; const w = cards[0].offsetWidth; const W = strip.clientWidth; strip0 = { step: w + 14, anchor: W * .08, end: W * .92 - (cards.length * (w + 14) - 14) }; }
-  /* the current month sits just inside the left fade, so the strip is full and already moving from the first frame;
-     near the end the strip stops at its last card and the marker walks on, so the right never empties either */
-  function paint(v) {
-    const p = PLANS[plan], k = KEEP[piece];
-    crTrack.style.transform = `translate3d(${(Math.max(strip0.anchor - (v - 1) * strip0.step, Math.min(strip0.anchor, strip0.end)) * dirSign()).toFixed(2)}px,0,0)`;
-    cards.forEach((c, i) => {
-      const d = i - (v - 1);
-      c.style.opacity = (d >= 0 ? Math.max(.28, 1 - d * .72) : Math.max(.5, 1 + d * .5)).toFixed(3);
-      c.classList.toggle('on', Math.abs(d) < .5);
-    });
-    keepBar.style.transform = `scaleX(${Math.min(1, v * p.price / k.price).toFixed(4)})`;
-    const m = Math.min(M, Math.round(v));
-    if (m !== shownM) { shownM = m; words(m); }
+  const numText = t => cvNums.forEach(el => { el.textContent = t; });
+  function countTo(left, instant) {
+    cancelAnimationFrame(numRaf);
+    if (instant || calm || shownLeft === null || shownLeft === left) { numText(`AED ${fmt(left)}`); shownLeft = left; return; }
+    const from = shownLeft, t0 = performance.now(); shownLeft = left;
+    const f = t => { const q = Math.min(1, (t - t0) / 300), e = 1 - Math.pow(1 - q, 3); numText(`AED ${fmt(Math.round(from + (left - from) * e))}`); if (q < 1) numRaf = requestAnimationFrame(f); };
+    numRaf = requestAnimationFrame(f);
   }
-  function words(m) {
+  function rollTo(text, after) {
+    cancelAnimationFrame(numRaf);
+    if (calm) { numText(text); if (after) after(); return; }
+    cvNums.forEach(el => el.animate([{ transform: 'none' }, { transform: 'translateY(-110%)' }], { duration: 200, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' }));
+    setTimeout(() => {
+      numText(text); if (after) after();
+      cvNums.forEach(el => el.animate([{ transform: 'translateY(110%)' }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }));
+    }, 200);
+  }
+  function showMonth(m, dir, instant) {
+    if (monthAnim) { monthAnim.cancel(); monthAnim = null; }
+    if (instant || calm) { cvMonth.innerHTML = monthHTML(m); cvMonth.style.opacity = ''; return; }
+    monthAnim = cvMonth.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-dir * 8 * dirSign()}%) scale(1.06)`, opacity: 0 }], { duration: 200, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' });
+    monthAnim.onfinish = () => {
+      cvMonth.innerHTML = monthHTML(m);
+      monthAnim = cvMonth.animate([{ transform: `translateX(${dir * 8 * dirSign()}%) scale(1.06)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)' });
+      monthAnim.onfinish = () => { monthAnim = null; };
+    };
+  }
+  function render(m, instant) {
     const p = PLANS[plan], k = KEEP[piece];
-    const yours = m >= M, credit = Math.min(k.price, m * p.price), worn = m * p.n;
+    const yours = m >= M, credit = Math.min(k.price, m * p.price), worn = m * p.n, left = k.price - credit;
+    if (m !== cm) showMonth(Math.min(m, M), m > cm ? 1 : -1, instant || !cm);
+    cvTag.textContent = `Month ${m} · +AED ${fmt(p.price)} credit`;
+    ticks.forEach((t, i) => t.classList.toggle('on', i < m));
+    rulerL.textContent = `Month ${m} of ${M}`;
     crStatus.innerHTML = yours
       ? `<b>${M} months, ${worn} pieces worn.</b> <span>${k.name} is yours to keep.</span>`
       : `<b>Month ${m}, ${worn} piece${worn > 1 ? 's' : ''} worn.</b> <span>AED ${fmt(credit)} of credit toward ${k.name}.</span>`;
-    const left = k.price - credit;
-    if (yours) keepV.textContent = 'Yours to keep';
-    else if (easeNext && !calm && shownLeft !== null && shownLeft !== left) tweenLeft(shownLeft, left);
-    else keepV.textContent = `AED ${fmt(left)} to go`;
-    shownLeft = yours ? null : left; easeNext = false;
+    if (yours !== yoursOn) {
+      const first = yoursOn === null; yoursOn = yours;
+      cvFlip.classList.toggle('yours', yours);
+      cvK.textContent = yours ? 'Credit covers the full price' : 'Left to pay with credit';
+      if (yours) { if (first || instant) numText('Yours'); else rollTo('Yours'); shownLeft = null; }
+      else if (first || instant) countTo(left, true);
+      else rollTo(`AED ${fmt(left)}`, () => { shownLeft = left; });
+    } else if (!yours) countTo(left, instant);
     if (yours) { const key = plan + piece; if (announced !== key) { announced = key; crLive.textContent = `On ${p.name}, after ${M} months and ${worn} pieces worn, credit covers the full price of ${k.name}.`; } }
+    cm = m;
   }
-  function placeTrack() { measureStrip(); paint(mp); placeThumb(true); }
-  /* plan and piece changes: the strip leaves (200ms, ease-in), is rebuilt and arrives with a 10px rise (300ms, ease-out);
-     the credit line and the "to go" figure ease to their new values on the same 300ms curve */
-  let shownLeft = null, easeNext = false, leftRaf = 0, swapT = 0;
-  function tweenLeft(from, to) {
-    cancelAnimationFrame(leftRaf);
-    const t0 = performance.now(), D = 300;
-    const f = t => { const q = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - q, 3); keepV.textContent = `AED ${fmt(Math.round(from + (to - from) * e))} to go`; if (q < 1) leftRaf = requestAnimationFrame(f); };
-    leftRaf = requestAnimationFrame(f);
-  }
-  function smoothRestart() {
-    if (calm) { restart(false); return; }
-    clearTimeout(swapT);
-    crTrack.classList.add('reset');
-    swapT = setTimeout(() => {
-      keepBar.style.transition = 'transform .3s cubic-bezier(.16,1,.3,1)';
-      easeNext = true;
-      restart(inView);
-      crTrack.classList.remove('reset');
-      setTimeout(() => { keepBar.style.transition = ''; }, 320);
-    }, 200);
-  }
+  const cvSpan = () => Math.max(1, cvPin.offsetHeight - cvStage.offsetHeight);
+  const monthAt = () => calm ? M : Math.min(M, 1 + Math.floor(seg((hd.offsetHeight - cvPin.getBoundingClientRect().top) / cvSpan(), .06, .82) * M));
+  function creditScroll() { if (calm) return; const m = monthAt(); if (m !== cm) render(m); }
   const crPlanEl = $('#crPlan'), thumb = document.createElement('i');
   thumb.className = 'seg-thumb'; thumb.setAttribute('aria-hidden', 'true'); crPlanEl.prepend(thumb); crPlanEl.classList.add('has-thumb');
   function placeThumb(instant) {
@@ -1271,31 +1420,10 @@ html[data-only] .jb,html[data-only] .chat{display:none}
     thumb.style.transform = `translate(${b.offsetLeft}px,${b.offsetTop}px)`;
     if (instant || calm) { thumb.offsetWidth; thumb.style.transition = ''; }
   }
+  /* layout changes (resize, fonts, direction) re-measure both held scenes */
+  function placeTrack() { placeThumb(true); measureStory(); howScroll(); }
   placeThumb(true);
   if (document.fonts) document.fonts.ready.then(() => placeThumb(true));
-  function glide(t) {
-    raf = 0;
-    if (!playing) return;
-    if (base >= M) {
-      if (!restUntil) restUntil = t + REST_MS;
-      if (t >= restUntil) {
-        restUntil = 0; crTrack.classList.add('reset');
-        timer = setTimeout(() => { base = mp = 1; shownM = 0; paint(mp); crTrack.classList.remove('reset'); glideT0 = performance.now() + 700; if (playing) raf = requestAnimationFrame(glide); }, 300);
-        return;
-      }
-    } else {
-      const f = Math.min(1, Math.max(0, (t - glideT0) / STEP_MS));
-      mp = base + (1 - Math.cos(Math.PI * f)) / 2;
-      if (f >= 1) { base++; mp = base; glideT0 = t; }
-      paint(mp);
-    }
-    raf = requestAnimationFrame(glide);
-  }
-  function setPlaying(v) {
-    playing = v; clearTimeout(timer); cancelAnimationFrame(raf); raf = 0; restUntil = 0;
-    if (v) { glideT0 = performance.now() + 700; raf = requestAnimationFrame(glide); }
-  }
-  function restart(play) { buildTrack(); measureStrip(); base = mp = calm ? M : 1; shownM = 0; crTrack.classList.remove('reset'); paint(mp); setPlaying(play); }
   function radio(group, onPick) {
     const bs = $$('[role="radio"]', group);
     const pick = (b, focus) => { bs.forEach(x => { const on = x === b; x.setAttribute('aria-checked', on); x.tabIndex = on ? 0 : -1; }); if (focus) b.focus(); onPick(b); };
@@ -1309,15 +1437,11 @@ html[data-only] .jb,html[data-only] .chat{display:none}
       });
     });
   }
-  radio($('#crPlan'), b => { plan = b.dataset.v; placeThumb(false); smoothRestart(); });
-  radio($('#crPick'), b => { piece = b.dataset.v; smoothRestart(); });
-  restart(false);
-  new IntersectionObserver(([e]) => {
-    inView = e.isIntersecting;
-    if (calm) return;
-    if (inView && !playing) { if (base >= M) { base = mp = 1; shownM = 0; paint(mp); } setPlaying(true); }
-    else if (!inView && playing) setPlaying(false);
-  }, { threshold: .35 }).observe($('#cr'));
+  /* a plan or piece change keeps the scroll position: the month, figure and ruler move to their new values */
+  const reprice = () => { build(); cm = 0; render(monthAt()); };
+  radio(crPlanEl, b => { plan = b.dataset.v; placeThumb(false); reprice(); });
+  radio($('#crPick'), b => { piece = b.dataset.v; reprice(); });
+  build(); render(monthAt(), true);
 
   /* ── 4 · pieces arrows ── */
   const pz = $('#pzTrack'), prev = $('#pzPrev'), next = $('#pzNext');
@@ -1409,11 +1533,11 @@ html[data-only] .jb,html[data-only] .chat{display:none}
 
   /* ── global: sticky join bar + chat ── */
   const jb = $('#jb'), chat = $('#chat'), chatB = $('#chatB');
-  const vis = { hero: true, plans: false, foot: false, how: false };
+  const vis = { hero: true, plans: false, foot: false, how: false, cr: false };
   function bar() {
-    const on = !only && !vis.hero && !vis.plans && !vis.foot && !vis.how && small.matches;
+    const on = !only && !vis.hero && !vis.plans && !vis.foot && !vis.how && !vis.cr && small.matches;
     jb.classList.toggle('on', on); root.classList.toggle('jb-on', on);
-    chat.classList.toggle('on', !only && !vis.hero && !vis.foot && !(vis.how && small.matches));
+    chat.classList.toggle('on', !only && !vis.hero && !vis.foot && !((vis.how || vis.cr) && small.matches));
     hd.classList.toggle('jb-on', on);
     hd.classList.toggle('hero-on', !only && vis.hero);
   }
@@ -1422,7 +1546,8 @@ html[data-only] .jb,html[data-only] .chat{display:none}
   watch($('#hero .hero-sub'), 'hero', { threshold: 0 });
   watch($('#plans'), 'plans', { threshold: 0, rootMargin: '-15% 0px -15% 0px' });
   watch($('#foot'), 'foot', { threshold: 0 });
-  watch($('#howG'), 'how', { threshold: 0, rootMargin: '-40% 0px -40% 0px' });
+  watch($('#syPin'), 'how', { threshold: 0, rootMargin: '-40% 0px -40% 0px' });
+  watch($('#cvPin'), 'cr', { threshold: 0, rootMargin: '-40% 0px -40% 0px' });
   small.addEventListener('change', bar);
   chatB.addEventListener('click', () => { const o = !chat.classList.contains('open'); chat.classList.toggle('open', o); chatB.setAttribute('aria-expanded', o); if (o) setTimeout(() => $('#chatP a').focus(), 60); });
   $$('[data-chat]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); chat.classList.add('on', 'open'); chatB.setAttribute('aria-expanded', true); chatB.focus(); }));
@@ -1449,7 +1574,7 @@ html[data-only] .jb,html[data-only] .chat{display:none}
     const y = scrollY; bBoost = clamp(bBoost + Math.abs(y - lastY) * 2.2, 0, 900); lastY = y;
     hd.classList.toggle('lined', y > 8); root.classList.toggle('hd-lined', y > 8);
     /* while the hero holds, its copy scrolls away as if the page were moving it */
-    howScroll();
+    howScroll(); creditScroll();
     if (pinned) heroWrap.style.transform = `translate3d(0,${(-Math.min(y, R.H * .9)).toFixed(1)}px,0)`;
     memDrift();
     ticking = false;
