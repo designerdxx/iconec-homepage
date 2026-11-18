@@ -660,8 +660,15 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .ph-screen{position:relative;width:282px;height:614px;border-radius:44px;overflow:hidden;background:#fff}
 .app{position:absolute;left:0;top:0;width:402px;height:874px;transform:scale(.70149);transform-origin:0 0;color:#141a14;font-family:var(--sans);text-align:left;line-height:normal;letter-spacing:0}
 .app img{max-width:none}
-.scr{position:absolute;inset:0;overflow:hidden;background:#fff;visibility:hidden;will-change:opacity,filter,transform}
-.scr:first-child{visibility:inherit}
+/* Five screens, one visible change about every screen of scroll: Spotlight, Pick your slot, Wearing, Swap, Return.
+   A change is played in time once its point in the scroll is passed, so it looks the same at any scroll speed: the
+   new screen fades in over the old one, sharpening and rising 16px (600ms, ease-out); the old one softens and sinks
+   3% underneath and is only hidden when the new one has covered it, so the phone never flashes dark between them. */
+.scr{position:absolute;inset:0;overflow:hidden;background:#fff;visibility:hidden;opacity:0;filter:blur(10px);transform:translateY(16px);transition:filter .5s var(--ease-in),transform .5s var(--ease-in),opacity 0s .5s,visibility 0s .5s;will-change:opacity,filter,transform}
+.scr.was{transform:scale(.97)}
+.scr.on{visibility:inherit;opacity:1;filter:none;transform:none;z-index:2;transition:opacity .5s var(--ease-out),filter .6s var(--ease-out),transform .6s var(--ease-out),visibility 0s}
+.scr[data-s="delivery"],.scr[data-s="jewelry"]{display:none}
+html.calm .scr{transition:none}
 .scr button{transition:transform .12s var(--ease-out)}
 .ph-slot{position:absolute;left:51.79px;top:139.48px;width:196.42px;height:260.95px;pointer-events:none}
 .phone:not(.has-card) [data-spot]{visibility:hidden}
@@ -1194,9 +1201,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   const stage = $('#stage'), field = $('#field'), lux = $('#lux'), phone = $('#phone'), slot = $('#slot');
   const app = $('#app'), phRot = $('#phRot'), phGlare = $('#phGlare'), phShadow = $('#phShadow');
   const p3d = root.classList.contains('p3d');
-  const SCR = $$('.scr', app), slotBtn = $('[data-s="slot"] button', app);
+  const SCR = ['spot', 'slot', 'wearing', 'swap', 'return'].map(k => $(`.scr[data-s="${k}"]`, app)), slotBtn = $('[data-s="slot"] button', app);
   const kp = $('#ch5'), kpPin = $('#kpPin'), kpA = $('#kpA'), kpB = $('#kpB'), kpLines = $$('#kpLines p'), kpRow = $('#kpRow'), kpBg = $('#kpBg');
-  const kpView = $('#kpView'), kpTrack = $('#pzTrack'), kpFill = $('#kpFill'), kpCards = $$('#pzTrack>li');
+  const kpView = $('#kpView'), kpTrack = $('#pzTrack'), kpFill = $('#kpFill'), kpCards = $$('#pzTrack>li'), kpImgs = kpCards.map(c => $('.pz-i img', c));
   const wq = $('#voice'), wqBlock = $('#wqBlock'), wqPhoto = $('#wqPhoto'), wqFly = $('#wqFly'), wqA = $('.a', wqFly), wqB = $('.b', wqFly), wp = $('#membership'), wpPhoto = $('#wpPhoto');
   const inkWords = (el => { const ws = el.textContent.trim().split(/\s+/); el.setAttribute('aria-label', el.textContent.trim()); el.innerHTML = ws.map(w => `<span class="wq-w" aria-hidden="true">${w}</span>`).join(' '); return $$('.wq-w', el); })($('#wqText'));
   /* the pinned version needs room beside the quote; below that the two sections simply follow each other */
@@ -1272,6 +1279,8 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       kpPin.style.setProperty('--vb', (ph - kpView.offsetTop - kpView.offsetHeight) + 'px');
       const textEnd = padL + Math.min(pw * .46, 640);
       M.startX = (vw > 820 ? textEnd + Math.max(24, (pw - padL - textEnd - cw) / 2) : (pw - cw) / 2) - padL;
+      const base = kpCards[0].offsetParent === kpTrack ? 0 : kpTrack.offsetLeft;
+      M.kpC = kpCards.map(c => c.offsetLeft - base + c.offsetWidth / 2);      /* each card's centre along the row */
     }
     const small = vw <= 760;
     M.small = small;
@@ -1289,7 +1298,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     /* where each step sits centred (Choose, Wear before the month sheet; Swap, Return after it), and where each of
        the six screen changes happens. W is half the width of a change. */
     M.C = [M.r1 + .25 * vh, M.r1 + 1.25 * vh, M.h4 + .15 * vh, M.h4 + 1.15 * vh];
-    M.T = [M.C[0] + .05 * vh, M.C[1] - .45 * vh, M.C[1] + .1 * vh, M.C[2] - .8 * vh, M.C[2] + .25 * vh, M.C[3] - .3 * vh];
+    /* where each of the four screen changes happens. Slot .55 of a screen after the card lands, Wearing .6 after that,
+       Swap behind the month sheet, Return three quarters of a screen after the sheet has gone. */
+    M.T = [M.r1 + .55 * vh, M.r1 + 1.15 * vh, M.h4 - .8 * vh, M.h4 + .75 * vh];
     M.W = .07 * vh;
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
@@ -1302,8 +1313,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null; });
     if (!calm) {
       /* each step's stretch of the scroll, [arrives, leaves]: Choose as the card lands, Wear with the delivery screen and until
-         the month sheet has covered it, Swap as that sheet clears the text, Return with its own screen */
-      M.SA = [[M.r0 + .88 * (M.r1 - M.r0), M.r1 + .78 * vh], [M.r1 + .78 * vh, M.h4 - .9 * vh], [M.h4 - .38 * vh, M.h4 + .8 * vh], [M.h4 + .8 * vh, 1e9]];
+         the month sheet has covered it, Swap as that sheet clears the text, Return with its own screen. Wear and Return
+         change on the same point of the scroll as their screens. */
+      M.SA = [[M.r0 + .88 * (M.r1 - M.r0), M.T[1]], [M.T[1], M.h4 - .9 * vh], [M.h4 - .38 * vh, M.T[3]], [M.T[3], 1e9]];
       /* the name is centred on the phone's own centre line; on phones both sit under the phone */
       STEPS.forEach(st => {
         const y = small ? M.pBot + 22 : M.pcy - st.hh / 2;
@@ -1425,19 +1437,10 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         phone.style.opacity = po.toFixed(3);
         phone.style.filter = po < 1 ? `blur(${((1 - po) * 16).toFixed(1)}px)` : 'none';
         phone.style.transform = `translate(-50%,-50%) translateY(${((1 - pe) * 46).toFixed(1)}px) scale(${(M.ps * (1.1 - .1 * pe)).toFixed(4)})`;
-        /* the app: seven real screens, changed by scroll. Each change is a short blur cross-fade, as on Legend:
-           the old screen softens and sinks 3%, the new one sharpens and rises 16px (ease-in-out, scrubbed). */
-        let f = 0; for (const T of M.T) f += seg(sy, T - M.W, T + M.W);
-        const idx = Math.min(SCR.length - 1, Math.floor(f)), te = E.io(f - idx);
-        set('scr', idx + ':' + Math.round(te * 60), () => {
-          SCR.forEach((el, j) => {
-            const st = el.style;
-            if (j === idx) { st.visibility = 'inherit'; st.zIndex = 1; st.opacity = (1 - te).toFixed(3); st.filter = te ? `blur(${(te * 10).toFixed(1)}px)` : ''; st.transform = te ? `scale(${(1 - .03 * te).toFixed(4)})` : ''; }
-            else if (j === idx + 1 && te > 0) { st.visibility = 'inherit'; st.zIndex = 2; st.opacity = te.toFixed(3); st.filter = `blur(${((1 - te) * 10).toFixed(1)}px)`; st.transform = `translateY(${((1 - te) * 16).toFixed(1)}px)`; }
-            else if (st.visibility !== 'hidden') st.visibility = 'hidden';
-          });
-        });
-        if (slotBtn) set('press', sy > M.T[1] - M.W - .09 * vh && sy < M.T[1] - M.W, v => { slotBtn.style.transform = v ? 'scale(.97)' : ''; });
+        /* the app: five real screens; passing a point in the scroll starts the change (see the styles) */
+        let idx = 0; for (const T of M.T) if (sy >= T) idx++;
+        set('scr', idx, v => SCR.forEach((el, j) => { el.classList.toggle('on', j === v); el.classList.toggle('was', j < v); }));
+        if (slotBtn) set('press', sy > M.T[1] - .12 * vh && sy < M.T[1], v => { slotBtn.style.transform = v ? 'scale(.97)' : ''; });
 
         /* the four steps: held beside the phone and changed by class (see the styles); with reduced motion they pass the
            phone at page speed, name on the left and explanation on the right, as before */
@@ -1501,9 +1504,12 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       });
       const ao = E.sine(seg(p, .52, .66));
       kpA.style.opacity = (1 - ao).toFixed(3); kpA.style.transform = `translate3d(0,${(-ao * 12).toFixed(2)}px,0)`;
-      /* the piece fades into the dark while the lines are read, and comes back when Iconec arrives */
-      const dim = E.sine(seg(p, .06, .46)) * (1 - E.sine(seg(p, .58, .82)));
-      kpCards[0].style.opacity = lerp(1, .2, dim).toFixed(3); kpCards[0].style.scale = lerp(1, .95, dim).toFixed(4);
+      /* the piece is put away as the lines are read, a step with each line: it shrinks back, sinks, tilts a few degrees,
+         loses its colour and fades into the dark, like something left in a drawer. When Iconec arrives it comes back
+         to full size and colour, ready to lead the row. */
+      const put = (E.sine(seg(p, .06, .2)) + E.sine(seg(p, .2, .34)) + E.sine(seg(p, .34, .48))) / 3 * (1 - E.sine(seg(p, .58, .82))), c0 = kpCards[0].style;
+      c0.opacity = (1 - .72 * put).toFixed(3); c0.scale = (1 - .14 * put).toFixed(4); c0.rotate = (-3 * put).toFixed(2) + 'deg'; c0.translate = '0 ' + (12 * put).toFixed(1) + 'px';
+      c0.filter = put > .01 ? `grayscale(${put.toFixed(3)})` : '';
       const bi = E.sine(seg(p, .6, .8)), bo = E.sine(seg(h, 0, .24));
       kpB.style.opacity = (bi * (1 - bo)).toFixed(3); kpB.style.transform = `translate3d(0,${((1 - bi) * 16 - bo * 14).toFixed(2)}px,0)`;
       /* handoff: the stage turns white, the piece slides to the head of the row and the other cards follow it in */
@@ -1515,7 +1521,15 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       });
       set('kpIn', h > .6, v => kpRow.classList.toggle('is-in', v));
       /* then the whole row keeps moving */
-      kpTrack.style.transform = `translate3d(${(lerp(M.startX, 0, he) - tr * M.travel).toFixed(2)}px,0,0)`;
+      const tx = lerp(M.startX, 0, he) - tr * M.travel, zoom = 1.08 + .1 * (1 - E.sine(p));
+      kpTrack.style.transform = `translate3d(${tx.toFixed(2)}px,0,0)`;
+      /* inside every card the photo drifts against the card's own travel (2.6% of its width from one side of the screen
+         to the other), and the waiting piece's photo eases back from a closer crop while the statement is read */
+      kpImgs.forEach((im, i) => {
+        if (!im) return;
+        const pos = clamp((tx + M.kpC[i]) / vw) * 2 - 1;
+        im.style.translate = (-pos * 2.6).toFixed(2) + '% 0'; im.style.scale = (i ? 1.08 : zoom).toFixed(4);
+      });
       kpFill.style.transform = `scaleX(${Math.max(.04, tr).toFixed(4)})`;
     }
 
