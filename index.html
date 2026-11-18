@@ -741,6 +741,13 @@ html.calm .scr{transition:none}
    it the other way round. With reduced motion the steps simply scroll past as before. */
 .step .gl,.step .w{display:inline-block}
 html.js:not(.calm) .st-h,html.js:not(.calm) .st-p{visibility:inherit}
+/* The hairline that joins a step's name to the phone, and the phone to the explanation. It is drawn from the name
+   outwards after the name has arrived (0.9s, ease-out; the second half 220ms after the first) and taken back
+   quickly when the step leaves (0.28s, ease-in), so the eye is led name, phone, explanation, in that order. */
+.st-ln{position:absolute;left:0;top:0;height:1px;background:rgba(20,20,19,.32);transform-origin:0 50%;transform:scaleX(0);opacity:0;transition:transform .28s var(--ease-in),opacity .28s var(--ease-in);pointer-events:none}
+.st-ln.on{transform:scaleX(1);opacity:1;transition:transform .9s var(--ease-out) .5s,opacity .2s linear .5s}
+.st-ln.b.on{transition-delay:.72s}
+@media (max-width:760px){.st-ln{display:none}}
 html.js:not(.calm) .step .gl,html.js:not(.calm) .step .w,html.js:not(.calm) .step .st-p p+p{opacity:0;filter:blur(10px);transform:translate3d(0,.3em,0);transition:opacity .24s var(--ease-in),filter .24s var(--ease-in),transform .24s var(--ease-in);will-change:opacity,filter,transform}
 html.js:not(.calm) .step .st-p p+p{transform:translate3d(0,12px,0)}
 html.js:not(.calm) .step.out .gl,html.js:not(.calm) .step.out .w{transform:translate3d(0,-.3em,0)}
@@ -787,12 +794,17 @@ html.js:not(.calm) .wq-w.on{color:var(--cream)}
 .wq-fly{display:none;position:fixed;left:0;top:0;z-index:4;border-radius:6px;overflow:hidden;background:#1e1e1c;pointer-events:none;contain:layout paint;will-change:transform,width,height}
 .wq-fly img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
 .wq-fly .a{object-position:62% 60%}
-.wq-fly .b{clip-path:inset(100% 0 0 0)}
-html.q-pin .wq{height:275vh;height:275svh;padding-top:0}
+.wq-fly .b{opacity:0}
+/* 375 = one screen for the words, one for the picture to grow and change, and the last under the rising membership */
+html.q-pin .wq{height:375vh;height:375svh;padding-top:0}
 html.q-pin .wq-stage{position:sticky;top:0;height:100vh;height:100svh}
 html.q-pin .wq-photo{background:none}
 html.q-pin .wq-photo img{visibility:hidden}
-html.q-pin .wq-fly{display:block;visibility:hidden}
+/* pinned: the layer is the whole screen and only its clip (the window) changes; the portrait sits where its frame is,
+   the membership photograph lies behind at full size */
+html.q-pin .wq-fly{display:block;visibility:hidden;inset:0;width:auto;height:auto;border-radius:0;background:none;will-change:clip-path}
+html.q-pin .wq-fly .a{inset:auto;left:0;top:0;z-index:1;transform-origin:50% 50%}
+html.q-pin .wq-fly .b{inset:auto;max-width:none;transform-origin:50% 50%}
 html.q-pin .wp{margin-top:-100vh;margin-top:-100svh}
 html.q-pin .wp.fly-on .wp-photo img{visibility:hidden}
 html.q-pin .wp-btn{transition:opacity .24s var(--ease-out),transform .12s var(--ease-out)}
@@ -801,16 +813,32 @@ html.q-pin .wp.fly-on .wp-btn{opacity:0}
 .wp-card{display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-height:clamp(520px,44.4vw,800px);padding:clamp(28px,3.9vw,56px);border-radius:6px;background:#1c1c1a}
 .wp-card h2{font-weight:300;text-transform:uppercase;font-size:clamp(30px,3.4vw,56px);line-height:.96;letter-spacing:-.032em;max-width:9em;text-wrap:balance}
 .wp-list{margin:0;padding:0;list-style:none}
-.wp-list li{position:relative;display:flex;align-items:center;min-height:68px;padding:12px 0}
+.wp-list li{position:relative;display:flex;align-items:center;min-height:clamp(72px,6.2vw,96px);padding:14px 0}
 .wp-list li::before,.wp-list li:last-child::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--line-d);transform-origin:left}
 .wp-list li:last-child::after{top:auto;bottom:0}
 html.js:not(.calm) .wp-list li::before,html.js:not(.calm) .wp-list li:last-child::after{transform:scaleX(0);transition:transform 1s var(--ease-out);transition-delay:calc(var(--i)*45ms)}
 html.js:not(.calm) .wp-list.in li::before,html.js:not(.calm) .wp-list.in li:last-child::after{transform:scaleX(1)}
 .wp-list .n{flex:0 0 56px;font-size:13px;line-height:19.5px;color:var(--cream-45);font-variant-numeric:tabular-nums}
-.wp-list .t{font-size:18px;line-height:27px;letter-spacing:-.0244em;transition:transform .2s var(--ease-out)}
-html.js:not(.calm) .wp-list li>span{opacity:0;translate:0 14px;transition:opacity .9s var(--ease-out),translate .9s var(--ease-out),transform .2s var(--ease-out);transition-delay:calc(var(--i)*45ms + 80ms),calc(var(--i)*45ms + 80ms),0ms}
+.wp-list .t{font-size:clamp(22px,1.95vw,30px);line-height:1.2;letter-spacing:-.022em;transition:transform .2s var(--ease-out)}
+/* the list comes in once as it enters the screen: each row fades up 16px over 0.5s on the page's ease-out, rows 60ms
+   apart, the number leading its words by 40ms (12 principles: slow out, overlapping action, follow-through) */
+html.js:not(.calm) .wp-list li>span{opacity:0;translate:0 16px;transition:opacity .5s var(--ease-out),translate .5s var(--ease-out),transform .2s var(--ease-out);transition-delay:calc(var(--i)*60ms + 60ms),calc(var(--i)*60ms + 60ms),0ms}
+html.js:not(.calm) .wp-list li>.t{transition-delay:calc(var(--i)*60ms + 100ms),calc(var(--i)*60ms + 100ms),0ms}
 html.js:not(.calm) .wp-list.in li>span{opacity:1;translate:0 0}
 @media (hover:hover){.wp-list li:hover .t{transform:translateX(8px)}}
+/* The thread. The line runs through the centre of the number column from the first item to the last, drawn by the
+   scroll and led by a dot at the reading line (half way down the screen). Until the line reaches an item its words
+   wait at a third of their strength; when it arrives, the number closes into a capsule sitting on the line and the
+   words come up and settle 8px (0.6s, ease-out). Scrolling back takes them back. */
+.wp-list.thr{position:relative;--nx:20px}
+.wp-thr,.wp-dot{display:none}
+.wp-list.thr .wp-thr{display:block;position:absolute;left:var(--nx);top:0;width:1px;height:var(--th,0px);background:rgba(244,242,238,.4);transform-origin:50% 0;transform:scaleY(0);pointer-events:none}
+.wp-list.thr .wp-dot{display:block;position:absolute;left:var(--nx);top:0;width:7px;height:7px;margin:-3.5px 0 0 -3px;border-radius:50%;background:var(--cream);opacity:0;pointer-events:none;transition:opacity .2s linear}
+.wp-list.thr .n{position:relative;z-index:1;flex:0 0 40px;height:22px;margin-right:16px;display:grid;place-items:center;box-sizing:border-box;border:1px solid transparent;border-radius:999px;background:#1c1c1a;line-height:1;transition:border-color .5s var(--ease-out),color .5s var(--ease-out),scale .5s var(--ease-out);scale:.86}
+.wp-list.thr li.lit .n{border-color:rgba(244,242,238,.5);color:var(--cream);scale:1}
+html.js:not(.calm) .wp-list.thr li>span{opacity:1;translate:none;transition-delay:0s}
+html.js:not(.calm) .wp-list.thr li .t{opacity:.3;translate:0 8px;transition:opacity .6s var(--ease-out),translate .6s var(--ease-out),transform .2s var(--ease-out)}
+html.js:not(.calm) .wp-list.thr li.lit .t{opacity:1;translate:0 0}
 .wp-photo{position:relative;min-height:clamp(420px,44.4vw,800px);border-radius:6px;overflow:hidden;background:#1e1e1c}
 .wp-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .wp-btn{position:absolute;right:20px;bottom:16px;z-index:2;display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;background:var(--cream);color:var(--ink);font-size:15px;font-weight:500}
@@ -822,11 +850,22 @@ html.js:not(.calm) .wp-list.in li>span{opacity:1;translate:0 0}
   .wp{grid-template-columns:1fr;padding-top:56px}
   .wp-card{min-height:0}
   .wp-photo{min-height:0;aspect-ratio:5/6}
-  .wp-list .t{font-size:17px}
+  .wp-list .t{font-size:20px}
   .wp-list .n{flex-basis:40px}
 }
 /* members: a white sheet that rises over the black membership section */
-.ux-mem{position:relative;z-index:3;margin-top:-20px;border-radius:20px 20px 0 0;background:var(--white);padding-bottom:clamp(88px,10vw,152px)}
+/* The curved sheet edge. A section that arrives over another one overlaps it by --domeM, and while it rises its top
+   edge is bowed (set in the frame); the bow relaxes to this flat, lightly rounded edge as the section covers the
+   screen. The section underneath keeps its own spacing: its bottom padding grows by the overlap. */
+:root{--domeM:20px}
+.ux-mem{position:relative;z-index:3;margin-top:calc(-1 * var(--domeM));border-radius:20px 20px 0 0;background:var(--white);padding-bottom:clamp(88px,10vw,152px);overflow:clip}
+.wp{padding-bottom:calc(clamp(96px,11vw,168px) + var(--domeM) - 20px)}
+.ux-end{margin-top:calc(-1 * var(--domeM));z-index:3;background:linear-gradient(transparent var(--domeM),var(--white) 0)}
+.ux-end #gift{background:var(--white);border-radius:20px 20px 0 0;overflow:clip}
+.ch7 .sheet-in{padding-bottom:calc(clamp(72px,12vh,128px) + var(--domeM))}
+/* the Gift photograph is seen through an opening that grows as it comes up the screen (set in the frame) */
+.ux .gift-ph{will-change:clip-path}
+.ux .gift-ph img{will-change:transform}
 .ux-end #faq{padding-bottom:clamp(88px,10vw,152px)}
 .ux .mem-head{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .ux .mem-head h2{position:relative;display:inline-block}
@@ -875,6 +914,22 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
 .ux .qa.open .qa-a{grid-template-rows:1fr}
 @media (min-width:761px){.ux .faq-g{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,96px);align-items:start}
 .ux .faq-g>.sec-h{position:sticky;top:calc(var(--hd) + 32px);align-items:flex-start}}
+/* No borders (client): the page's dividers and outlines are gone; space and tone separate things instead. Controls
+   keep what shows their state: gift cards are filled rather than outlined and the chosen one turns dark. */
+.face{box-shadow:0 34px 60px -34px rgba(20,20,19,.34)}
+.card.flat .face,#flip .pc{box-shadow:none}
+.face.back::before{border:0}
+.card .appf{box-shadow:0 40px 64px -36px rgba(20,20,19,.45)}
+.ux .prompt,.ux .pz-go,.ux .cols,.ux .bot{border-top:0}
+.ux .qa,.ux .qa:last-child{border:0}
+.ux .pz,.ux .pz-more{box-shadow:none}
+.wp-list li::before,.wp-list li:last-child::after,.plans::before,.plan+.plan::before,.pl-all::before{display:none}
+.ux .gc{box-shadow:none;background:#f4f5f2}
+@media (hover:hover){.ux .gc[aria-checked="false"]:hover{box-shadow:none;background:#ecedea}}
+.ux .gc[aria-checked="true"]{box-shadow:none;background:var(--ink);color:#f8f8f2}
+.ux .gc[aria-checked="true"] .gc-b span{color:#f8f8f2}
+.ux .gc[aria-checked="true"] .gc-b small,.ux .gc[aria-checked="true"] .gc-b em{color:rgba(248,248,242,.7)}
+.ux .gc[aria-checked="true"] .gc-t i{box-shadow:inset 0 0 0 6px #f8f8f2}
 </style>
 </head>
 <body>
@@ -1090,7 +1145,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       <p class="lead rv">Give her months of Iconec. She picks the pieces and swaps when she likes.</p>
     </div>
     <div class="gift-g">
-      <div class="gift-ph rv" aria-hidden="true"><img src="life-6.jpg" alt="" loading="lazy"></div>
+      <div class="gift-ph" id="gfPh" aria-hidden="true"><img src="life-6.jpg" alt="" loading="lazy"></div>
       <div class="gift-c rv" style="--d:.05s">
         <div class="gcards" id="gfCards" role="radiogroup" aria-label="Length">
           <button class="gc" type="button" role="radio" aria-checked="false" data-m="1" tabindex="-1"><span class="gc-t"><b>1 month</b><i aria-hidden="true"></i></span><span class="gc-b"><span>AED 299 <em>+ VAT</em></span><small>Worth 1 month of Single</small></span></button>
@@ -1240,14 +1295,23 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   const inkWords = (el => { const ws = el.textContent.trim().split(/\s+/); el.setAttribute('aria-label', el.textContent.trim()); el.innerHTML = ws.map(w => `<span class="wq-w" aria-hidden="true">${w}</span>`).join(' '); return $$('.wq-w', el); })($('#wqText'));
   /* the pinned version needs room beside the quote; below that the two sections simply follow each other */
   const qMQ = matchMedia('(min-width: 900px) and (min-height: 560px)');
-  let qPinned = false, qVis = null, qW = 0, qH = 0, lastInk = -1;
+  let qPinned = false, qVis = null, qW = 0, qH = 0, qBW = 0, qBH = 0, lastInk = -1;
   const syncQ = () => {
     qPinned = !calm && qMQ.matches; root.classList.toggle('q-pin', qPinned);
     if (!qPinned) { wqBlock.style.opacity = ''; wqBlock.style.transform = ''; wp.classList.remove('fly-on'); wqFly.style.visibility = ''; qVis = null; lastInk = -1; }
   };
   syncQ(); qMQ.addEventListener('change', () => { syncQ(); measure(); });
+  /* the membership thread: a line and its dot in the list; positions measured with the rest of the page */
+  const wpList = $('#wpList'), WT = { on: false, line: null, dot: null, items: [], top: 0, end: 0, s: -1 };
+  if (WT.on) {
+    wpList.classList.add('thr');
+    WT.line = document.createElement('i'); WT.line.className = 'wp-thr'; WT.line.setAttribute('aria-hidden', 'true');
+    WT.dot = document.createElement('i'); WT.dot.className = 'wp-dot'; WT.dot.setAttribute('aria-hidden', 'true');
+    wpList.appendChild(WT.line); wpList.appendChild(WT.dot);
+    WT.items = $$('li', wpList).map(el => ({ el, c: 0, lit: false }));
+  }
   if (calm) $('#wpList').classList.add('in');
-  else new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); } }), { threshold: .25 }).observe($('#wpList'));
+  else new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); } }), { threshold: .15 }).observe($('#wpList'));
   /* the waiting card starts as another piece and changes once, to its own (which heads the row) */
   const TURN = [['Pendant', 'The Feather', 'piece-feather'], ['Earrings', 'The Ivy', '']];
   const kpTag = $('.pz-tag', kpCards[0]), kpName = $('.pz-n', kpCards[0]), kpOv = [];
@@ -1268,6 +1332,24 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   };
   const KEPT = 2, HAND = .9;      /* the statement scrubs over two screens, the handoff into the row over .9, then the row travels */
   const STEPS = $$('#steps .step').map(el => ({ el, h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, cap: 0, on: null }));
+  /* the hairline in the phone scene: name to phone (a), phone to explanation (b) */
+  /* the hairlines were removed at the client's request; the step text changes as before without them */
+  const stLn = [] || ['a', 'b'].map(c => { const i = document.createElement('i'); i.className = 'st-ln ' + c; i.setAttribute('aria-hidden', 'true'); $('#steps').appendChild(i); return i; });
+  let stLnT = 0;
+  const stLines = k => {
+    if (!stLn.length) return;
+    clearTimeout(stLnT); stLn.forEach(l => l.classList.remove('on'));
+    const i = k.indexOf('b'); if (i < 0 || M.small) return;
+    stLnT = setTimeout(() => {
+      const st = STEPS[i], g = 28, y = Math.round(M.pcy) + 'px';
+      const A = [M.gxL + st.tw + g, M.phL - g], B = [M.phR + g, st.pl - g];
+      [A, B].forEach(([x0, x1], j) => { const l = stLn[j]; l.style.top = y; l.style.left = x0.toFixed(1) + 'px'; l.style.width = Math.max(0, x1 - x0).toFixed(1) + 'px'; if (x1 - x0 > 24) { void l.offsetWidth; l.classList.add('on'); } });
+    }, 300);
+  };
+  /* sections with the curved edge, and the Gift photograph */
+  /* the bowed edge was removed at the client's request: sections rise with a flat, lightly rounded edge */
+  const DOMES = [] || [[$('.ws-idea'), 1], [$('#ch5'), 1], [$('#voice'), 1], [$('.ux-mem'), 0], [$('#gift'), 0]].filter(d => d[0]).map(([el, big]) => ({ el, big, top: 0, on: false }));
+  const gfPh = $('#gfPh'), gfImg = gfPh && $('img', gfPh); let gfOpen = null;
   /* each name is split into letters and each first line into words, so they can come into focus one after another */
   STEPS.forEach(st => {
     const t = st.h.textContent.trim(); st.h.setAttribute('aria-label', t);
@@ -1380,12 +1462,24 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
     M.wq = { top: docTop(wq), h: wq.offsetHeight };
+    if (WT.on) {
+      /* the line starts at the first item's capsule and ends at the last one's */
+      WT.top = docTop(wpList);
+      WT.items.forEach(it => { it.c = it.el.offsetTop + it.el.offsetHeight / 2; });
+      const a = WT.items[0].c, b = WT.items[WT.items.length - 1].c;
+      WT.line.style.top = a + 'px'; WT.line.style.setProperty('--th', (b - a) + 'px'); WT.a = a; WT.b = b;
+    }
     M.ft = docTop(foot);
+    DOMES.forEach(d => { d.top = docTop(d.el); });
+    M.domeBig = Math.min(.46 * vh, .5 * vw); M.domeM = Math.min(.24 * vh, .22 * vw);
+    if (gfPh) M.gf = { top: docTop(gfPh), h: gfPh.offsetHeight };
     M.max = Math.max(1, root.scrollHeight - innerHeight);
     M.ps = Math.min(1, (small ? .5 : .58) * vh / 632, (vw - 64) / 300);
     M.pcy = (small ? .5 : .54) * vh;
     M.pBot = M.pcy + 316 * M.ps;
-    STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null; });
+    STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null;
+      const rg = document.createRange(); rg.selectNodeContents(st.h); st.tw = rg.getBoundingClientRect().width; st.pl = st.p.offsetLeft; });
+    M.gxL = STEPS.length ? STEPS[0].h.offsetLeft : 0; M.phL = vw / 2 - phone.offsetWidth * M.ps / 2; M.phR = vw - M.phL;
     if (!calm) {
       /* each step's stretch of the scroll, [arrives, leaves]: Choose as the card lands; Wear, Swap and Return change on
          the same point of the scroll as their screens */
@@ -1409,7 +1503,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
 
   /* ── smooth scroll ── */
   let lenis = null;
-  if (!calm && !still && window.Lenis && !/[?&]nolenis\b/.test(qs) && matchMedia('(pointer: fine)').matches) lenis = new Lenis({ lerp: .09, smoothWheel: true }); window.__lenis = lenis;
+  /* savor.it's own settings: each wheel step glides for 0.8s on an exponential ease-out, and touch scrolling is
+     smoothed the same way */
+  if (!calm && !still && window.Lenis && !/[?&]nolenis\b/.test(qs)) lenis = new Lenis({ duration: .8, easing: t => t === 1 ? 1 : 1.001 - Math.pow(2, -10 * t), smoothWheel: true, syncTouch: true }); window.__lenis = lenis;
   function go(y) { if (lenis) lenis.scrollTo(y, { duration: 1.4, easing: E.io, force: true }); else scrollTo({ top: y, behavior: calm ? 'auto' : 'smooth' }); }
 
   /* ── the phone scene snaps ──
@@ -1429,7 +1525,12 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     if (to === null || Math.abs(to - scrollY) < 2) return;
     if (lenis) lenis.scrollTo(to, { duration: .9, easing: t => 1 - Math.pow(1 - t, 3) }); else scrollTo({ top: to, behavior: 'smooth' });
   }
-  if (lenis) addEventListener('wheel', e => { if (e.deltaY) snapDir = e.deltaY > 0 ? 1 : -1; clearTimeout(snapT); snapT = setTimeout(snap, 110); }, { passive: true });
+  if (lenis) {
+    addEventListener('wheel', e => { if (e.deltaY) snapDir = e.deltaY > 0 ? 1 : -1; clearTimeout(snapT); snapT = setTimeout(snap, 110); }, { passive: true });
+    /* with touch synced, the glide after a swipe is Lenis's own: snap once it has settled */
+    addEventListener('touchstart', () => { touching = true; clearTimeout(snapT); }, { passive: true });
+    ['touchend', 'touchcancel'].forEach(n => addEventListener(n, () => { touching = false; if (lenis.direction) snapDir = lenis.direction; clearTimeout(snapT); snapT = setTimeout(snap, 420); }, { passive: true }));
+  }
   else if (!calm && !still) {
     addEventListener('scroll', () => { const y = scrollY; if (y !== snapLast) snapDir = y > snapLast ? 1 : -1; snapLast = y; clearTimeout(snapT); snapT = setTimeout(snap, 140); }, { passive: true });
     addEventListener('touchstart', () => { touching = true; clearTimeout(snapT); }, { passive: true });
@@ -1571,7 +1672,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         if (!calm) {
           let key = '';
           for (let i = 0; i < STEPS.length; i++) key += sy < M.SA[i][0] ? 'a' : sy < M.SA[i][1] ? 'b' : 'c';
-          set('steps', key, k => STEPS.forEach((st, i) => { st.el.classList.toggle('on', k[i] === 'b'); st.el.classList.toggle('out', k[i] === 'c'); }));
+          set('steps', key, k => { STEPS.forEach((st, i) => { st.el.classList.toggle('on', k[i] === 'b'); st.el.classList.toggle('out', k[i] === 'c'); }); stLines(k); });
         } else
         for (let i = 0; i < STEPS.length; i++) {
           const st = STEPS[i], dy = M.C[i] - sy, on = Math.abs(dy) < vh * 1.2;
@@ -1666,17 +1767,41 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         const a = wqPhoto.getBoundingClientRect(), d = wpPhoto.getBoundingClientRect(), pt = wp.getBoundingClientRect().top;
         const n = Math.round(clamp((vh * .55 - qTop) / (vh * 1.15)) * inkWords.length);
         if (n !== lastInk) { inkWords.forEach((w, i) => w.classList.toggle('on', i < n)); lastInk = n; }
-        const rise = clamp(1 - pt / vh), out = E.in(seg(rise, .02, .3)), te = E.io(seg(rise, .04, .8)), landed = te >= 1;
+        /* One picture carries the whole passage, and only one thing happens to it at a time:
+           1 once the words are read they leave, and the frame starts to open like a window
+           2 while it opens, the portrait gives way to the membership photograph, and the window goes on until the photograph fills the screen (nothing is enlarged: the photograph
+             is already lying there at full size, and only the opening moves)
+           3 as the membership section rises underneath, the photograph pulls back into its frame there
+           (12 principles: staging, one subject and one change at a time; exaggeration, the frame becomes the whole
+           screen; slow in and slow out on every stage; solid drawing, the picture keeps its size and proportions.) */
+        const u = -qTop / vh, rise = clamp(1 - pt / vh);
+        const out = E.in(seg(u, .68, .98)), grow = E.io(seg(u, .9, 1.5)), mix = E.sine(seg(u, .98, 1.38));
+        const te = E.io(seg(rise, .05, .86)), landed = te >= 1;
         wqBlock.style.opacity = (1 - out).toFixed(3);
         wqBlock.style.transform = out ? `translate3d(0,${(-out * 48).toFixed(2)}px,0)` : '';
         if (wp.classList.contains('fly-on') === landed) wp.classList.toggle('fly-on', !landed);
         if (qVis === landed || qVis === null) { wqFly.style.visibility = landed ? 'hidden' : 'visible'; qVis = !landed; }
         if (!landed) {
-          const w = a.width + (d.width - a.width) * te, h = a.height + (d.height - a.height) * te;
-          if (Math.abs(w - qW) > .2 || Math.abs(h - qH) > .2) { wqFly.style.width = w.toFixed(2) + 'px'; wqFly.style.height = h.toFixed(2) + 'px'; qW = w; qH = h; }
-          wqFly.style.transform = `translate3d(${(a.left + (d.left - a.left) * te).toFixed(2)}px,${(a.top + (d.top - a.top) * te).toFixed(2)}px,0)`;
-          wqA.style.transform = `scale(${(1 + .14 * (1 - E.out(clamp((vh - qTop) / vh)))).toFixed(4)})`;
-          wqB.style.clipPath = `inset(${((1 - E.io(seg(te, .2, .92))) * 100).toFixed(2)}% 0 0 0)`;
+          /* the window: the portrait's frame, then the whole screen, then the membership frame */
+          let x = lerp(a.left, 0, grow), y = lerp(a.top, 0, grow), w = lerp(a.width, vw, grow), h = lerp(a.height, vh, grow), rad = 6 * (1 - grow);
+          if (te > 0) { x = lerp(0, d.left, te); y = lerp(0, d.top, te); w = lerp(vw, d.width, te); h = lerp(vh, d.height, te); rad = 6 * te; }
+          wqFly.style.clipPath = `inset(${Math.max(0, y).toFixed(1)}px ${Math.max(0, vw - x - w).toFixed(1)}px ${Math.max(0, vh - y - h).toFixed(1)}px ${Math.max(0, x).toFixed(1)}px round ${rad.toFixed(1)}px)`;
+          /* the portrait keeps the size of its frame; it never grows */
+          if (Math.abs(a.width - qW) > .2 || Math.abs(a.height - qH) > .2) { wqA.style.width = a.width.toFixed(2) + 'px'; wqA.style.height = a.height.toFixed(2) + 'px'; qW = a.width; qH = a.height; }
+          wqA.style.transform = `translate3d(${a.left.toFixed(2)}px,${a.top.toFixed(2)}px,0) scale(${(1 + .14 * (1 - E.out(clamp((vh - qTop) / vh)))).toFixed(4)})`;
+          /* the membership photograph lies still at full size while the window opens, and only pulls back, in one
+             even move, as it settles into its frame */
+          /* the membership photograph is there in full as soon as the window starts to open; the portrait, lying over it
+             in its frame, dissolves into it as the window widens */
+          wqB.style.opacity = grow > 0 ? 1 : 0; wqA.style.opacity = (1 - mix).toFixed(3);
+          /* it is laid out whole, at the size that covers the screen, so that when it pulls back the whole picture
+             comes with it and fills its frame exactly */
+          const nw = wqB.naturalWidth || 1600, nh = wqB.naturalHeight || 1280, c = Math.max(vw / nw, vh / nh), bw = nw * c, bh = nh * c;
+          if (Math.abs(bw - qBW) > .5 || Math.abs(vh - qBH) > .5) { qBW = bw; qBH = vh; wqB.style.width = bw.toFixed(1) + 'px'; wqB.style.height = bh.toFixed(1) + 'px'; wqB.style.left = ((vw - bw) / 2).toFixed(1) + 'px'; wqB.style.top = ((vh - bh) / 2).toFixed(1) + 'px'; }
+          if (te > 0) {
+            const k = Math.max(d.width / nw, d.height / nh) / c;
+            wqB.style.transform = `translate3d(${((d.left + d.width / 2 - vw / 2) * te).toFixed(2)}px,${((d.top + d.height / 2 - vh / 2) * te).toFixed(2)}px,0) scale(${lerp(1, k, te).toFixed(4)})`;
+          } else wqB.style.transform = '';
         }
       } else {
         const r = wqBlock.getBoundingClientRect();
@@ -1684,6 +1809,47 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         if (n !== lastInk) { inkWords.forEach((w, i) => w.classList.toggle('on', i < n)); lastInk = n; }
       }
     } else if (qVis !== false && qPinned) { wqFly.style.visibility = 'hidden'; qVis = false; if (sy >= M.wq.top + M.wq.h) wp.classList.remove('fly-on'); }
+
+    /* The membership thread. The reading line is half way down the screen; the line's head follows an eased copy of
+       the scroll so it glides rather than ticks, and each item lights when the head reaches its capsule (with a
+       little hysteresis so it never flickers when the page rests on it).
+       (12 principles: staging, one item comes forward at a time along one line; slow in and slow out on every
+       change; follow-through, the head runs on between items; nothing appears away from the line.) */
+    if (WT.on) {
+      const near = sy > WT.top - vh * 1.4 && sy < WT.top + WT.b + vh * .2;
+      if (near) {
+        WT.s = WT.s < 0 || Math.abs(sy - WT.s) > vh ? sy : WT.s + (sy - WT.s) * (1 - Math.exp(-dt / (lenis ? 70 : 120)));
+        const head = WT.s + vh * .5 - WT.top, len = clamp(head - WT.a, 0, WT.b - WT.a);
+        WT.line.style.transform = `scaleY(${((WT.b - WT.a) ? len / (WT.b - WT.a) : 0).toFixed(4)})`;
+        const moving = len > 0 && len < WT.b - WT.a;
+        WT.dot.style.opacity = moving ? 1 : 0;
+        if (moving) WT.dot.style.transform = `translate3d(0,${(WT.a + len).toFixed(1)}px,0)`;
+        for (const it of WT.items) {
+          const lit = head >= it.c - (it.lit ? 24 : 2);
+          if (lit !== it.lit) { it.lit = lit; it.el.classList.toggle('lit', lit); }
+        }
+      } else WT.s = -1;
+    }
+
+    /* The curved sheet edge: while a section's top is on its way up the screen its edge is bowed, deepest as it
+       enters and flat by the time it reaches the top (one sine curve over the whole rise, so the corners catch
+       up with the middle without ever speeding past it). At rest the stylesheet's own edge applies. */
+    for (const d of DOMES) {
+      const y = d.top - sy;
+      if (y > vh * 1.05 || y < 2) { if (d.on) { d.on = false; d.el.style.borderRadius = ''; } continue; }
+      const D = (d.big ? M.domeBig : M.domeM) * E.sine(clamp(y / (vh * .92)));
+      d.on = true; d.el.style.borderRadius = D < 20 ? '' : `50% 50% 0 0 / ${D.toFixed(1)}px ${D.toFixed(1)}px 0 0`;
+    }
+    /* the Gift photograph: an ellipse that opens from a point in the middle as the picture comes up three quarters of the
+       screen, while the picture pulls back from a closer crop; fully open, the clip is removed */
+    if (gfPh && !calm && M.gf) {
+      const e = E.sine(clamp((sy + vh * .98 - M.gf.top) / (vh * .74))), key = e >= 1 ? 1 : e <= 0 ? 0 : -1;
+      if (key < 0 || key !== gfOpen) {
+        gfOpen = key;
+        gfPh.style.clipPath = e >= 1 ? '' : `ellipse(${lerp(3, 76, e).toFixed(2)}% ${lerp(2, 76, e).toFixed(2)}% at 50% 56%)`;
+        gfImg.style.transform = e >= 1 ? '' : `scale(${lerp(1.5, 1, e).toFixed(4)})`;
+      }
+    }
 
     /* plans + footer */
     set('h2p', sy > M.ch7.top - vh * .55, v => v && $('#h2p').classList.add('in'));
