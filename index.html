@@ -101,6 +101,14 @@ html:not(.js) .loader,html.still .loader{display:none}
 .face.back{transform:rotateY(180deg);background:var(--stone);color:var(--ink);display:grid;place-items:center;font-size:11px;font-weight:500;letter-spacing:.2em}
 .face.back::before{content:"";position:absolute;inset:8px;border:1px solid var(--line-l);border-radius:6px}
 .shade{position:absolute;inset:0;background:#000;opacity:0;border-radius:12px;pointer-events:none}
+/* Three cards leave the gathered deck and become the statement's three pictures. The deck lives under the page's
+   sections, so each of the three has a twin in this layer above them, with the same perspective: the twin takes over
+   at the exact pose of its card, comes down, narrows to the pill's shape and shows the pill's own picture by the time
+   it lands, where the real pill takes over from it. */
+#fliers{position:fixed;inset:0 0 auto;height:100vh;height:100svh;z-index:2;perspective:1400px;pointer-events:none}
+.card.fly{will-change:transform,clip-path}
+.fly-pill{position:absolute;left:0;width:100%;overflow:hidden;background:#17181c;opacity:0;z-index:3}
+.fly-pill img{position:absolute;inset:calc((1 - var(--z,1))*50%);width:calc(var(--z,1)*100%);height:calc(var(--z,1)*100%);max-width:none;object-fit:cover}
 .ph{background:var(--stone)}
 .ph img{width:100%;height:100%;object-fit:cover}
 /* the piece card (same markup in the carousel and in the phone) */
@@ -158,6 +166,13 @@ html.js .ws-lead .w{transition:opacity .9s var(--ease-out),filter .9s var(--ease
 .ipill img.on{opacity:1;z-index:1;transition:opacity .9s var(--ease-out),transform 1.6s var(--ease-out);transition-delay:0s,calc(min(var(--i),44)*24ms + 140ms)}
 html.js:not(.calm) .ws-lead:not(.in) .ipill{clip-path:inset(0 50% 0 50% round 999px)}
 html.js:not(.calm) .ws-lead:not(.in) .ipill img{transform:scale(1.4)}
+/* a pill a card is on its way to: an empty place in the sentence, arriving with the words, until its card lands */
+.ws-lead .ipill.tgt{clip-path:inset(0 0 0 0 round 999px)!important;transition:opacity .9s var(--ease-out);transition-delay:calc(min(var(--i),44)*24ms + 140ms)}
+html.js:not(.calm) .ws-lead:not(.in) .ipill.tgt{opacity:0}
+.ws-lead .ipill.tgt img{transform:none!important}
+.ws-lead .ipill.tgt.wait{background:rgba(16,21,15,.1)}
+.ws-lead .ipill.tgt.wait img{visibility:hidden}
+.ws-lead .ipill.tgt:not(.wait){opacity:1!important;transition:none}
 .ws-go{display:inline-flex;align-items:center;gap:20px;color:var(--acc);font-size:16px;line-height:1;padding-block:8px;transition:transform .12s var(--ease-out)}
 .ws-go:active{transform:scale(.97)}
 .ws-go-ic{position:relative;flex:none;width:26px;height:16px;border:1px solid currentColor;border-radius:999px;overflow:hidden;transition:background-color .22s var(--ease-out)}
@@ -1190,7 +1205,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     const files = el.dataset.cycle.split(',').map(f => f.split('|'));
     let k = 0, timer = null;
     const next = () => {
-      if (document.hidden) return;
+      if (document.hidden || el.classList.contains('wait')) return;
       k = (k + 1) % files.length;
       const cur = $('img.on', el), nxt = $('img:not(.on)', el), show = () => { cur.classList.remove('on'); nxt.classList.add('on'); };
       nxt.src = files[k][0]; nxt.style.objectPosition = files[k][1]; nxt.style.setProperty('--z', files[k][2]);
@@ -1276,6 +1291,24 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
      card that waits under the statement is the same object that settles into the app */
   { const spot = $('[data-spot]', app);
     if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.el.firstChild); } }
+  /* the three cards that come down into the statement: [card in the deck, pill in the sentence], front card first,
+     so a card never has to pass through one still lying on top of it */
+  const FLY = [];
+  if (!calm && !still) {
+    const layer = document.createElement('div'); layer.id = 'fliers'; layer.setAttribute('aria-hidden', 'true'); stage.parentNode.insertBefore(layer, stage.nextSibling);
+    const pills = $$('.ws-lead .ipill');
+    [[0, 1], [1, 0], [2, 2]].forEach(([k, pi], i) => {
+      const src = cards[k], pill = pills[pi]; if (!src || !pill) return;
+      const el = src.el.cloneNode(true); el.classList.add('fly'); el.style.cssText = '';
+      const ov = document.createElement('span'), im = document.createElement('img'); ov.className = 'fly-pill'; im.alt = ''; ov.appendChild(im); el.appendChild(ov);
+      layer.appendChild(el); pill.classList.add('tgt', 'wait');
+      const f = { el, src, pill, ov, im, shade: $('.shade', el), k, a: .5 + i * .08, st: 0, cx: 0, cy: 0, w: 1, hb: 97 };
+      src.fly = f; FLY.push(f);
+    });
+  }
+  /* the twin's picture is whatever its pill is showing */
+  const syncFly = f => { const on = $('img.on', f.pill); if (!on) return; f.im.src = on.currentSrc || on.src; f.im.style.objectPosition = on.style.objectPosition; f.im.style.setProperty('--z', on.style.getPropertyValue('--z') || 1); };
+  FLY.forEach(syncFly);
   let car = 0, lastT = 0;
 
   /* ── measurements (cached; never read layout inside the frame) ── */
@@ -1303,6 +1336,8 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       M.kpC = kpCards.map(c => c.offsetLeft - base + c.offsetWidth / 2);      /* each card's centre along the row */
       M.kpH = kpCards[0].offsetHeight;
     }
+    /* where each pill sits on the page, and the band of its card that has the pill's proportions */
+    FLY.forEach(f => { const r = f.pill.getBoundingClientRect(); if (!r.width) return; f.w = r.width; f.cx = r.left + r.width / 2; f.cy = r.top + scrollY + r.height / 2; f.hb = 232 * r.height / r.width; f.ov.style.top = ((316 - f.hb) / 2).toFixed(2) + 'px'; f.ov.style.height = f.hb.toFixed(2) + 'px'; });
     const small = vw <= 760;
     M.small = small;
     M.fs = small ? clamp(vh * .34 / 316, .5, 1) : clamp(vh * .42 / 316, .55, 1.2);
@@ -1448,7 +1483,30 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         c.el.style.opacity = inn < 1 ? inn.toFixed(2) : '';
         const sh = Math.round(ax * Math.min(22, c.k * 3));
         if (sh !== c.lastShade) { c.lastShade = sh; c.shade.style.opacity = sh / 100; }
-        if (!c.vis) { c.vis = true; c.el.style.visibility = 'visible'; }
+        const want = !(c.fly && sS > c.fly.a);      /* its twin has taken over */
+        if (c.vis !== want) { c.vis = want; c.el.style.visibility = want ? 'visible' : 'hidden'; }
+      }
+      /* The three cards come down into the sentence. Each takes half a screen of scroll, 8% of a screen after the
+         one before, and is down to a small tile before it crosses the words (12 principles: slow in and slow out, one sine curve for the whole move; arcs, the sideways
+         move starts a beat after the fall so the path curves; overlapping action, the three leave one after
+         another; staging, the card's shadow goes and its shape narrows before its picture changes, one thing
+         at a time; no tilt, no overshoot, no settle bounce). The fall follows the eased scroll and the landing
+         place follows the page, so the card meets the pill exactly wherever the page is. */
+      for (const f of FLY) {
+        const q = clamp((sS - f.a) / .5), st = q <= 0 ? 0 : q >= 1 ? 2 : 1;
+        if (st !== f.st) {
+          if (f.st === 2) syncFly(f);
+          f.st = st; f.el.style.visibility = st === 1 ? 'visible' : 'hidden';
+          f.el.classList.toggle('flat', st === 1); f.pill.classList.toggle('wait', st !== 2);
+        }
+        if (st !== 1) continue;
+        const e = E.sine(q), ex = E.sine(seg(q, .1, 1)), to = f.w / 232;
+        const x = lerp(f.k * 9 - 30, f.cx - vw / 2, ex), y = lerp(-vh * .06 - f.k * 2 - lift, f.cy - sy - vh / 2, e);
+        const sc = M.ds * Math.pow(to / M.ds, E.sine(seg(q, 0, .78))), cl = E.sine(seg(q, .2, 1)), hb = lerp(316, f.hb, cl);
+        f.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${(-f.k * 26 * (1 - e)).toFixed(1)}px) rotateY(${((-8 - f.k * 1.8) * (1 - e)).toFixed(2)}deg) scale(${sc.toFixed(4)})`;
+        f.el.style.clipPath = cl > 0 ? `inset(${((316 - hb) / 2).toFixed(2)}px 0 round ${lerp(12, f.hb / 2, cl).toFixed(1)}px)` : '';
+        f.ov.style.opacity = E.sine(seg(q, .45, .9)).toFixed(3);
+        f.shade.style.opacity = (Math.min(22, f.k * 3) / 100 * (1 - e)).toFixed(3);
       }
 
       /* the one card */
