@@ -145,8 +145,9 @@ html.js .rise.in .ln-r>span{transform:none;transition:transform 1s var(--ease-ou
 /* alignment: the block starts on the page's one left margin, under the header logo and in line with the step names
    and every other heading; the sentence keeps a 22em measure so it breaks into three even lines */
 .ws-grid{padding-left:var(--gx);padding-right:var(--gxr)}
-.ws-main{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(40px,6vh,64px)}
-.ch1 h2.ws-lead{font-weight:400;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-transform:none;text-wrap:pretty;max-width:22em}
+/* the statement stands alone in its panel, so it sits on the page's centre line: lines balanced, link centred under it */
+.ws-main{min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(40px,6vh,64px)}
+.ch1 h2.ws-lead{font-weight:400;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-transform:none;text-wrap:balance;max-width:21em}
 .ws-acc{color:var(--acc)}
 .ws-lead .w{display:inline-block}
 .ws-lead .nb{white-space:nowrap}
@@ -1317,6 +1318,8 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     M.T = [M.r1 + .55 * vh, M.r1 + 1.2 * vh, M.r1 + 2.1 * vh, M.r1 + 3 * vh];
     /* with reduced motion the steps scroll past the phone: where each one sits centred */
     M.C = [M.r1 + .25 * vh, M.T[1] + .25 * vh, M.T[2] + .25 * vh, M.T[3] + .25 * vh];
+    /* where the scroll comes to rest in the phone scene: one point in the middle of each screen's stretch */
+    M.P = [M.C[0], (M.T[0] + M.T[1]) / 2, (M.T[1] + M.T[2]) / 2, (M.T[2] + M.T[3]) / 2, M.T[3] + .4 * vh];
     M.W = .07 * vh;
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
@@ -1352,6 +1355,30 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   let lenis = null;
   if (!calm && !still && window.Lenis && !/[?&]nolenis\b/.test(qs) && matchMedia('(pointer: fine)').matches) lenis = new Lenis({ lerp: .09, smoothWheel: true }); window.__lenis = lenis;
   function go(y) { if (lenis) lenis.scrollTo(y, { duration: 1.4, easing: E.io, force: true }); else scrollTo({ top: y, behavior: calm ? 'auto' : 'smooth' }); }
+
+  /* ── the phone scene snaps ──
+     From the moment the phone starts to appear until its last screen, the scroll never rests between two screens.
+     When the input stops (the wheel goes quiet, or a touch scroll ends), the page glides on to the next rest point
+     in the direction of travel; a nudge of under 6% of a screen settles back instead. Past the last point going
+     down, or above the first going up, the page is free again. The glide eases out (it continues the user's own
+     motion, so it has no slow start) and any new input takes over at once. Not used with reduced motion. */
+  let snapDir = 1, snapT = 0, snapLast = 0, touching = false;
+  function snap() {
+    if (calm || still || !M.P || touching) return;
+    const y = lenis ? lenis.targetScroll : scrollY, eps = .06 * vh, P = M.P;
+    if (y < M.r1 - .6 * vh || y > P[P.length - 1] + .3 * vh) return;
+    let to = null;
+    if (snapDir > 0) { for (const q of P) if (q >= y - eps) { to = q; break; } }
+    else for (let i = P.length - 1; i >= 0; i--) if (P[i] <= y + eps) { to = P[i]; break; }
+    if (to === null || Math.abs(to - scrollY) < 2) return;
+    if (lenis) lenis.scrollTo(to, { duration: .9, easing: t => 1 - Math.pow(1 - t, 3) }); else scrollTo({ top: to, behavior: 'smooth' });
+  }
+  if (lenis) addEventListener('wheel', e => { if (e.deltaY) snapDir = e.deltaY > 0 ? 1 : -1; clearTimeout(snapT); snapT = setTimeout(snap, 110); }, { passive: true });
+  else if (!calm && !still) {
+    addEventListener('scroll', () => { const y = scrollY; if (y !== snapLast) snapDir = y > snapLast ? 1 : -1; snapLast = y; clearTimeout(snapT); snapT = setTimeout(snap, 140); }, { passive: true });
+    addEventListener('touchstart', () => { touching = true; clearTimeout(snapT); }, { passive: true });
+    ['touchend', 'touchcancel'].forEach(n => addEventListener(n, () => { touching = false; clearTimeout(snapT); snapT = setTimeout(snap, 140); }, { passive: true }));
+  }
 
   /* in-page links glide on the same curve as the store links */
   document.addEventListener('click', e => {
