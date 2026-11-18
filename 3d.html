@@ -1210,17 +1210,19 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
 
   /* ── the carousel: one row of cards sliding left to right ── */
   const DEF = [
-    { p: 0 }, { img: 'od-member-aisha' }, { p: 1 }, { img: 'od-member-dana' }, { p: 2 }, { img: 'od-app-band' },
+    { img: 'od-member-aisha' }, { p: 1 }, { img: 'od-member-dana' }, { p: 2 }, { img: 'od-app-band' },
     { p: 3 }, { img: 'od-member-reem' }, { img: 'od-step-return' }, { img: 'od-box-portrait' }, { img: 'od-member-fatima' }, { img: 'od-step-deliver' }
   ];
-  const cards = DEF.map((d, i) => {
+  const mkCard = (d, i) => {
     const el = document.createElement('div'); el.className = 'card';
     const front = d.img ? `<div class="face ph"><img src="${d.img}.jpg" alt=""></div>` : `<div class="face">${pcHTML(PIECES[d.p])}</div>`;
     el.innerHTML = front + `<div class="face back">ICONEC</div><div class="shade"></div>`;
     field.appendChild(el);
     return { el, shade: el.lastChild, k: i, vis: false, lastShade: -1 };
-  });
-  const hero0 = cards[0];
+  };
+  const cards = DEF.map(mkCard);
+  /* the one card that lands in the phone is not part of the row: it waits under the statement */
+  const hero0 = mkCard({ p: 0 }, 0);
   /* the landing card carries a second front: the app's own spotlight card, cloned from the phone's first screen */
   { const spot = $('[data-spot]', app);
     if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.shade); } }
@@ -1332,24 +1334,32 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       set('ch1in', S > .45, v => { if (v) ch1.classList.add('in'); });
       /* the cards follow an eased copy of the scroll, so a fast flick never snaps the row shut */
       sS = sS < 0 || calm || still || S > 1.2 ? S : sS + (S - sS) * (1 - Math.exp(-dt / 110));
-      const g = seg(sS, .02, .62), exit = E.in(seg(sS, .3, .9));
+      /* Collapse and exit, staged so the panel sliding up from below never cuts through them:
+         - staging: the row is a deck by the time the panel is a third of the way up, and gone before the panel reaches it
+         - overlapping action: cards near the middle gather first, the far ones a beat later
+         - arcs: each card rises ahead of its slide inwards, so it swings in and does not travel in a straight line
+         - anticipation: the deck sinks 10px and tightens 2% just before it leaves
+         - slow in, slow out: the gather eases both ways; the exit eases in (it is leaving)
+         - follow-through: the top card leaves first and the rest trail it, tipping back as they go */
+      const g = seg(sS, .02, .32), ex = seg(sS, .28, .6), ant = Math.sin(Math.PI * seg(sS, .2, .34));
       const ay = M.anchor - sy, solo = ay < vh + 180;
-      const rowOn = !solo && exit < 1;
-      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .3); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
+      const rowOn = ex < 1, N = cards.length;
+      if (!calm && introT0 !== null) { const slow = 1 - seg(sS, 0, .2); car += dt * .034 * slow * slow; }      /* the row slows to a stop as it gathers */
       for (const c of cards) {
-        if (c === hero0 && solo) continue;
         if (!rowOn) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const inn = introT0 === null ? 0 : E.out(clamp((t - introT0 - 150) / 1700));
         if (inn <= 0) { if (c.vis) { c.vis = false; c.el.style.visibility = 'hidden'; } continue; }
         const fx = ((c.k * M.gap + car + M.L / 2) % M.L) - M.L / 2 - (1 - inn) * vw * .3;
-        const ai = E.sine(clamp(g * 1.22 - c.k * .02));
+        const far = Math.min(1, Math.abs(fx) / (vw * .6)), tg = clamp((g - far * .22) / .78);
+        const ax = E.io(tg), ayv = E.out(tg);
+        const lift = E.in(clamp((ex - c.k * .012) / (1 - (N - 1) * .012)));
         /* the row sits on the inside of a wide curve, like a panorama: flat in the middle, turning in and coming closer at the edges */
-        const th = clamp(fx / M.R, -1.25, 1.25), flat = 1 - ai;
-        const x = lerp(M.R * Math.sin(th), c.k * 9 - 30, ai), y = lerp(M.rowY, -vh * .08 - c.k * 2, ai) - exit * vh * 1.25;
-        const z = M.R * (1 - Math.cos(th)) * flat - c.k * 26 * ai, rot = -th * 57.296 * flat + (-8 - c.k * 1.8) * ai, sc = lerp(M.fs, M.ds, ai);
-        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        const th = clamp(fx / M.R, -1.25, 1.25), flat = 1 - ax;
+        const x = lerp(M.R * Math.sin(th), c.k * 9 - 30, ax), y = lerp(M.rowY, -vh * .06 - c.k * 2, ayv) + ant * 10 * ax - lift * vh * 1.15;
+        const z = M.R * (1 - Math.cos(th)) * flat - c.k * 26 * ax, rot = -th * 57.296 * flat + (-8 - c.k * 1.8) * ax, sc = lerp(M.fs, M.ds, ax) * (1 - .02 * ant * ax);
+        c.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateX(${(lift * 9).toFixed(2)}deg) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
         c.el.style.opacity = inn < 1 ? inn.toFixed(2) : '';
-        const sh = Math.round(ai * Math.min(22, c.k * 3));
+        const sh = Math.round(ax * Math.min(22, c.k * 3));
         if (sh !== c.lastShade) { c.lastShade = sh; c.shade.style.opacity = sh / 100; }
         if (!c.vis) { c.vis = true; c.el.style.visibility = 'visible'; }
       }
@@ -1366,7 +1376,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         set('h0vis', !docked, v => { hero0.vis = v; hero0.el.style.visibility = v ? 'visible' : 'hidden'; });
         set('flat', r > .9, v => hero0.el.classList.toggle('flat', v));
         set('asapp', rot >= 180, v => hero0.el.classList.toggle('as-app', v));
-      } else { state.h0vis = hero0.vis; set('asapp', false, v => hero0.el.classList.toggle('as-app', v)); }
+      } else { set('h0vis', false, v => { hero0.vis = false; hero0.el.style.visibility = 'hidden'; }); set('asapp', false, v => hero0.el.classList.toggle('as-app', v)); }
       set('docked', docked, v => phone.classList.toggle('has-card', v));
 
       /* white opens to stone, the phone comes into focus */
