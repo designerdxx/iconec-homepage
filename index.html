@@ -23,7 +23,7 @@
 /* Iconec · Out of the drawer.
    Layout: a white stage stays pinned while one piece card travels through it (sliding carousel, deck,
    solo card, phone). The ground opens from white to a neutral stone. Chapters arrive over the stage as
-   white sheets, then a charcoal second act (pieces, the maths), a last sheet (plans) and a footer
+   white sheets, then the pieces, a last sheet (plans) and a footer
    revealed from underneath.
    Palette: white, one warm stone, ink, charcoal. Iconec green appears only inside the app screen.
    Motion: scroll scenes are scrubbed, so the visitor sets the pace. Things a visitor triggers finish
@@ -253,24 +253,8 @@ html.js .ch1 .rise.in .wd{transform:none;transition:transform .9s var(--ease-out
 .chip:active{transform:scale(.97)}
 .chip[aria-pressed="true"]{background:var(--cream);color:var(--ink);box-shadow:none}
 
-/* ───────── the maths ───────── */
-.ch6{position:relative;z-index:3;height:230vh;height:230svh;background:var(--char);color:var(--cream)}
-.ch6 .pin{display:flex;flex-direction:column;padding:calc(72px + env(safe-area-inset-top,0px)) var(--gxr) calc(96px + env(safe-area-inset-bottom,0px)) var(--gx);background:var(--char)}
-.m-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px}
-.m-head h2{font-size:clamp(40px,6vw,100px)}
-.m-head p{max-width:38ch;color:var(--cream-70);font-size:15px}
-.ch6 .cols{margin-top:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0 clamp(16px,2.2vw,32px)}
-.ch6 .col{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(40px,12vh,130px);padding-top:14px;min-width:0}
-.ch6 .col::before{content:"";position:absolute;inset:0 0 auto;height:1px;background:var(--cream-45);transform-origin:0 50%}
-html.js:not(.still) .ch6:not(.in) .col::before{transform:scaleX(0)}
-.ch6.in .col::before{transition:transform 1.2s var(--ease-out);transition-delay:calc(var(--i)*110ms)}
-.ch6 .col small{font-size:var(--small);color:var(--cream-70)}
-.ch6 .col b{font-weight:300;font-size:clamp(72px,12vw,210px);letter-spacing:-.055em;line-height:.8;font-variant-numeric:tabular-nums;margin-left:-.04em}
-html.js:not(.still) .ch6:not(.in) .col b{opacity:0;transform:translateY(24px)}
-.ch6.in .col b{transition:opacity .6s,transform 1s var(--ease-out);transition-delay:calc(var(--i)*110ms + 120ms)}
-
 /* ───────── plans + footer ───────── */
-.tail{position:relative;z-index:4;margin-top:-100vh;margin-top:-100svh}
+.tail{position:relative;z-index:4}
 .ch7 .sheet-in{padding-top:clamp(96px,17vh,180px)}
 .ch7 .eyebrow{font-size:14px;color:var(--ink-70);margin-bottom:18px}
 .ch7 h2{font-size:var(--d3)}
@@ -333,12 +317,6 @@ html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--
   .p-name{padding-bottom:14vh;font-size:18.5vw}
   .p-foot{flex-direction:column;align-items:flex-start;gap:14px;padding-top:12px;bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .p-pick p{display:none}
-  .ch6 .pin{padding-top:calc(60px + env(safe-area-inset-top,0px));padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
-  .m-head{flex-direction:column;align-items:flex-start;gap:16px}
-  .m-head p{font-size:14px}
-  .ch6 .cols{grid-template-columns:1fr 1fr;gap:28px 16px}
-  .ch6 .col{gap:28px}
-  .ch6 .col b{font-size:28vw}
   .plans li{grid-template-columns:1fr auto;gap:12px}
   .plans .th{display:none}
   .plans small{display:block;margin:8px 0 0;text-align:right}
@@ -355,8 +333,6 @@ html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--
    Their own tokens and classes live under .ux so nothing leaks into Out of the Drawer. ───────── */
 /* On rotation takes the place of the pieces chapter: a white sheet rising over the stage */
 .ux-rot{position:relative;z-index:3;margin-top:-100vh;margin-top:-100svh;background:var(--white);border-radius:20px 20px 0 0;box-shadow:0 -30px 80px -40px rgba(20,20,19,.22);padding-bottom:clamp(88px,10vw,152px)}
-.ch6{border-radius:20px 20px 0 0}
-.ch6 .pin{border-radius:20px 20px 0 0}
 /* Gift and the footer follow the plans sheet */
 .ux-end{position:relative;background:var(--white);padding-bottom:1px}
 .ux{font:400 var(--body)/1.5 var(--sans);color:var(--ink);font-variant-numeric:tabular-nums;
@@ -546,7 +522,6 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .hud{padding-top:calc(var(--hdh) + 14px + env(safe-area-inset-top,0px))}
 .c2 h2{top:calc(var(--hdh) + 4vh)}
 .c4 .words{top:calc(var(--hdh) + 4vh)}
-.ch6 .pin{padding-top:calc(var(--hdh) + 64px + env(safe-area-inset-top,0px))}
 .ux .hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;height:var(--hd);background:var(--paper);transition:box-shadow .3s}
 .ux .hd.lined{box-shadow:0 1px 0 var(--line)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.ux .hd{-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);transition:background-color .3s var(--out),box-shadow .3s var(--out)}
@@ -805,21 +780,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
 </section>
 </div>
 
-<section class="ch6" id="ch6" aria-label="The maths">
-  <div class="pin">
-    <div class="m-head">
-      <h2 class="d rise" id="h2m" aria-label="Every month adds up."><span class="ln-r" aria-hidden="true" style="--i:0"><span>Every month</span></span><span class="ln-r" aria-hidden="true" style="--i:1"><span>adds up.</span></span></h2>
-      <p>On the three-piece plan, with a swap each month, 36 pieces pass through your hands in a year. You wore every one of them. You bought none.</p>
-    </div>
-    <div class="cols" id="cols">
-      <div class="col" style="--i:0"><small>Pieces at a time</small><b data-n="3">3</b></div>
-      <div class="col" style="--i:1"><small>Days with each</small><b data-n="30">30</b></div>
-      <div class="col" style="--i:2"><small>Pieces a year</small><b data-n="36">36</b></div>
-      <div class="col" style="--i:3"><small>Pieces bought</small><b data-n="0">0</b></div>
-    </div>
-  </div>
-</section>
-
 <div class="tail">
   <section class="sheet ch7" id="ch7" aria-label="Plans">
     <div class="sheet-in">
@@ -996,7 +956,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     M.T = [M.C[0] + .05 * vh, M.C[1] - .45 * vh, M.C[1] + .1 * vh, M.C[2] - .8 * vh, M.C[2] + .25 * vh, M.C[3] - .3 * vh];
     M.W = .07 * vh;
     M.ch5 = { top: docTop(ch5), h: ch5.offsetHeight };
-    M.ch6 = { top: docTop(ch6), h: ch6.offsetHeight };
     M.ch7 = { top: docTop(ch7), h: ch7.offsetHeight };
     M.ft = docTop(foot);
     M.max = Math.max(1, root.scrollHeight - innerHeight);
@@ -1007,19 +966,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     M.luxR = Math.hypot(vw, vh) / 2 + 40;
     rows = $$('.row', ch3).map(el => ({ el, top: docTop(el), o: -1 }));
     planRows = $$('#plans li').map(el => ({ el, top: docTop(el), on: false }));
-  }
-
-  /* ── the maths: numerals count up once ── */
-  let counted = false;
-  function countUp() {
-    if (counted) return; counted = true;
-    ch6.classList.add('in'); $('#h2m').classList.add('in');
-    if (calm || still) return;
-    $$('#cols b').forEach((b, i) => {
-      const to = +b.dataset.n; if (!to) return;
-      const t0 = performance.now() + 120 + i * 110; b.textContent = '0';
-      const tick = t => { const p = E.out(clamp((t - t0) / 1300)); b.textContent = Math.round(to * p); if (p < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick);
-    });
   }
 
   /* ── inline image cycle, store links ── */
@@ -1154,9 +1100,6 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     /* sheet: a month in */
     tilt(ch3, M.ch3, sy);
     for (const row of rows) { const o = Math.round(seg(sy + vh * .98 - row.top, 0, vh * .34) * 50) / 50; if (o !== row.o) { row.o = o; row.el.style.opacity = o; row.el.style.transform = o < 1 ? `scale(${(.96 + .04 * o).toFixed(3)}) translateY(${((1 - o) * 24).toFixed(1)}px)` : 'none'; } }
-
-    /* the maths */
-    if (!counted && sy > M.ch6.top - vh * .4) countUp();
 
     /* plans + footer */
     tilt(ch7, M.ch7, sy);
