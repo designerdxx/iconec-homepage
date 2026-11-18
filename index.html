@@ -584,6 +584,14 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 /* the plans sheet now ends on a white page, not the charcoal footer, so its edge needs a shadow that shows:
    a hairline all round, a soft drop below and the original lift above */
 .ch7.sheet{box-shadow:0 0 0 1px rgba(20,20,19,.08),0 36px 80px -24px rgba(20,20,19,.3),0 12px 28px -12px rgba(20,20,19,.14),0 -30px 80px -40px rgba(20,20,19,.3)}
+/* the hero's own top row is gone (it stacked under the header); its one-line description now sits under the headline
+   at every width, and settles in on the timing that row had (opacity .6s, 10px rise .8s, after .5s) */
+@media (min-width:761px){
+  .hero .tag-m{display:block;margin:clamp(10px,2vh,24px) auto 0;max-width:min(100%,110ch);text-align:center;text-wrap:balance;font-size:15px;line-height:1.4;color:var(--ink-70)}
+  html.js:not(.still) .hero .tag-m{opacity:0;transform:translateY(-10px)}
+  html.js.is-in .hero .tag-m{opacity:1;transform:none;transition:opacity .6s .5s,transform .8s .5s var(--ease-out)}
+}
+@media (min-width:761px) and (max-height:660px){.hero .tag-m{display:none}}
 </style>
 </head>
 <body>
@@ -692,11 +700,6 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
   </div>
 
   <section class="hero flow" id="hero">
-    <div class="top">
-      <span class="wordmark">ICONEC</span>
-      <p>Real diamond jewellery on a monthly membership. Wear a piece for 30 days, then swap it for the next.</p>
-      <a class="cta" href="#get" data-store>Get the app</a>
-    </div>
     <h1 class="d" id="h1" aria-label="Wear the real thing"><span class="fit" aria-hidden="true"><span class="ln" data-split>Wear the</span> <span class="ln" data-split>real thing</span></span></h1>
     <p class="tag-m">Real diamond jewellery on a monthly membership. Wear a piece for 30 days, then swap it for the next.</p>
   </section>
