@@ -134,22 +134,38 @@ html.js:not(.still) .rise .ln-r>span{transform:translateY(108%)}
 html.js .rise.in .ln-r>span{transform:none;transition:transform 1s var(--ease-out);transition-delay:calc(var(--i)*80ms)}
 
 /* chapter 01 */
-.ch1{padding:18vh var(--gxr) 0 var(--gx)}
-/* what Iconec is, in one sentence (after Wear then Swap): the words come into focus one after another, 24ms apart, and
-   each picture opens from its centre as the words around it arrive */
-.ch1 h2.idea{font-weight:300;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-wrap:pretty;max-width:27em}
-.idea .w{display:inline-block}
-.idea .nb{white-space:nowrap}
-html.js:not(.still) .idea:not(.in) .w{opacity:0;filter:blur(9px);transform:translate3d(0,.32em,0)}
-html.js .idea .w{transition:opacity .9s var(--ease-out),filter .9s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(min(var(--i),44)*24ms)}
+.ch1{padding:0}
+/* what Iconec is: Wear then Swap's second section, copied over as it is there. A mist panel slides up over the hero; the
+   sentence comes into focus word by word (24ms apart, 900ms, 9px blur, .32em rise); each picture opens from its centre
+   as the words around it arrive; the last clause is green; the How it works link follows 300ms later. Each piece is
+   revealed once, as it enters the lower 91% of the screen. */
+.ws-idea{--mist:#eff0ed;--fg:#10150f;--acc:#102c0b;--acc-on:#f3f4f0;--gut:clamp(20px,4.75vw,68px);background:var(--mist);color:var(--fg);padding-block:clamp(112px,19vh,208px);font-weight:400;line-height:1.4}
+.ws-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-left:max(var(--gut),env(safe-area-inset-left,0px));padding-right:max(var(--gut),env(safe-area-inset-right,0px))}
+.ws-main{grid-column:5/13;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(40px,6vh,64px)}
+.ch1 h2.ws-lead{font-weight:400;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-transform:none;text-wrap:pretty}
+.ws-acc{color:var(--acc)}
+.ws-lead .w{display:inline-block}
+.ws-lead .nb{white-space:nowrap}
+html.js:not(.calm) .ws-lead:not(.in) .w{opacity:0;filter:blur(9px);transform:translate3d(0,.32em,0)}
+html.js .ws-lead .w{transition:opacity .9s var(--ease-out),filter .9s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(min(var(--i),44)*24ms)}
 .ipill{position:relative;display:inline-block;width:2.3em;height:.96em;margin:0 .05em;vertical-align:-.13em;border-radius:999px;overflow:hidden;background:#17181c;clip-path:inset(0 0 0 0 round 999px);transition:clip-path 1.1s var(--ease-out);transition-delay:calc(min(var(--i),44)*24ms + 140ms)}
 .ipill img{position:absolute;inset:calc((1 - var(--z,1))*50%);width:calc(var(--z,1)*100%);height:calc(var(--z,1)*100%);max-width:none;object-fit:cover;opacity:0;transition:opacity 0s .9s,transform 1.6s var(--ease-out);transition-delay:.9s,calc(min(var(--i),44)*24ms + 140ms)}
 .ipill img.on{opacity:1;z-index:1;transition:opacity .9s var(--ease-out),transform 1.6s var(--ease-out);transition-delay:0s,calc(min(var(--i),44)*24ms + 140ms)}
-html.js:not(.still) .idea:not(.in) .ipill{clip-path:inset(0 50% 0 50% round 999px)}
-html.js:not(.still) .idea:not(.in) .ipill img{transform:scale(1.4)}
-.idea-go{margin-top:clamp(32px,5vh,56px);font-size:17px}
-html.js:not(.still) .ch1:not(.in) .idea-go{opacity:0;transform:translateY(12px)}
-html.js .ch1.in .idea-go{transition:opacity .7s .9s var(--ease-out),transform .9s .9s var(--ease-out)}
+html.js:not(.calm) .ws-lead:not(.in) .ipill{clip-path:inset(0 50% 0 50% round 999px)}
+html.js:not(.calm) .ws-lead:not(.in) .ipill img{transform:scale(1.4)}
+.ws-go{display:inline-flex;align-items:center;gap:20px;color:var(--acc);font-size:16px;line-height:1;padding-block:8px;transition:transform .12s var(--ease-out)}
+.ws-go:active{transform:scale(.97)}
+.ws-go-ic{position:relative;flex:none;width:26px;height:16px;border:1px solid currentColor;border-radius:999px;overflow:hidden;transition:background-color .22s var(--ease-out)}
+.ws-go-ic svg{position:absolute;inset:0;margin:auto;width:10px;height:7px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s var(--ease-out),stroke .22s var(--ease-out)}
+.ws-go-ic svg+svg{transform:translateX(-22px)}
+@media (hover:hover){
+  .ws-go:hover .ws-go-ic{background:var(--acc)}
+  .ws-go:hover .ws-go-ic svg{transform:translateX(22px);stroke:var(--acc-on)}
+  .ws-go:hover .ws-go-ic svg+svg{transform:none}
+}
+html.js:not(.calm) [data-wsrv]:not(.in){opacity:0;filter:blur(8px);transform:translate3d(0,16px,0)}
+html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s var(--ease-out),transform .9s var(--ease-out);transition-delay:var(--d0,0ms)}
+@media (max-width:900px){.ws-main{grid-column:1/-1}}
 .anchor{height:316px;margin-top:16vh}
 
 /* chapter 02 + 04 live on the stone layer inside the stage */
@@ -301,7 +317,6 @@ html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--
   .hero .tag-m{display:block;margin:18px auto 0;max-width:30ch;text-align:center;font-size:14px;color:var(--ink-70)}
   html.js:not(.still) .hero .tag-m{opacity:0}
   html.js.is-in .hero .tag-m{opacity:1;transition:opacity .6s .9s}
-  .ch1{padding-top:14vh}
   .phone{top:50%}
   .days{font-size:25vw}
   .c2 h2{font-size:9vw;top:9vh}
@@ -884,8 +899,14 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   </section>
 
   <section class="ch1 flow" id="ch1">
-    <h2 class="idea" id="h2a" aria-label="Iconec is a diamond membership. Hold up to three pieces, wear them like your own, and swap when you want something new."><span aria-hidden="true" data-words>Iconec is a diamond membership. Hold up to three <span class="nb">pieces <span class="ipill"><img class="on" src="ws-piece-ring.jpg" alt="" style="object-position:50% 45%;--z:1.7"></span>,</span> wear them like your <span class="nb">own <span class="ipill"><img class="on" src="ws-story-keep.jpg" alt="" style="object-position:50% 38%;--z:1"></span>,</span> and <span class="nb">swap <span class="ipill" data-cycle="ws-piece-earrings.jpg|50% 52%|1.8,ws-piece-riviere.jpg|50% 80%|1.25,ws-piece-pendant.jpg|50% 42%|1.2"><img class="on" src="ws-piece-earrings.jpg" alt="" style="object-position:50% 52%;--z:1.8"><img alt=""></span></span> when you want something new.</span></h2>
-    <div class="ux idea-go"><a class="go" href="#how">How it works <svg class="ic flip" aria-hidden="true"><use href="#arr"/></svg></a></div>
+    <div class="ws-idea">
+      <div class="ws-grid">
+        <div class="ws-main">
+      <h2 class="ws-lead" id="h2a" aria-label="Iconec is a diamond membership. Hold up to three pieces, wear them like your own, and swap when you want something new."><span aria-hidden="true" data-words>Iconec is a diamond membership. Hold up to three <span class="nb">pieces <span class="ipill"><img class="on" src="ws-piece-ring.jpg" alt="" style="object-position:50% 45%;--z:1.7"></span>,</span> wear them like your <span class="nb">own <span class="ipill"><img class="on" src="ws-story-keep.jpg" alt="" style="object-position:50% 38%;--z:1"></span>,</span> <span class="ws-acc">and <span class="nb">swap <span class="ipill" data-cycle="ws-piece-earrings.jpg|50% 52%|1.8,ws-piece-riviere.jpg|50% 80%|1.25,ws-piece-pendant.jpg|50% 42%|1.2"><img class="on" src="ws-piece-earrings.jpg" alt="" style="object-position:50% 52%;--z:1.8"><img alt=""></span></span> when you want something new.</span></span></h2>
+          <a class="ws-go" href="#how" data-wsrv style="--d0:300ms"><span class="ws-go-ic" aria-hidden="true"><svg viewBox="0 0 10 7"><path d="M.5 3.5h8.6M6.4.8l2.8 2.7-2.8 2.7"/></svg><svg viewBox="0 0 10 7"><path d="M.5 3.5h8.6M6.4.8l2.8 2.7-2.8 2.7"/></svg></span><span>How it works</span></a>
+        </div>
+      </div>
+    </div>
     <div class="anchor" id="anchor"></div>
   </section>
 
@@ -1136,6 +1157,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     });
     walk(el);
   });
+  { const els = $$('.ws-lead,[data-wsrv]');
+    if (calm || still || !('IntersectionObserver' in window)) els.forEach(el => el.classList.add('in'));
+    else { const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; e.target.classList.add('in'); io.unobserve(e.target); }), { rootMargin: '0px 0px -9% 0px', threshold: .01 }); els.forEach(el => io.observe(el)); } }
   $$('[data-cycle]').forEach(el => {
     if (calm || still) return;
     const files = el.dataset.cycle.split(',').map(f => f.split('|'));
@@ -1305,7 +1329,7 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
 
     /* act one */
     if (sy < M.ch5.top + 10) {
-      set('ch1in', S > .45, v => { if (v) { ch1.classList.add('in'); $('#h2a').classList.add('in'); } });
+      set('ch1in', S > .45, v => { if (v) ch1.classList.add('in'); });
       /* the cards follow an eased copy of the scroll, so a fast flick never snaps the row shut */
       sS = sS < 0 || calm || still || S > 1.2 ? S : sS + (S - sS) * (1 - Math.exp(-dt / 110));
       const g = seg(sS, .02, .62), exit = E.in(seg(sS, .3, .9));
