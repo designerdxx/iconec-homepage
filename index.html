@@ -139,7 +139,12 @@ html.js .rise.in .ln-r>span{transform:none;transition:transform 1s var(--ease-ou
 .ch1 .ln-r:nth-child(2){margin-left:9%}
 .ch1 p{margin:clamp(40px,9vh,96px) 0 0 26%;max-width:35ch;color:var(--ink-70)}
 html.js:not(.still) .ch1 p{opacity:0;transform:translateY(16px)}
-html.js .ch1.in p{opacity:1;transform:none;transition:opacity .7s .45s,transform .9s .45s var(--ease-out)}
+html.js .ch1.in p{opacity:1;transform:none;transition:opacity .7s .5s,transform .9s .5s var(--ease-out)}
+/* the headline rises word by word out of each line's mask: 45ms apart, 900ms ease-out; the paragraph follows last */
+.ch1 .wd{display:inline-block;font-style:normal}
+html.js:not(.still) .ch1 .rise .ln-r>span{transform:none}
+html.js:not(.still) .ch1 .rise:not(.in) .wd{transform:translateY(114%)}
+html.js .ch1 .rise.in .wd{transform:none;transition:transform .9s var(--ease-out);transition-delay:calc(var(--w)*45ms)}
 .anchor{height:316px;margin-top:16vh}
 
 /* chapter 02 + 04 live on the stone layer inside the stage */
@@ -276,8 +281,8 @@ html.js:not(.still) .ch6:not(.in) .col b{opacity:0;transform:translateY(24px)}
 .plans .th img{width:clamp(34px,3.4vw,52px);aspect-ratio:3/4;object-fit:cover;border-radius:3px}
 .plans small{font-weight:400;font-size:14px;letter-spacing:0;color:var(--ink-70);margin-left:10px}
 .plans li>span:last-child{justify-self:end;font-variant-numeric:tabular-nums;white-space:nowrap}
-html.js:not(.still) .plans li{opacity:0;transform:translateY(24px)}
-html.js .plans li.in{opacity:1;transform:none;transition:opacity .6s,transform .9s var(--ease-out)}
+html.js:not(.still) .plans:not(.in) li>span{opacity:0;transform:translateY(28px)}
+html.js .plans.in li>span{opacity:1;transform:none;transition:opacity .6s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(var(--n)*50ms)}
 .fine{max-width:44ch;margin-top:32px;color:var(--ink-70);font-size:15px}
 
 .foot{position:sticky;bottom:0;z-index:-1;height:100vh;height:100svh;background:var(--char);color:var(--cream);display:flex;flex-direction:column;padding:clamp(88px,16vh,170px) var(--gxr) calc(22px + env(safe-area-inset-bottom,0px)) var(--gx);overflow:hidden;visibility:hidden}
@@ -623,7 +628,7 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .app{position:absolute;left:0;top:0;width:402px;height:874px;transform:scale(.70149);transform-origin:0 0;color:#141a14;font-family:var(--sans);text-align:left;line-height:normal;letter-spacing:0}
 .app img{max-width:none}
 .scr{position:absolute;inset:0;overflow:hidden;background:#fff;visibility:hidden;will-change:opacity,filter,transform}
-.scr:first-child{visibility:visible}
+.scr:first-child{visibility:inherit}
 .scr button{transition:transform .12s var(--ease-out)}
 .ph-slot{position:absolute;left:51.79px;top:139.48px;width:196.42px;height:260.95px;pointer-events:none}
 .phone:not(.has-card) [data-spot]{visibility:hidden}
@@ -753,10 +758,10 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
 
   <section class="ch1 flow" id="ch1">
     <h2 class="d rise" id="h2a" aria-label="Most diamonds spend their lives waiting in a drawer.">
-      <span class="ln-r" aria-hidden="true" style="--i:0"><span>Most diamonds</span></span>
-      <span class="ln-r" aria-hidden="true" style="--i:1"><span>spend their</span></span>
-      <span class="ln-r" aria-hidden="true" style="--i:2"><span>lives waiting in</span></span>
-      <span class="ln-r" aria-hidden="true" style="--i:3"><span>a drawer.</span></span>
+      <span class="ln-r" aria-hidden="true" style="--i:0"><span><i class="wd" style="--w:0">Most</i> <i class="wd" style="--w:1">diamonds</i></span></span>
+      <span class="ln-r" aria-hidden="true" style="--i:1"><span><i class="wd" style="--w:2">spend</i> <i class="wd" style="--w:3">their</i></span></span>
+      <span class="ln-r" aria-hidden="true" style="--i:2"><span><i class="wd" style="--w:4">lives</i> <i class="wd" style="--w:5">waiting</i> <i class="wd" style="--w:6">in</i></span></span>
+      <span class="ln-r" aria-hidden="true" style="--i:3"><span><i class="wd" style="--w:7">a</i> <i class="wd" style="--w:8">drawer.</i></span></span>
     </h2>
     <p>You buy one piece, once. It costs what a holiday costs, so it comes out for weddings and goes back in its box. The rest of the year you wear the same three things, and the piece you love most is the one you see least.</p>
     <div class="anchor" id="anchor"></div>
@@ -825,9 +830,9 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
       <p class="eyebrow">A plan is how many pieces you hold at once.</p>
       <h2 class="d rise" id="h2p" aria-label="One, two or three. You set the pace."><span class="ln-r" aria-hidden="true" style="--i:0"><span>One, two or three.</span></span><span class="ln-r" aria-hidden="true" style="--i:1"><span>You set the pace.</span></span></h2>
       <ul class="plans" id="plans">
-        <li><span>One piece</span><span class="th" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span><span>AED 299<small>a month</small></span></li>
-        <li><span>Two pieces</span><span class="th" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span><span>AED 450<small>a month</small></span></li>
-        <li><span>Three pieces</span><span class="th" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span><span>AED 599<small>a month</small></span></li>
+        <li><span style="--n:0">One piece</span><span class="th" style="--n:1" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span><span style="--n:2">AED 299<small>a month</small></span></li>
+        <li><span style="--n:3">Two pieces</span><span class="th" style="--n:4" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span><span style="--n:5">AED 450<small>a month</small></span></li>
+        <li><span style="--n:6">Three pieces</span><span class="th" style="--n:7" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span><span style="--n:8">AED 599<small>a month</small></span></li>
       </ul>
       <p class="fine">Every piece is yours for 30 days. Swap any of them from day 2, send it back on day 30, or keep it on for another 30.</p>
     </div>
@@ -962,7 +967,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
 
   /* ── measurements (cached; never read layout inside the frame) ── */
   const docTop = el => { let y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; };
-  const M = {}; let vw = 0, vh = 0, rows = [], planRows = [];
+  const M = {}; let vw = 0, vh = 0, rows = [], planRows = [], plansOn = false;
   function fitText() {
     [[$('#h1'), $('#h1 .fit')]].forEach(([el, box]) => {
       el.style.fontSize = '100px';
@@ -1122,8 +1127,8 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
         set('scr', idx + ':' + Math.round(te * 60), () => {
           SCR.forEach((el, j) => {
             const st = el.style;
-            if (j === idx) { st.visibility = 'visible'; st.zIndex = 1; st.opacity = (1 - te).toFixed(3); st.filter = te ? `blur(${(te * 10).toFixed(1)}px)` : ''; st.transform = te ? `scale(${(1 - .03 * te).toFixed(4)})` : ''; }
-            else if (j === idx + 1 && te > 0) { st.visibility = 'visible'; st.zIndex = 2; st.opacity = te.toFixed(3); st.filter = `blur(${((1 - te) * 10).toFixed(1)}px)`; st.transform = `translateY(${((1 - te) * 16).toFixed(1)}px)`; }
+            if (j === idx) { st.visibility = 'inherit'; st.zIndex = 1; st.opacity = (1 - te).toFixed(3); st.filter = te ? `blur(${(te * 10).toFixed(1)}px)` : ''; st.transform = te ? `scale(${(1 - .03 * te).toFixed(4)})` : ''; }
+            else if (j === idx + 1 && te > 0) { st.visibility = 'inherit'; st.zIndex = 2; st.opacity = te.toFixed(3); st.filter = `blur(${((1 - te) * 10).toFixed(1)}px)`; st.transform = `translateY(${((1 - te) * 16).toFixed(1)}px)`; }
             else if (st.visibility !== 'hidden') st.visibility = 'hidden';
           });
         });
@@ -1133,7 +1138,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
            On phones there is no room beside it, so each step sits under the phone and fades through. */
         for (let i = 0; i < STEPS.length; i++) {
           const st = STEPS[i], dy = M.C[i] - sy, on = Math.abs(dy) < vh * 1.2;
-          if (on !== st.on) { st.on = on; st.h.style.visibility = st.p.style.visibility = on ? 'visible' : 'hidden'; }
+          if (on !== st.on) { st.on = on; st.h.style.visibility = st.p.style.visibility = on ? 'inherit' : 'hidden'; }
           if (!on) continue;
           if (M.small) {
             const o = E.io(1 - clamp(Math.abs(dy) / (vh * .46))), y = M.pBot + 22 + dy * .12;
@@ -1147,12 +1152,12 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
         }
 
         if (p3d) {
-          /* arrives turned away and faces front exactly as the card lands; after that it rests at a different angle
+          /* arrives turned away and faces front before the card reaches it; after that it rests at a different angle
              for each screen and turns between them over a wider stretch than the blur, so the turn leads the change */
           const REST = [0, 22, -20, 18, -22, 20, -14];
           let fw = 0; for (const T of M.T) fw += seg(sy, T - .3 * vh, T + .3 * vh);
           const iw = Math.min(REST.length - 1, Math.floor(fw)), ang = lerp(REST[iw], REST[Math.min(REST.length - 1, iw + 1)], E.io(fw - iw));
-          const land = E.io(seg(r, .36, 1)), free = seg(sy, M.r1, M.r1 + .2 * vh), bob = calm ? 0 : Math.sin(t0 * .0011) * 5 * free;
+          const land = E.io(seg(r, .36, .7)), free = seg(sy, M.r1, M.r1 + .2 * vh), bob = calm ? 0 : Math.sin(t0 * .0011) * 5 * free;
           const ry = lerp(-38, ang, land) + pxs * 9 * free, rx = lerp(18, 4 + Math.abs(ang) * .28, land) - pys * 7 * free, rz = lerp(-12, -ang * .26, land);
           phRot.style.transform = `translateY(${bob.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
           phGlare.style.backgroundPosition = `${(50 + ry * 2.4).toFixed(1)}% 0`;
@@ -1171,7 +1176,7 @@ html.p3d .ph-shadow{display:block;position:absolute;left:6%;right:6%;bottom:-9%;
     /* plans + footer */
     tilt(ch7, M.ch7, sy);
     set('h2p', sy > M.ch7.top - vh * .55, v => v && $('#h2p').classList.add('in'));
-    for (const pr of planRows) if (!pr.on && sy + vh * .9 > pr.top) { pr.on = true; pr.el.classList.add('in'); pr.el.style.transitionDelay = (planRows.indexOf(pr) * 70) + 'ms'; }
+    if (!plansOn && planRows.length && sy + vh * .96 > planRows[planRows.length - 1].top) { plansOn = true; $('#plans').classList.add('in'); }
     set('foot', sy > M.ch7.top, v => foot.classList.toggle('on', v));
   }
 
