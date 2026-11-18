@@ -266,27 +266,40 @@ html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s
 .ch7 .sheet-in{padding-top:clamp(96px,17vh,180px)}
 .ch7 h2{font-size:var(--d3)}
 .pl-sub{margin-top:22px;max-width:30ch;color:var(--ink-70);font-size:17px;line-height:1.4}
-/* The plans, laid out the way people expect a price table: three cards side by side, each with its name, how many pieces
-   (the thumbnails), the monthly price, one line on who it suits and the way in. What every plan shares sits once, below. */
-.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:clamp(40px,7vh,72px)}
-.plan{display:flex;flex-direction:column;min-height:clamp(340px,28vw,410px);padding:clamp(22px,2.2vw,32px);border-radius:6px;background:#f4f5f2}
+/* The plans, laid out the way people expect a price table, but drawn with rules instead of cards: three columns under
+   one hairline, divided by hairlines, each with its name, how many pieces (the thumbnails), the monthly price, one line
+   on who it suits and the way in. What every plan shares sits once, below.
+   Arrival, once, as the row enters (12 principles): staging, the rules draw first and the content follows them;
+   slow out on everything (one exponential ease-out); overlapping action, columns 50ms apart and rows 40ms apart;
+   the prices rise out of a mask like the headings do, so the section has one way of moving, not several. */
+.plans{--pg:clamp(40px,4.8vw,72px);position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--pg);margin-top:clamp(40px,7vh,72px)}
+.plans::before{content:"";position:absolute;inset:0 0 auto;height:1px;background:var(--line-l);transform-origin:0 50%;transition:transform 1.2s var(--ease-out)}
+.plan{position:relative;display:flex;flex-direction:column;min-height:clamp(340px,28vw,410px);padding-block:clamp(24px,2.4vw,36px)}
+.plan+.plan::before{content:"";position:absolute;inset:0 auto 0 calc(var(--pg)/-2);width:1px;background:var(--line-l);transform-origin:50% 0;transition:transform 1.2s var(--ease-out) calc(var(--n)*50ms + 100ms)}
 .plan-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .plan h3{font-weight:400;font-size:clamp(20px,1.7vw,24px);line-height:1.2;letter-spacing:-.02em}
 .plan .th{display:flex;gap:4px}
 .plan .th img{width:clamp(36px,3.4vw,50px);aspect-ratio:3/4;object-fit:cover;border-radius:3px}
-.pl-price{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:40px;color:var(--ink-70);font-size:14px;line-height:1}
-.pl-price b{font-weight:300;color:var(--ink);font-size:clamp(52px,5.4vw,80px);line-height:.9;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.pl-price{margin-top:auto;padding-top:40px;overflow:clip;overflow-clip-margin:4px;color:var(--ink-70);font-size:14px;line-height:1}
+.pl-price .up{display:flex;align-items:baseline;gap:8px;transition:transform 1.2s var(--ease-out) calc(var(--n)*50ms + 180ms)}
+.pl-price b{font-weight:300;color:var(--ink);font-size:clamp(52px,5.4vw,80px);line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .pl-d{margin-top:16px;color:var(--ink-70);font-size:15px;line-height:1.4}
-.pl-go{display:flex;align-items:center;justify-content:center;height:48px;margin-top:28px;padding:0 24px;border-radius:999px;background:#294123;color:#f8f8f2;font-size:15px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;transition:background-color .2s var(--ease-out),transform .12s var(--ease-out)}
+.plan-top{--r:0}.pl-d{--r:2}.pl-go{--r:3}
+.plan-top,.pl-d{transition:opacity .8s var(--ease-out) calc(var(--n)*50ms + var(--r)*40ms + 140ms),translate 1.1s var(--ease-out) calc(var(--n)*50ms + var(--r)*40ms + 140ms)}
+.pl-go{display:flex;align-items:center;justify-content:center;height:48px;margin-top:28px;padding:0 24px;border-radius:999px;background:#294123;color:#f8f8f2;font-size:15px;font-weight:500;letter-spacing:-.005em;white-space:nowrap;transition:background-color .2s var(--ease-out),transform .12s var(--ease-out),opacity .8s var(--ease-out) calc(var(--n)*50ms + var(--r)*40ms + 140ms),translate 1.1s var(--ease-out) calc(var(--n)*50ms + var(--r)*40ms + 140ms)}
 .pl-go:active{transform:scale(.97)}
 @media (hover:hover){.pl-go:hover{background:#1f3219}}
-.pl-all{margin-top:clamp(28px,4vh,40px);padding-top:20px;border-top:1px solid var(--line-l);font-size:15px;line-height:1.4}
+.pl-all{position:relative;padding-top:20px;font-size:15px;line-height:1.4;transition:opacity .8s var(--ease-out) .36s,translate 1.1s var(--ease-out) .36s}
+.pl-all::before{content:"";position:absolute;inset:0 0 auto;height:1px;background:var(--line-l);transform-origin:0 50%;transition:transform 1.2s var(--ease-out) .2s}
 .pl-all p{font-weight:500}
-.pl-all ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 16px;margin-top:8px;color:var(--ink-70)}
-/* the cards rise in 50ms apart as the row enters, and each price counts up to its figure */
-html.js:not(.still) .plans:not(.in) .plan,html.js:not(.still) .plans:not(.in)+.pl-all{opacity:0;transform:translateY(28px)}
-html.js .plans.in .plan,html.js .plans.in+.pl-all{opacity:1;transform:none;transition:opacity .6s var(--ease-out),transform .9s var(--ease-out);transition-delay:calc(var(--n,3)*50ms)}
-html.calm .plans .plan,html.calm .pl-all{opacity:1!important;transform:none!important;transition:none!important}
+.pl-all ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px clamp(40px,4.8vw,72px);margin-top:8px;color:var(--ink-70)}
+html.js:not(.still) .plans:not(.in)::before,html.js:not(.still) .plans:not(.in)+.pl-all::before{transform:scaleX(0)}
+html.js:not(.still) .plans:not(.in) .plan+.plan::before{transform:scaleY(0)}
+html.js:not(.still) .plans:not(.in) .plan-top,html.js:not(.still) .plans:not(.in) .pl-d,html.js:not(.still) .plans:not(.in) .pl-go{opacity:0;translate:0 16px}
+html.js:not(.still) .plans:not(.in)+.pl-all>*{opacity:0}
+html.js:not(.still) .plans:not(.in) .pl-price .up{transform:translateY(112%)}
+.pl-all>*{transition:opacity .8s var(--ease-out) .36s}
+html.calm .plans *,html.calm .plans::before,html.calm .plans .plan::before,html.calm .pl-all,html.calm .pl-all *,html.calm .pl-all::before{transition:none!important}
 .fine{max-width:44ch;margin-top:32px;color:var(--ink-70);font-size:15px}
 
 .foot{position:sticky;bottom:0;z-index:-1;height:100vh;height:100svh;background:var(--char);color:var(--cream);display:flex;flex-direction:column;padding:clamp(88px,16vh,170px) var(--gxr) calc(22px + env(safe-area-inset-bottom,0px)) var(--gx);overflow:hidden;visibility:hidden}
@@ -329,8 +342,11 @@ html.calm .plans .plan,html.calm .pl-all{opacity:1!important;transform:none!impo
   .p-name{padding-bottom:14vh;font-size:18.5vw}
   .p-foot{flex-direction:column;align-items:flex-start;gap:14px;padding-top:12px;bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .p-pick p{display:none}
-  .plans{grid-template-columns:1fr;gap:12px}
-  .plan{min-height:0}
+  .plans{grid-template-columns:1fr}
+  .plan{min-height:0;padding-block:28px}
+  .plan+.plan::before{inset:0 0 auto;width:auto;height:1px;transform-origin:0 50%}
+  html.js:not(.still) .plans:not(.in) .plan+.plan::before{transform:scaleX(0)}
+  .pl-price{padding-top:28px}
   .pl-all ul{grid-template-columns:1fr}
   .foot-top{flex-direction:column;align-items:flex-start;gap:16px}
   .foot-row{grid-template-columns:1fr 1fr}
@@ -365,9 +381,11 @@ html.js:not(.calm) .kp-row.is-in .kp-head>*+*{transition-delay:50ms}
 .kp-view{flex:1;min-height:0;max-height:540px}
 .ux .kp-track{display:flex;gap:16px;height:100%;width:max-content;margin:0;padding:0 var(--gxr) 0 var(--gx);list-style:none;will-change:transform}
 .ux .kp-track .pz,.ux .kp-track .pz-more{height:100%;will-change:transform,opacity}
-/* the waiting card's other pieces: stacked photos over its own, each wiped away upwards in turn */
+/* the waiting card's first piece: one photo over its own, wiped away upwards once. The wipe is played in time
+   (800ms, ease in and out) when its point in the scroll is passed, so it looks the same at any swipe speed. */
 .ux .kp-track .pz:first-child .pz-i{position:relative}
-.ux .pz-i .kp-ov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:clip-path}
+.ux .pz-i .kp-ov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 0 0 0);transition:clip-path .8s var(--io);will-change:clip-path}
+.ux .pz.turned .kp-ov{clip-path:inset(0 0 100% 0)}
 .ux .kp-track .pz:first-child .pz-tag,.ux .kp-track .pz:first-child .pz-n{transition:opacity .14s var(--ease-out)}
 .kp-bar{height:1px;background:rgba(20,20,19,.2);margin:0 var(--gxr) 0 var(--gx);position:relative}
 .kp-bar i{position:absolute;inset:0;background:var(--ink);transform:scaleX(.04);transform-origin:0 50%;will-change:transform}
@@ -620,7 +638,8 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 @media (min-width:761px){.ux .hd .logo svg{height:28px}}
 /* the plans sheet now ends on a white page, not the charcoal footer, so its edge needs a shadow that shows:
    a hairline all round, a soft drop below and the original lift above */
-.ch7.sheet{box-shadow:0 0 0 1px rgba(20,20,19,.08),0 36px 80px -24px rgba(20,20,19,.3),0 12px 28px -12px rgba(20,20,19,.14),0 -30px 80px -40px rgba(20,20,19,.3)}
+/* the plans are a flat, full-width band in the statement panel's mist: no floating sheet, no shadow, no tilt */
+.ch7.sheet{background:#eff0ed;border-radius:0;box-shadow:none;will-change:auto}
 /* the hero's own top row is gone (it stacked under the header); its one-line description now sits under the headline
    at every width, and settles in on the timing that row had (opacity .6s, 10px rise .8s, after .5s) */
 @media (min-width:761px){
@@ -1024,9 +1043,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       <h2 class="d rise" id="h2p" aria-label="One, two or three. You set the pace."><span class="ln-r" aria-hidden="true" style="--i:0"><span>One, two or three.</span></span><span class="ln-r" aria-hidden="true" style="--i:1"><span>You set the pace.</span></span></h2>
       <p class="pl-sub">Choose how many you hold at a time. Priced by the month.</p>
       <ul class="plans" id="plans">
-        <li class="plan" style="--n:0"><div class="plan-top"><h3>One piece</h3><span class="th" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="299">299</b><span>a month</span></p><p class="pl-d">One piece at a time. The simplest way to start.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
-        <li class="plan" style="--n:1"><div class="plan-top"><h3>Two pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="450">450</b><span>a month</span></p><p class="pl-d">Two at a time. Keep one on, swap the other.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
-        <li class="plan" style="--n:2"><div class="plan-top"><h3>Three pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span></div><p class="pl-price"><span>AED</span><b data-count="599">599</b><span>a month</span></p><p class="pl-d">Three at a time. A full box that keeps changing.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:0"><div class="plan-top"><h3>One piece</h3><span class="th" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>299</b><span>a month</span></span></p><p class="pl-d">One piece at a time. The simplest way to start.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:1"><div class="plan-top"><h3>Two pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>450</b><span>a month</span></span></p><p class="pl-d">Two at a time. Keep one on, swap the other.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:2"><div class="plan-top"><h3>Three pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>599</b><span>a month</span></span></p><p class="pl-d">Three at a time. A full box that keeps changing.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
       </ul>
       <div class="pl-all"><p>Every plan</p><ul><li>Swaps from day 2</li><li>Delivery at a slot you choose</li><li>30 more days on any piece you want to keep</li></ul></div>
     </div>
@@ -1198,19 +1217,23 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   syncQ(); qMQ.addEventListener('change', () => { syncQ(); measure(); });
   if (calm) $('#wpList').classList.add('in');
   else new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); } }), { threshold: .25 }).observe($('#wpList'));
-  /* the pieces the waiting card passes through before it settles on its own (the last, which heads the row) */
-  const TURN = [['Pendant', 'The Feather', 'piece-feather'], ['Necklace', 'The Windfall', 'piece-windfall'], ['Ring', 'The Knot', 'piece-knot'], ['Earrings', 'The Ivy', '']];
+  /* the waiting card starts as another piece and changes once, to its own (which heads the row) */
+  const TURN = [['Pendant', 'The Feather', 'piece-feather'], ['Earrings', 'The Ivy', '']];
   const kpTag = $('.pz-tag', kpCards[0]), kpName = $('.pz-n', kpCards[0]), kpOv = [];
-  let kpTurn = 3;
+  let kpTurn = 1, kpLab = 0;
   if (!calm) {
-    /* stacked so the first piece is on top: wiping one away shows the next beneath it */
-    [2, 1, 0].forEach(k => { const im = document.createElement('img'); im.className = 'kp-ov'; im.alt = ''; im.src = `${TURN[k][2]}.jpg`; kpImgs[0].parentNode.appendChild(im); kpOv[k] = im; });
-    kpTurn = 0; kpTag.textContent = TURN[0][0]; kpName.textContent = TURN[0][1];      /* it starts as the first of them */
+    const im = document.createElement('img'); im.className = 'kp-ov'; im.alt = ''; im.src = `${TURN[0][2]}.jpg`; kpImgs[0].parentNode.appendChild(im); kpOv.push(im);
+    kpTurn = 0; kpTag.textContent = TURN[0][0]; kpName.textContent = TURN[0][1];
   }
+  /* the photo wipes over 800ms; the name and type fade out and back in around its middle */
   const turnTo = k => {
     if (k === kpTurn) return; kpTurn = k;
-    kpTag.style.opacity = kpName.style.opacity = 0;
-    setTimeout(() => { kpTag.textContent = TURN[kpTurn][0]; kpName.textContent = TURN[kpTurn][1]; kpTag.style.opacity = kpName.style.opacity = ''; }, 140);
+    kpCards[0].classList.toggle('turned', k === 1);
+    clearTimeout(kpLab);
+    kpLab = setTimeout(() => {
+      kpTag.style.opacity = kpName.style.opacity = 0;
+      kpLab = setTimeout(() => { kpTag.textContent = TURN[kpTurn][0]; kpName.textContent = TURN[kpTurn][1]; kpTag.style.opacity = kpName.style.opacity = ''; }, 140);
+    }, 260);
   };
   const KEPT = 2, HAND = .9;      /* the statement scrubs over two screens, the handoff into the row over .9, then the row travels */
   const STEPS = $$('#steps .step').map(el => ({ el, h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, cap: 0, on: null }));
@@ -1493,20 +1516,13 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       });
       const ao = E.sine(seg(p, .52, .66));
       kpA.style.opacity = (1 - ao).toFixed(3); kpA.style.transform = `translate3d(0,${(-ao * 12).toFixed(2)}px,0)`;
-      /* The waiting card never moves. While the lines are read its light goes out, a step with each line (dimmer, and
-         drained of colour). When Iconec arrives the light comes back and the piece itself changes, three times: each
-         photo is wiped away upwards to show the next, and the name and type change at the middle of each wipe. It
-         settles on the piece that heads the row. (12 principles: staging, one thing changes at a time; slow in and
-         slow out on every step; the photo's slow pull-back is the only secondary action; no travel, tilt or overshoot.) */
-      const put = (E.sine(seg(p, .06, .2)) + E.sine(seg(p, .2, .34)) + E.sine(seg(p, .34, .48))) / 3 * (1 - E.sine(seg(p, .56, .7))), c0 = kpCards[0].style;
+      /* The waiting card never moves, and only three things happen to it, one at a time: its light goes out in one
+         slow fade while the lines are read, the light comes back when Iconec arrives, and then the piece changes
+         once. The change is started by the scroll but played in time, so a fast swipe shows the same calm wipe
+         as a slow one; the two thresholds stop it flickering when the scroll rests on the line. */
+      const put = E.sine(seg(p, .06, .46)) * (1 - E.sine(seg(p, .54, .68))), c0 = kpCards[0].style;
       c0.opacity = (1 - .74 * put).toFixed(3); c0.filter = put > .01 ? `grayscale(${put.toFixed(3)})` : '';
-      let turned = 0;
-      for (let k = 0; k < 3; k++) {
-        const w = E.sine(seg(p, .66 + k * .1, .76 + k * .1)), v = w.toFixed(3);
-        if (w > .5) turned = k + 1;
-        if (kpOv[k] && v !== kpOv[k]._v) { kpOv[k]._v = v; kpOv[k].style.clipPath = w <= 0 ? '' : `inset(0 0 ${(w * 100).toFixed(2)}% 0)`; kpOv[k].style.visibility = w >= 1 ? 'hidden' : ''; }
-      }
-      if (kpOv.length) turnTo(turned);
+      if (kpOv.length) turnTo(p > (kpTurn ? .62 : .7) ? 1 : 0);
       const bi = E.sine(seg(p, .6, .8)), bo = E.sine(seg(h, 0, .24));
       kpB.style.opacity = (bi * (1 - bo)).toFixed(3); kpB.style.transform = `translate3d(0,${((1 - bi) * 16 - bo * 14).toFixed(2)}px,0)`;
       /* handoff: the stage turns white, the piece slides to the head of the row and the other cards follow it in */
@@ -1558,17 +1574,8 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     } else if (qVis !== false && qPinned) { wqFly.style.visibility = 'hidden'; qVis = false; if (sy >= M.wq.top + M.wq.h) wp.classList.remove('fly-on'); }
 
     /* plans + footer */
-    tilt(ch7, M.ch7, sy);
     set('h2p', sy > M.ch7.top - vh * .55, v => v && $('#h2p').classList.add('in'));
-    if (!plansOn && planRows.length && sy + vh * .9 > planRows[0].top) {
-      plansOn = true; $('#plans').classList.add('in');
-      /* each price counts up to its figure as its card arrives (900ms, decaying) */
-      if (!calm && !still) $$('#plans [data-count]').forEach((el, i) => {
-        const to = +el.dataset.count, t0 = performance.now() + i * 50, dur = 900;
-        const tick = now => { const k = clamp((now - t0) / dur); el.textContent = Math.round(to * (1 - Math.pow(2, -10 * k)) / (1 - Math.pow(2, -10))); if (k < 1) requestAnimationFrame(tick); };
-        requestAnimationFrame(tick);
-      });
-    }
+    if (!plansOn && planRows.length && sy + vh * .86 > planRows[0].top) { plansOn = true; $('#plans').classList.add('in'); }
     set('foot', sy > M.ch7.top, v => foot.classList.toggle('on', v));
   }
 
