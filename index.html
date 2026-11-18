@@ -317,8 +317,8 @@ html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
 .cr{display:grid;grid-template-areas:"h" "strip" "status" "keep" "ctrl" "fine";row-gap:28px}
 .cr-h{grid-area:h;display:grid;gap:16px}
 .cr-strip{grid-area:strip;position:relative;overflow:hidden;margin-inline:calc(var(--gx) * -1);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 88%,transparent);--mcw:120px}
-.cr-track{display:flex;gap:14px;width:max-content;will-change:transform;backface-visibility:hidden;transition:opacity .45s var(--out)}
-.cr-track.reset{opacity:0;transition:opacity .28s var(--in)}
+.cr-track{display:flex;gap:14px;width:max-content;will-change:transform;backface-visibility:hidden;transition:opacity .3s var(--out),translate .3s var(--out)}
+.cr-track.reset{opacity:0;translate:0 10px;transition:opacity .2s var(--in),translate .2s var(--in)}
 .mc{flex:none;width:var(--mcw);opacity:.28}
 .mc.past{opacity:.5}.mc.on{opacity:1}
 .mc-ph{display:grid;gap:2px;aspect-ratio:4/5;border-radius:6px;overflow:hidden}
@@ -349,6 +349,10 @@ html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
 .seg button{display:grid;place-content:center;min-height:52px;padding:6px 4px;border-radius:12px;font-size:14px;line-height:1.25;transition:background-color .2s var(--out),color .2s var(--out),transform .12s var(--out)}
 .seg button span{display:block;font-size:12px;opacity:.72}
 .seg button[aria-checked="true"]{background:var(--ink);color:var(--paper)}
+.seg{position:relative}
+.seg button{position:relative;z-index:1}
+.seg.has-thumb button[aria-checked="true"]{background:transparent}
+.seg-thumb{position:absolute;top:0;left:0;border-radius:12px;background:var(--ink);pointer-events:none;transition:transform .3s var(--out),width .3s var(--out),height .3s var(--out)}
 .seg button:active{transform:scale(.97)}
 @media (hover:hover){.seg button[aria-checked="false"]:hover{background:rgba(22,23,20,.05)}}
 .picks{display:flex;gap:8px}
@@ -367,6 +371,7 @@ html.js:not(.calm) .how-stick>.how-g{width:100%;margin-top:0}
   .keep{justify-self:end;width:min(100%,400px)}
   .cr-ctrl .ctl:first-child{flex:none}
   .seg{display:flex;border-radius:999px;width:max-content}
+  .seg-thumb{border-radius:999px}
   .seg button{display:inline-flex;align-items:center;min-height:40px;height:40px;padding:0 16px;border-radius:999px;white-space:nowrap}
   .seg button span{display:inline;font-size:14px;opacity:1}
   .seg button span::before{content:" · "}
@@ -1204,10 +1209,46 @@ html[data-only] .jb,html[data-only] .chat{display:none}
     crStatus.innerHTML = yours
       ? `<b>${M} months, ${worn} pieces worn.</b> <span>${k.name} is yours to keep.</span>`
       : `<b>Month ${m}, ${worn} piece${worn > 1 ? 's' : ''} worn.</b> <span>AED ${fmt(credit)} of credit toward ${k.name}.</span>`;
-    keepV.textContent = yours ? 'Yours to keep' : `AED ${fmt(k.price - credit)} to go`;
+    const left = k.price - credit;
+    if (yours) keepV.textContent = 'Yours to keep';
+    else if (easeNext && !calm && shownLeft !== null && shownLeft !== left) tweenLeft(shownLeft, left);
+    else keepV.textContent = `AED ${fmt(left)} to go`;
+    shownLeft = yours ? null : left; easeNext = false;
     if (yours) { const key = plan + piece; if (announced !== key) { announced = key; crLive.textContent = `On ${p.name}, after ${M} months and ${worn} pieces worn, credit covers the full price of ${k.name}.`; } }
   }
-  function placeTrack() { measureStrip(); paint(mp); }
+  function placeTrack() { measureStrip(); paint(mp); placeThumb(true); }
+  /* plan and piece changes: the strip leaves (200ms, ease-in), is rebuilt and arrives with a 10px rise (300ms, ease-out);
+     the credit line and the "to go" figure ease to their new values on the same 300ms curve */
+  let shownLeft = null, easeNext = false, leftRaf = 0, swapT = 0;
+  function tweenLeft(from, to) {
+    cancelAnimationFrame(leftRaf);
+    const t0 = performance.now(), D = 300;
+    const f = t => { const q = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - q, 3); keepV.textContent = `AED ${fmt(Math.round(from + (to - from) * e))} to go`; if (q < 1) leftRaf = requestAnimationFrame(f); };
+    leftRaf = requestAnimationFrame(f);
+  }
+  function smoothRestart() {
+    if (calm) { restart(false); return; }
+    clearTimeout(swapT);
+    crTrack.classList.add('reset');
+    swapT = setTimeout(() => {
+      keepBar.style.transition = 'transform .3s cubic-bezier(.16,1,.3,1)';
+      easeNext = true;
+      restart(inView);
+      crTrack.classList.remove('reset');
+      setTimeout(() => { keepBar.style.transition = ''; }, 320);
+    }, 200);
+  }
+  const crPlanEl = $('#crPlan'), thumb = document.createElement('i');
+  thumb.className = 'seg-thumb'; thumb.setAttribute('aria-hidden', 'true'); crPlanEl.prepend(thumb); crPlanEl.classList.add('has-thumb');
+  function placeThumb(instant) {
+    const b = crPlanEl.querySelector('[aria-checked="true"]'); if (!b) return;
+    if (instant || calm) thumb.style.transition = 'none';
+    thumb.style.width = b.offsetWidth + 'px'; thumb.style.height = b.offsetHeight + 'px';
+    thumb.style.transform = `translate(${b.offsetLeft}px,${b.offsetTop}px)`;
+    if (instant || calm) { thumb.offsetWidth; thumb.style.transition = ''; }
+  }
+  placeThumb(true);
+  if (document.fonts) document.fonts.ready.then(() => placeThumb(true));
   function glide(t) {
     raf = 0;
     if (!playing) return;
@@ -1244,8 +1285,8 @@ html[data-only] .jb,html[data-only] .chat{display:none}
       });
     });
   }
-  radio($('#crPlan'), b => { plan = b.dataset.v; restart(!calm && inView); });
-  radio($('#crPick'), b => { piece = b.dataset.v; restart(!calm && inView); });
+  radio($('#crPlan'), b => { plan = b.dataset.v; placeThumb(false); smoothRestart(); });
+  radio($('#crPick'), b => { piece = b.dataset.v; smoothRestart(); });
   restart(false);
   new IntersectionObserver(([e]) => {
     inView = e.isIntersecting;
