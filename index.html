@@ -1353,7 +1353,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   }
 
   /* ── the frame ── */
-  let introT0 = still || calm ? -1e6 : null, lastDay = -1, state = {}, sS = -1;
+  let introT0 = still || calm ? -1e6 : null, lastDay = -1, state = {}, sS = -1, kS = -1;
+  /* linear through the middle, easing in over the first 14% and out over the last 14% */
+  const soft = (t, a = .14) => t < a ? t * t / (2 * a * (1 - a)) : t > 1 - a ? 1 - (1 - t) * (1 - t) / (2 * a * (1 - a)) : (t - a / 2) / (1 - a);
   const set = (k, v, fn) => { if (state[k] !== v) { state[k] = v; fn(v); } };
   function frame(t) {
     const sy = scrollY, S = sy / vh, t0 = t;
@@ -1477,24 +1479,39 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       } else set('phv', false, v => phone.style.visibility = 'hidden');
     }
 
-    /* the pieces: a statement read in the dark, then its piece leads the row in */
+    /* the pieces: a statement read in the dark, then its piece leads the row in.
+       What made it jumpy, and what each fix is (12 principles):
+       - it followed the raw scroll position, so every wheel step showed: it now follows an eased copy of the scroll
+       - slow in, slow out: every scrubbed move used a curve that starts at full speed; they now ease both ways (sine)
+       - timing: each line had a tenth of a screen to arrive; the windows are half as long again and overlap
+       - arcs / exaggeration: the other cards flew in from a whole screen away; they now only fade in from 140px while
+         the row's own slide carries them
+       - overlapping action: the row starts travelling as the slide into place is still finishing, so there is no dead stop
+         between the two, and the travel itself eases in at its start and out at its end */
     if (!calm && sy > M.ch5.top - vh && sy < M.ch5.top + M.ch5.h) {
-      const s = sy - M.ch5.top, kl = vh * KEPT, hl = vh * HAND;
-      const p = clamp(s / kl), h = clamp((s - kl) / hl), he = E.io(h), tr = M.travel > 0 ? clamp((s - kl - hl) / M.travel) : 0;
-      /* each line arrives in place, one at a time; the earlier ones step back */
+      kS = kS < 0 || Math.abs(sy - kS) > vh * 1.5 ? sy : kS + (sy - kS) * (1 - Math.exp(-dt / (lenis ? 70 : 130)));
+      const s = kS - M.ch5.top, kl = vh * KEPT, hl = vh * HAND;
+      const p = clamp(s / kl), h = clamp((s - kl) / hl), he = E.sine(h);
+      const tr = M.travel > 0 ? soft(clamp((s - kl - hl * .8) / (M.travel + hl * .2))) : 0;
+      /* each line arrives in place, one at a time; the earlier ones step back as the next arrives */
       kpLines.forEach((l, i) => {
-        const a = E.out(seg(p, .1 + i * .15, .19 + i * .15)), next = i < 2 ? seg(p, .25 + i * .15, .34 + i * .15) : 0;
+        const a = E.sine(seg(p, .06 + i * .14, .2 + i * .14)), next = i < 2 ? E.sine(seg(p, .2 + i * .14, .34 + i * .14)) : 0;
         l.style.transform = `translate3d(0,${((1 - a) * 14).toFixed(2)}px,0)`; l.style.opacity = (a * lerp(1, .38, next)).toFixed(3);
       });
-      kpA.style.opacity = (1 - seg(p, .56, .64)).toFixed(3);
+      const ao = E.sine(seg(p, .52, .66));
+      kpA.style.opacity = (1 - ao).toFixed(3); kpA.style.transform = `translate3d(0,${(-ao * 12).toFixed(2)}px,0)`;
       /* the piece fades into the dark while the lines are read, and comes back when Iconec arrives */
-      const dim = E.io(seg(p, .1, .5)) * (1 - E.io(seg(p, .62, .8)));
+      const dim = E.sine(seg(p, .06, .46)) * (1 - E.sine(seg(p, .58, .82)));
       kpCards[0].style.opacity = lerp(1, .2, dim).toFixed(3); kpCards[0].style.scale = lerp(1, .95, dim).toFixed(4);
-      const bi = E.out(seg(p, .64, .76)), bo = E.in(seg(h, 0, .16));
-      kpB.style.opacity = (bi * (1 - bo)).toFixed(3); kpB.style.transform = `translate3d(0,${((1 - bi) * 16 - bo * 16).toFixed(2)}px,0)`;
+      const bi = E.sine(seg(p, .6, .8)), bo = E.sine(seg(h, 0, .24));
+      kpB.style.opacity = (bi * (1 - bo)).toFixed(3); kpB.style.transform = `translate3d(0,${((1 - bi) * 16 - bo * 14).toFixed(2)}px,0)`;
       /* handoff: the stage turns white, the piece slides to the head of the row and the other cards follow it in */
-      kpBg.style.opacity = E.io(seg(h, .04, .6)).toFixed(3);
-      kpCards.forEach((c, i) => { if (!i) return; const v = ((1 - E.out(seg(h, .12 + i * .05, .76 + i * .05))) * vw).toFixed(1); if (v !== c._v) { c._v = v; c.style.translate = v + 'px 0'; } });
+      kpBg.style.opacity = E.sine(seg(h, .04, .62)).toFixed(3);
+      kpCards.forEach((c, i) => {
+        if (!i) return;
+        const e = E.sine(seg(h, .08 + i * .06, .62 + i * .06)), v = e.toFixed(3);
+        if (v !== c._v) { c._v = v; c.style.translate = ((1 - e) * 140).toFixed(1) + 'px 0'; c.style.opacity = v; }
+      });
       set('kpIn', h > .6, v => kpRow.classList.toggle('is-in', v));
       /* then the whole row keeps moving */
       kpTrack.style.transform = `translate3d(${(lerp(M.startX, 0, he) - tr * M.travel).toFixed(2)}px,0,0)`;
