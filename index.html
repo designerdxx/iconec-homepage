@@ -931,6 +931,11 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
     M.max = Math.max(1, root.scrollHeight - innerHeight);
     M.ps = Math.min(1, (small ? .5 : .58) * vh / 632, (vw - 64) / 300);
     M.pcy = (small ? .5 : .54) * vh;
+    /* the phone always sits clear of the headline above it and the captions below it */
+    { const hl = $('h2', c2), cp = $('.caps', c2);
+      const top = hl.offsetTop + hl.offsetHeight + (small ? 24 : 40), bot = cp.offsetTop - (small ? 20 : 32);
+      M.ps = Math.min(M.ps, Math.max(.3, (bot - top) / 632));
+      M.pcy = clamp(M.pcy, top + 316 * M.ps, bot - 316 * M.ps); }
     let sx = slot.offsetWidth / 2 - phone.offsetWidth / 2, sy = slot.offsetHeight / 2 - phone.offsetHeight / 2, e = slot;
     while (e && e !== phone) { sx += e.offsetLeft; sy += e.offsetTop; e = e.offsetParent; }
     M.slot = { x: sx * M.ps, y: M.pcy - vh / 2 + sy * M.ps };
