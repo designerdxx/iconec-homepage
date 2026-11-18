@@ -301,9 +301,16 @@ html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s
 .plan+.plan::before{content:"";position:absolute;inset:0 auto 0 calc(var(--pg)/-2);width:1px;background:var(--line-l);transform-origin:50% 0;transition:transform 1.2s var(--ease-out) calc(var(--n)*50ms + 100ms)}
 .plan-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .plan h3{font-weight:400;font-size:clamp(20px,1.7vw,24px);line-height:1.2;letter-spacing:-.02em}
-.plan .th{display:flex;gap:4px}
+.plan .th{display:flex;padding-right:2px}
 /* how many pieces the plan holds: tiny blank cards, off-white with a thick white edge */
 .plan .th i{display:block;width:clamp(26px,2.3vw,32px);aspect-ratio:3/4;border:3px solid #fff;border-radius:6px;background:#e6e4dd}
+/* held like a small hand of cards: each overlaps the one before by nearly half, and two or three fan a few degrees from their feet */
+.plan .th i{transform-origin:50% 100%}
+.plan .th i+i{margin-left:-13px}
+.plan .th i:nth-child(1):nth-last-child(2){rotate:-5deg}
+.plan .th i:nth-child(2):nth-last-child(1){rotate:5deg}
+.plan .th i:nth-child(1):nth-last-child(3){rotate:-9deg;translate:0 1.5px}
+.plan .th i:nth-child(3):nth-last-child(1){rotate:9deg;translate:0 1.5px}
 .pl-price{margin-top:auto;padding-top:40px;overflow:clip;overflow-clip-margin:4px;color:var(--ink-70);font-size:14px;line-height:1}
 .pl-price .up{display:flex;align-items:baseline;gap:8px;transition:transform 1.2s var(--ease-out) calc(var(--n)*50ms + 180ms)}
 .pl-price b{font-weight:300;color:var(--ink);font-size:clamp(52px,5.4vw,80px);line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
