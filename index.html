@@ -295,7 +295,8 @@ html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s
 .plan-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .plan h3{font-weight:400;font-size:clamp(20px,1.7vw,24px);line-height:1.2;letter-spacing:-.02em}
 .plan .th{display:flex;gap:4px}
-.plan .th img{width:clamp(36px,3.4vw,50px);aspect-ratio:3/4;object-fit:cover;border-radius:3px}
+/* how many pieces the plan holds: tiny blank cards, off-white with a thick white edge */
+.plan .th i{display:block;width:clamp(26px,2.3vw,32px);aspect-ratio:3/4;border:3px solid #fff;border-radius:6px;background:#e6e4dd}
 .pl-price{margin-top:auto;padding-top:40px;overflow:clip;overflow-clip-margin:4px;color:var(--ink-70);font-size:14px;line-height:1}
 .pl-price .up{display:flex;align-items:baseline;gap:8px;transition:transform 1.2s var(--ease-out) calc(var(--n)*50ms + 180ms)}
 .pl-price b{font-weight:300;color:var(--ink);font-size:clamp(52px,5.4vw,80px);line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
@@ -1059,9 +1060,9 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
       <h2 class="d rise" id="h2p" aria-label="One, two or three. You set the pace."><span class="ln-r" aria-hidden="true" style="--i:0"><span>One, two or three.</span></span><span class="ln-r" aria-hidden="true" style="--i:1"><span>You set the pace.</span></span></h2>
       <p class="pl-sub">Choose how many you hold at a time. Priced by the month.</p>
       <ul class="plans" id="plans">
-        <li class="plan" style="--n:0"><div class="plan-top"><h3>One piece</h3><span class="th" aria-hidden="true"><img src="od-piece-ring.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>299</b><span>a month</span></span></p><p class="pl-d">One piece at a time. The simplest way to start.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
-        <li class="plan" style="--n:1"><div class="plan-top"><h3>Two pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-earrings.jpg" alt=""><img src="od-piece-pendant.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>450</b><span>a month</span></span></p><p class="pl-d">Two at a time. Keep one on, swap the other.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
-        <li class="plan" style="--n:2"><div class="plan-top"><h3>Three pieces</h3><span class="th" aria-hidden="true"><img src="od-piece-riviere.jpg" alt=""><img src="od-piece-ring.jpg" alt=""><img src="od-piece-earrings.jpg" alt=""></span></div><p class="pl-price"><span class="up"><span>AED</span><b>599</b><span>a month</span></span></p><p class="pl-d">Three at a time. A full box that keeps changing.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:0"><div class="plan-top"><h3>One piece</h3><span class="th" aria-hidden="true"><i></i></span></div><p class="pl-price"><span class="up"><span>AED</span><b>299</b><span>a month</span></span></p><p class="pl-d">One piece at a time. The simplest way to start.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:1"><div class="plan-top"><h3>Two pieces</h3><span class="th" aria-hidden="true"><i></i><i></i></span></div><p class="pl-price"><span class="up"><span>AED</span><b>450</b><span>a month</span></span></p><p class="pl-d">Two at a time. Keep one on, swap the other.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
+        <li class="plan" style="--n:2"><div class="plan-top"><h3>Three pieces</h3><span class="th" aria-hidden="true"><i></i><i></i><i></i></span></div><p class="pl-price"><span class="up"><span>AED</span><b>599</b><span>a month</span></span></p><p class="pl-d">Three at a time. A full box that keeps changing.</p><a class="pl-go" href="#foot" data-store>Get the app</a></li>
       </ul>
       <div class="pl-all"><p>Every plan</p><ul><li>Swaps from day 2</li><li>Delivery at a slot you choose</li><li>30 more days on any piece you want to keep</li></ul></div>
     </div>
