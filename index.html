@@ -45,8 +45,9 @@
   --d1:clamp(40px,8.6vw,148px); --d2:clamp(36px,5.3vw,88px); --d3:clamp(34px,6.4vw,108px);
   --body:16px; --small:13px;
   /* space */
-  --gx:max(clamp(16px,2.2vw,32px), env(safe-area-inset-left,0px));
-  --gxr:max(clamp(16px,2.2vw,32px), env(safe-area-inset-right,0px));
+  /* one side margin for the whole page: the same value the header, On rotation, members, gift and FAQ use */
+  --gx:max(clamp(16px,3.4vw,56px), env(safe-area-inset-left,0px));
+  --gxr:max(clamp(16px,3.4vw,56px), env(safe-area-inset-right,0px));
   /* motion */
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-in:cubic-bezier(.7,0,.84,0); --ease-io:cubic-bezier(.76,0,.24,1);
 }
@@ -139,9 +140,11 @@ html.js .rise.in .ln-r>span{transform:none;transition:transform 1s var(--ease-ou
    as the words around it arrive; the last clause is green; the How it works link follows 300ms later. Each piece is
    revealed once, as it enters the lower 91% of the screen. */
 .ws-idea{--mist:#eff0ed;--fg:#10150f;--acc:#102c0b;--acc-on:#f3f4f0;--gut:clamp(20px,4.75vw,68px);background:var(--mist);color:var(--fg);padding-block:clamp(112px,19vh,208px);font-weight:400;line-height:1.4}
-.ws-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-left:max(var(--gut),env(safe-area-inset-left,0px));padding-right:max(var(--gut),env(safe-area-inset-right,0px))}
-.ws-main{grid-column:5/13;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(40px,6vh,64px)}
-.ch1 h2.ws-lead{font-weight:400;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-transform:none;text-wrap:pretty}
+/* alignment: the block starts on the page's one left margin, under the header logo and in line with the step names
+   and every other heading; the sentence keeps a 22em measure so it breaks into three even lines */
+.ws-grid{padding-left:var(--gx);padding-right:var(--gxr)}
+.ws-main{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:clamp(40px,6vh,64px)}
+.ch1 h2.ws-lead{font-weight:400;font-size:clamp(27px,3.3vw,48px);line-height:1.2;letter-spacing:-.03em;text-transform:none;text-wrap:pretty;max-width:22em}
 .ws-acc{color:var(--acc)}
 .ws-lead .w{display:inline-block}
 .ws-lead .nb{white-space:nowrap}
@@ -164,7 +167,6 @@ html.js:not(.calm) .ws-lead:not(.in) .ipill img{transform:scale(1.4)}
 }
 html.js:not(.calm) [data-wsrv]:not(.in){opacity:0;filter:blur(8px);transform:translate3d(0,16px,0)}
 html.js:not(.calm) [data-wsrv]{transition:opacity .9s var(--ease-out),filter .9s var(--ease-out),transform .9s var(--ease-out);transition-delay:var(--d0,0ms)}
-@media (max-width:900px){.ws-main{grid-column:1/-1}}
 .anchor{height:316px;margin-top:16vh}
 
 /* chapter 02 + 04 live on the stone layer inside the stage */
@@ -664,9 +666,9 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .phone:not(.has-card) [data-spot]{visibility:hidden}
 .ph-edge,.ph-back,.ph-glare,.ph-shadow{display:none}
 /* the landing card's second front: the app's spotlight card, at the size it has inside the phone */
-.card .appf{position:absolute;left:50%;top:50%;width:280px;height:372px;margin:-186px 0 0 -140px;transform:scale(.70149);backface-visibility:hidden;display:none;border-radius:24px;box-shadow:0 48px 70px -40px rgba(20,20,19,.5);transition:box-shadow .3s}
-.card.as-app .appf{display:flex}
-.card.as-app>.face:not(.back){display:none}
+.card .appf{position:absolute;left:50%;top:50%;width:280px;height:372px;margin:-186px 0 0 -140px;transform:scale(.8286);backface-visibility:hidden;border-radius:24px;box-shadow:0 0 0 1px rgba(20,20,19,.06),0 40px 64px -36px rgba(20,20,19,.45);transition:box-shadow .3s}
+.card.land .face.back{inset:4px 0;border-radius:20px}
+.card.land .shade{display:none}
 .card.flat .appf{box-shadow:none}
 /* the steps */
 .steps{position:absolute;inset:0;pointer-events:none}
@@ -677,6 +679,20 @@ html.js.is-in .ux .hd .hd-in{opacity:1;transform:none;transition:opacity .6s .5s
 .st-p{right:var(--gxr);width:min(34ch,calc(50% - 190px - var(--gxr)));display:grid;gap:14px}
 .st-p p{font-size:15px;line-height:1.45;color:var(--ink-70)}
 .st-p p:first-child{font-size:17px;line-height:1.4;color:var(--ink)}
+/* The steps hold still beside the phone and change the way augen.pro changes its text. The step that is leaving
+   softens and lifts away in 240ms (ease-in); the next comes into focus from below (900ms, ease-out): its name letter by
+   letter, 32ms apart, then the first line word by word, 24ms apart, then the second paragraph. Scrolling back plays
+   it the other way round. With reduced motion the steps simply scroll past as before. */
+.step .gl,.step .w{display:inline-block}
+html.js:not(.calm) .st-h,html.js:not(.calm) .st-p{visibility:inherit}
+html.js:not(.calm) .step .gl,html.js:not(.calm) .step .w,html.js:not(.calm) .step .st-p p+p{opacity:0;filter:blur(10px);transform:translate3d(0,.3em,0);transition:opacity .24s var(--ease-in),filter .24s var(--ease-in),transform .24s var(--ease-in);will-change:opacity,filter,transform}
+html.js:not(.calm) .step .st-p p+p{transform:translate3d(0,12px,0)}
+html.js:not(.calm) .step.out .gl,html.js:not(.calm) .step.out .w{transform:translate3d(0,-.3em,0)}
+html.js:not(.calm) .step.out .st-p p+p{transform:translate3d(0,-12px,0)}
+html.js:not(.calm) .step.on .gl,html.js:not(.calm) .step.on .w,html.js:not(.calm) .step.on .st-p p+p{opacity:1;filter:none;transform:none;transition:opacity .9s var(--ease-out),filter .9s var(--ease-out),transform .9s var(--ease-out)}
+html.js:not(.calm) .step.on .gl{transition-delay:calc(var(--i)*32ms + 200ms)}
+html.js:not(.calm) .step.on .w{transition-delay:calc(var(--i)*24ms + 340ms)}
+html.js:not(.calm) .step.on .st-p p+p{transition-delay:.72s}
 @media (max-width:760px){
   .st-h{left:var(--gx);right:var(--gxr);max-width:none;font-size:9.5vw}
   .st-p{left:var(--gx);right:var(--gxr);width:auto}
@@ -1193,7 +1209,13 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   if (calm) $('#wpList').classList.add('in');
   else new IntersectionObserver((es, o) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); o.disconnect(); } }), { threshold: .25 }).observe($('#wpList'));
   const KEPT = 2, HAND = .9;      /* the statement scrubs over two screens, the handoff into the row over .9, then the row travels */
-  const STEPS = $$('#steps .step').map(el => ({ h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, cap: 0, on: null }));
+  const STEPS = $$('#steps .step').map(el => ({ el, h: $('.st-h', el), p: $('.st-p', el), hh: 0, ph: 0, cap: 0, on: null }));
+  /* each name is split into letters and each first line into words, so they can come into focus one after another */
+  STEPS.forEach(st => {
+    const t = st.h.textContent.trim(); st.h.setAttribute('aria-label', t);
+    st.h.innerHTML = [...t].map((ch, i) => `<span class="gl" aria-hidden="true" style="--i:${i}">${ch}</span>`).join('');
+    const p1 = st.p.firstElementChild; p1.innerHTML = p1.textContent.trim().split(/\s+/).map((w, i) => `<span class="w" style="--i:${i}">${w}</span>`).join(' ');
+  });
   /* distance from an element's top edge to the top of its first line's capitals */
   const cvx = document.createElement('canvas').getContext('2d');
   const capTop = el => {
@@ -1221,10 +1243,11 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
   };
   const cards = DEF.map(mkCard);
   /* the one card that lands in the phone is not part of the row: it waits under the statement */
-  const hero0 = mkCard({ p: 0 }, 0);
-  /* the landing card carries a second front: the app's own spotlight card, cloned from the phone's first screen */
+  const hero0 = (() => { const el = document.createElement('div'); el.className = 'card land'; el.innerHTML = `<div class="face back">ICONEC</div><div class="shade"></div>`; field.appendChild(el); return { el, shade: el.lastChild, k: 0, vis: false, lastShade: -1 }; })();
+  /* its front is the app's own spotlight card, cloned from the phone's first screen and shown at card size, so the
+     card that waits under the statement is the same object that settles into the app */
   { const spot = $('[data-spot]', app);
-    if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.shade); } }
+    if (spot) { const c = spot.cloneNode(true); c.removeAttribute('data-spot'); c.className = 'appf'; c.style.cssText += ';left:50%;top:50%'; hero0.el.insertBefore(c, hero0.el.firstChild); } }
   let car = 0, lastT = 0;
 
   /* ── measurements (cached; never read layout inside the frame) ── */
@@ -1276,6 +1299,17 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
     M.pcy = (small ? .5 : .54) * vh;
     M.pBot = M.pcy + 316 * M.ps;
     STEPS.forEach(st => { st.hh = st.h.offsetHeight; st.ph = st.p.offsetHeight; st.cap = capTop(st.h) - capTop(st.p.firstElementChild); st.on = null; });
+    if (!calm) {
+      /* each step's stretch of the scroll, [arrives, leaves]: Choose as the card lands, Wear with the delivery screen and until
+         the month sheet has covered it, Swap as that sheet clears the text, Return with its own screen */
+      M.SA = [[M.r0 + .88 * (M.r1 - M.r0), M.r1 + .78 * vh], [M.r1 + .78 * vh, M.h4 - .9 * vh], [M.h4 - .38 * vh, M.h4 + .8 * vh], [M.h4 + .8 * vh, 1e9]];
+      /* the name is centred on the phone's own centre line; on phones both sit under the phone */
+      STEPS.forEach(st => {
+        const y = small ? M.pBot + 22 : M.pcy - st.hh / 2;
+        st.h.style.transform = `translate3d(0,${y.toFixed(1)}px,0)`; st.p.style.transform = `translate3d(0,${(small ? y + st.hh + 8 : y + st.cap).toFixed(1)}px,0)`;
+        st.h.style.opacity = st.p.style.opacity = st.h.style.visibility = st.p.style.visibility = '';
+      });
+    }
     let sx = slot.offsetWidth / 2 - phone.offsetWidth / 2, sy = slot.offsetHeight / 2 - phone.offsetHeight / 2, e = slot;
     while (e && e !== phone) { sx += e.offsetLeft; sy += e.offsetTop; e = e.offsetParent; }
     M.slot = { x: sx * M.ps, y: M.pcy - vh / 2 + sy * M.ps };
@@ -1370,12 +1404,12 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         hero0.el.style.opacity = '';
         const tc = E.io(seg(r, .5, 1));
         const x = lerp(0, M.slot.x, tc), y = lerp(Math.max(ay, vh / 2) - vh / 2, M.slot.y, tc);
-        const sc = lerp(1, M.ps, tc) + Math.sin(Math.PI * seg(r, 0, .7)) * .08, rot = 360 * E.io(seg(r, .04, .86));
+        /* .8466 = the card's own scale inside the app (.70149) over its scale here (.8286), so it lands exactly on its place */
+        const sc = lerp(1, M.ps * .8466, tc) + Math.sin(Math.PI * seg(r, 0, .7)) * .08, rot = 360 * E.io(seg(r, .04, .86));
         hero0.el.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotateY(${rot.toFixed(2)}deg) scale(${sc.toFixed(4)})`;
         set('h0vis', !docked, v => { hero0.vis = v; hero0.el.style.visibility = v ? 'visible' : 'hidden'; });
         set('flat', r > .9, v => hero0.el.classList.toggle('flat', v));
-        set('asapp', rot >= 180, v => hero0.el.classList.toggle('as-app', v));
-      } else { set('h0vis', false, v => { hero0.vis = false; hero0.el.style.visibility = 'hidden'; }); set('asapp', false, v => hero0.el.classList.toggle('as-app', v)); }
+      } else { set('h0vis', false, v => { hero0.vis = false; hero0.el.style.visibility = 'hidden'; }); }
       set('docked', docked, v => phone.classList.toggle('has-card', v));
 
       /* white opens to stone, the phone comes into focus */
@@ -1402,8 +1436,13 @@ html[data-members="hidden"] .ux [data-block="members"]{display:none}
         });
         if (slotBtn) set('press', sy > M.T[1] - M.W - .09 * vh && sy < M.T[1] - M.W, v => { slotBtn.style.transform = v ? 'scale(.97)' : ''; });
 
-        /* the four steps pass the phone at page speed: name on the left, explanation on the right, on one top line.
-           On phones there is no room beside it, so each step sits under the phone and fades through. */
+        /* the four steps: held beside the phone and changed by class (see the styles); with reduced motion they pass the
+           phone at page speed, name on the left and explanation on the right, as before */
+        if (!calm) {
+          let key = '';
+          for (let i = 0; i < STEPS.length; i++) key += sy < M.SA[i][0] ? 'a' : sy < M.SA[i][1] ? 'b' : 'c';
+          set('steps', key, k => STEPS.forEach((st, i) => { st.el.classList.toggle('on', k[i] === 'b'); st.el.classList.toggle('out', k[i] === 'c'); }));
+        } else
         for (let i = 0; i < STEPS.length; i++) {
           const st = STEPS[i], dy = M.C[i] - sy, on = Math.abs(dy) < vh * 1.2;
           if (on !== st.on) { st.on = on; st.h.style.visibility = st.p.style.visibility = on ? 'inherit' : 'hidden'; }
